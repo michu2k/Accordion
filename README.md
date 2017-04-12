@@ -20,22 +20,22 @@ Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopi
 ###### Stwórz znaczniki HTML.
 ```
 <div class="hue">
-	<a href="#" class="hue-q">Lorem ipsum ?</a>
-	<div class="hue-a">
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-	</div>
+    <a href="#" class="hue-q">Lorem ipsum ?</a>
+    <div class="hue-a">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+    </div>
 </div>
 ```
 
 ###### Aktywuj HUE wklejając poniższy kod na koniec dokumentu.
 ```
 <script>
-	Hue.init(); 
+    Hue.init(); 
 </script>
 ```
 
 # Ustawienia
-**animationTime** - czas trwania animacji rozwijania
+**animationTime** - czas trwania animacji rozwijania  
 **showOnlyOne** - ustawione na false wyłącza automatyczne chowanie rozwiniętych list
 
 ```
@@ -46,3 +46,8 @@ Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopi
     }); 
 </script>
 ```
+
+# Autor
+Autorem projektu jest Michał Strumpf  
+- [Strona internetowa](http://www.michu2k.pl/)
+- [Profil GitHub](https://github.com/michu2k/)
