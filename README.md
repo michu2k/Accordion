@@ -3,13 +3,13 @@ HUE to moduł, który pozwala stworzyć rozwijaną listę, przydatną m.in. przy
 
 Strona skryptu: [HUE](http://www.michu2k.pl/hue/)
 
-# Wersja
+## Wersja
 1.0
 
-# Licencja 
+## Licencja 
 Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopiowania, modyfikowania i rozpowszechniania skryptu. Jedynym wymaganiem jest zachowanie warunków licencyjnych i informacje o autorze.
 
-# Jak używać ?
+## Jak używać ?
 
 ###### Dołącz odpowiednie pliki do dokumentu.
 ```
@@ -34,7 +34,7 @@ Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopi
 </script>
 ```
 
-# Ustawienia
+## Ustawienia
 **animationTime** - czas trwania animacji rozwijania  
 **showOnlyOne** - ustawione na false wyłącza automatyczne chowanie rozwiniętych list
 
@@ -47,7 +47,7 @@ Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopi
 </script>
 ```
 
-# Autor
+## Autor
 Autorem projektu jest Michał Strumpf  
 - [Strona internetowa](http://www.michu2k.pl/)
 - [Profil GitHub](https://github.com/michu2k/)
