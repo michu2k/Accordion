@@ -1,23 +1,23 @@
 # HUE
-HUE to moduł, który pozwala stworzyć rozwijaną listę, przydatną m.in. przy tworzeniu list FAQ. Waży bardzo mało a do działania potrzebuje jedynie biblioteki jQuery oraz trochę CSS'a :)
+HUE is very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
 
-Strona skryptu: [HUE](http://www.michu2k.pl/hue/)
+Website: [HUE](http://www.michu2k.pl/hue/)
 
-## Wersja
+## Version
 1.0
 
-## Licencja 
-Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopiowania, modyfikowania i rozpowszechniania skryptu. Jedynym wymaganiem jest zachowanie warunków licencyjnych i informacje o autorze.
+## License 
+The module uses the MIT license. You can use, copy, modify and spread the module. You must only keep the license terms and informations about author.
 
-## Jak używać ?
+## How to use ?
 
-###### Dołącz odpowiednie pliki do dokumentu.
+###### Include files.
 ```
 <link rel="stylesheet" href="css/hue.css"> 
 <script src="js/hue.min.js"></script>  
 ```
 
-###### Stwórz znaczniki HTML.
+###### Create HTML tags.
 ```
 <div class="hue">
     <a href="#" class="hue-q">Lorem ipsum ?</a>
@@ -27,16 +27,16 @@ Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopi
 </div>
 ```
 
-###### Aktywuj HUE wklejając poniższy kod na koniec dokumentu.
+###### Initiate the module.
 ```
 <script>
     Hue.init(); 
 </script>
 ```
 
-## Ustawienia
-**animationTime** - czas trwania animacji rozwijania  
-**showOnlyOne** - ustawione na false wyłącza automatyczne chowanie rozwiniętych list
+## Settings
+**animationTime** - animation duration
+**showOnlyOne** - shows only one answer at the same time if set to true
 
 ```
 <script>
@@ -47,7 +47,7 @@ Skrypt jest oparty na licencji MIT. Masz nieograniczone prawo do używania, kopi
 </script>
 ```
 
-## Autor
-Autorem projektu jest Michał Strumpf  
-- [Strona internetowa](http://www.michu2k.pl/)
-- [Profil GitHub](https://github.com/michu2k/)
+## Author
+Created by Michał Strumpf
+- [Website](http://www.michu2k.pl/)
+- [GitHub](https://github.com/michu2k/)
