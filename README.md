@@ -35,7 +35,7 @@ The module uses the MIT license. You can use, copy, modify and spread the module
 ```
 
 ## Settings
-**animationTime** - animation duration
+**animationTime** - animation duration  
 **showOnlyOne** - shows only one answer at the same time if set to true
 
 ```
