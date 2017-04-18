@@ -1,7 +1,7 @@
 # HUE
 HUE is very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
 
-Website: [HUE](http://www.michu2k.pl/hue/)
+Website: [HUE](http://michu2k.pl/hue/)
 
 ## Version
 1.0
