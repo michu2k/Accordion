@@ -1,27 +1,24 @@
-# HUE
-HUE is very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
+# FAQ Accordion
+Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
 
-Website: [HUE](http://michu2k.pl/hue/)
+Website: [Accordion](http://michu2k.pl/accordion/)
 
 ## Version
 1.0
-
-## License 
-The module uses the MIT license. You can use, copy, modify and spread the module. You must only keep the license terms and informations about author.
 
 ## How to use ?
 
 ###### Include files.
 ```
-<link rel="stylesheet" href="css/hue.css"> 
-<script src="js/hue.min.js"></script>  
+<link rel="stylesheet" href="css/accordion.css"> 
+<script src="js/accordion.min.js"></script>  
 ```
 
 ###### Create HTML tags.
 ```
-<div class="hue">
-    <a href="#" class="hue-q">Lorem ipsum ?</a>
-    <div class="hue-a">
+<div class="ac">
+    <a href="#" class="ac-q">Lorem ipsum ?</a>
+    <div class="ac-a">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
     </div>
 </div>
@@ -30,7 +27,7 @@ The module uses the MIT license. You can use, copy, modify and spread the module
 ###### Initiate the module.
 ```
 <script>
-    Hue.init(); 
+    Accordion.init(); 
 </script>
 ```
 
@@ -40,7 +37,7 @@ The module uses the MIT license. You can use, copy, modify and spread the module
 
 ```
 <script>
-    Hue.init({
+    Accordion.init({
         animationTime:  300,     //default
         showOnlyOne: true        //default
     }); 
@@ -49,5 +46,5 @@ The module uses the MIT license. You can use, copy, modify and spread the module
 
 ## Author
 Created by Michał Strumpf
-- [Website](http://www.michu2k.pl/)
+- [Website](http://michu2k.pl/)
 - [GitHub](https://github.com/michu2k/)
