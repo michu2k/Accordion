@@ -1,11 +1,12 @@
 /*
-Name: Hue v1.0
+Name: FAQ Accordion 
 Description: Simple FAQ list with jQuery & CSS3
-Author: Michał Strumpf 
+Version: 1.0
+Author: Michał Strumpf (Michu2k) 
 License: MIT
 */
 
-var Hue = (function($) {
+var Accordion = (function($) {
 
 	//Defaults	
 	var	defaults = {
@@ -14,8 +15,8 @@ var Hue = (function($) {
 	};
 
 	//Vars
-	var containerClass = ".hue",
-		answerClass = ".hue-a",
+	var containerClass = ".ac",
+		answerClass = ".ac-a",
 		activeClass = "active";
 
 	//Close all the answers		
@@ -36,7 +37,7 @@ var Hue = (function($) {
 	}
 
 	//Core
-	var hueCore = function() {
+	var Core = function() {
 		$(containerClass).click(function(e) {
 			e.preventDefault();
 
@@ -49,14 +50,14 @@ var Hue = (function($) {
 	};
 
 	//Init
-	var hueInit = function(options) {
+	var AcInit = function(options) {
 		$.extend(true, defaults, options);
-		hueCore();
+		Core();
 	}
 
 	//Return
 	return {
-		init : hueInit
+		init : AcInit
 	}
 
 })(jQuery);
