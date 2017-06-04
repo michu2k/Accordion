@@ -13,6 +13,7 @@ Demo: [Accordion](http://michu2k.pl/accordion/)
 <link rel="stylesheet" href="css/accordion.css"> 
 <script src="js/accordion.min.js"></script>  
 ```
+Script also require jQuery.
 
 ###### Create HTML tags.
 ```
