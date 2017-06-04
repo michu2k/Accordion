@@ -1,10 +1,10 @@
 # FAQ Accordion
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
 
-Website: [Accordion](http://michu2k.pl/accordion/)
+Demo: [Accordion](http://michu2k.pl/accordion/)
 
 ## Version
-1.0
+1.1
 
 ## How to use ?
 

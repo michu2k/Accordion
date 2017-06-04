@@ -1,26 +1,26 @@
 /*
 Name: FAQ Accordion 
 Description: Simple FAQ list with jQuery & CSS3
-Version: 1.0
-Author: Michał Strumpf (Michu2k) 
+Version: 1.1
+Author: Michał Strumpf https://github.com/michu2k
 License: MIT
 */
 
-var Accordion = (function($) {
+let Accordion = (($) => {
+	'use strict';
 
 	//Defaults	
-	var	defaults = {
+	let defaults = {
 		animationTime: 300,
 		showOnlyOne: true
 	};
 
-	//Vars
-	var containerClass = ".ac",
-		answerClass = ".ac-a",
-		activeClass = "active";
+	const containerClass = '.ac',
+		  answerClass = '.ac-a',
+		  activeClass = 'active';
 
 	//Close all the answers		
-	var _closeAll = function($this) {
+	const _closeAll = ($this) => {
 		$(containerClass)
 			.not($this)
 			.removeClass(activeClass)
@@ -29,7 +29,7 @@ var Accordion = (function($) {
 	}	
 
 	//Show answer
-	var _showOne = function($this) {
+	const _showOne = ($this) => {
 		$($this)
 			.toggleClass(activeClass)
 			.children(answerClass)
@@ -37,10 +37,10 @@ var Accordion = (function($) {
 	}
 
 	//Core
-	var Core = function() {
-		$(containerClass).click(function(e) {
-			e.preventDefault();
-
+	const _core = () => {
+		$(containerClass).click(function(event) {
+			event.preventDefault();
+			
 			if (defaults.showOnlyOne === true)
 				_closeAll(this);	
 
@@ -50,14 +50,16 @@ var Accordion = (function($) {
 	};
 
 	//Init
-	var AcInit = function(options) {
-		$.extend(true, defaults, options);
-		Core();
+	const _init = (options) => {
+		const result = Object.assign(defaults, options);
+		_core();
 	}
 
 	//Return
 	return {
-		init : AcInit
+		init : _init
 	}
 
 })(jQuery);
+
+
