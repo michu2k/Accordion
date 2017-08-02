@@ -63,6 +63,6 @@ Script also require jQuery.
 
 | Option  | Type | Default value | Description |
 | ----- | ----- | ----- | ----- |
-| duration | number | 300 | Duration in ms |
-| showOnlyOne | boolean | true | Show only one element |
+| duration | number | 300 | Animation duration in ms |
+| showOnlyOne | boolean | true | Show only one element at the same time |
 | showFirst | boolean | false | Always show first element |
