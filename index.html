@@ -2,36 +2,40 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">	
 	<link rel="stylesheet" href="accordion.css">
+	<title>Accordion</title>
 </head>
 <body>
 
-<div class="ac">
-	<a href="#" class="ac-q">Lorem ipsum dolor sit amet.</a>
-	<div class="ac-a">
-		<p>Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis sollicitudin eros.</p>
+<div class="ac-container">
+	<div class="ac">
+		<a href="#" class="ac-q">Lorem ipsum dolor sit amet.</a>
+		<div class="ac-a">
+			<p>Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+		</div>
 	</div>
-</div>
 
-<div class="ac">
-	<a href="#" class="ac-q">Lorem ipsum dolor sit amet.</a>
-	<div class="ac-a">
-		<p>Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis sollicitudin eros.</p>
+	<div class="ac">
+		<a href="#" class="ac-q">Lorem ipsum dolor sit amet.</a>
+		<div class="ac-a">
+			<p>Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+		</div>
 	</div>
-</div>
 
-<div class="ac">
-	<a href="#" class="ac-q">Lorem ipsum dolor sit amet.</a>
-	<div class="ac-a">
-		<p>Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis sollicitudin eros.</p>
+	<div class="ac">
+		<a href="#" class="ac-q">Lorem ipsum dolor sit amet.</a>
+		<div class="ac-a">
+			<p>Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+		</div>
 	</div>
-</div>
+</div>	
 
-<script src="js/jQuery.js"></script>
-<script src="js/accordion.min.js"></script>	
+<script src="jQuery.js"></script>
+<script src="accordion.min.js"></script>	
 
 <script>
-	Accordion.init();	
+	var accordion = new Accordion();	
 </script>
 
 </body>

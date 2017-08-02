@@ -18,7 +18,7 @@
   position: relative;
 }
 .ac > .ac-q::after {
-  content: "+"; /*Open Icon*/
+  content: "+";
   text-align: center;
   width: 15px;
   right: 10px;
@@ -38,5 +38,5 @@
   padding: 10px;
 }
 .ac.active > .ac-q::after {
-  content: "\2013"; /*Close Icon*/
+  content: "\2013";
 }

@@ -1,51 +1,68 @@
-# FAQ Accordion
+# Accordion
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
 
-Demo: [Accordion](http://michu2k.pl/accordion/)
-
 ## Version
-1.1
+v1.2.0
 
-## How to use ?
+## Usage
 
-###### Include files.
-```
+###### Include files
+```html
 <link rel="stylesheet" href="css/accordion.css"> 
 <script src="js/accordion.min.js"></script>  
 ```
 Script also require jQuery.
 
-###### Create HTML tags.
-```
-<div class="ac">
-    <a href="#" class="ac-q">Lorem ipsum ?</a>
-    <div class="ac-a">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-    </div>
+###### Create HTML layout
+```html
+<div class="ac-container">
+	<div class="ac">
+	    <a href="#" class="ac-q">Lorem ipsum</a>
+	    <div class="ac-a">
+	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+	    </div>
+	</div>
+
+	<div class="ac">
+	    <a href="#" class="ac-q">Lorem ipsum</a>
+	    <div class="ac-a">
+	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+	    </div>
+	</div>	
+
+	<div class="ac">
+	    <a href="#" class="ac-q">Lorem ipsum</a>
+	    <div class="ac-a">
+	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+	    </div>
+	</div>
 </div>
 ```
 
-###### Initiate the module.
+###### Initialize the module
 ```
 <script>
-    Accordion.init(); 
+	var accordion = new Accordion();	
 </script>
 ```
 
-## Settings
-**animationTime** - animation duration  
-**showOnlyOne** - shows only one answer at the same time if set to true
+## API
+
+###### Example
 
 ```
 <script>
-    Accordion.init({
-        animationTime:  300,     //default
-        showOnlyOne: true        //default
-    }); 
+	var accordion = new Accordion({
+		option: value,
+		duration: 500
+	});	
 </script>
 ```
 
-## Author
-Created by Michał Strumpf
-- [Website](http://michu2k.pl/)
-- [GitHub](https://github.com/michu2k/)
+###### Options
+
+| Option  | Type | Default value | Description |
+| ----- | ----- | ----- | ----- |
+| duration | number | 300 | Duration in ms |
+| showOnlyOne | boolean | true | Show only one element |
+| showFirst | boolean | false | Always show first element |

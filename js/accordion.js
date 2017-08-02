@@ -1,65 +1,82 @@
 /*
-Name: FAQ Accordion 
-Description: Simple FAQ list with jQuery & CSS3
-Version: 1.1
-Author: Michał Strumpf https://github.com/michu2k
-License: MIT
+	Simple accordion created with jQuery & CSS. Very useful to create FAQ lists on your website. 
+	Author: Michał Strumpf https://github.com/michu2k
+	License: MIT
+	Version: v1.2.0
 */
 
-let Accordion = (($) => {
-	'use strict';
+(function($){
 
-	//Defaults	
-	let defaults = {
-		animationTime: 300,
-		showOnlyOne: true
-	};
-
-	const containerClass = '.ac',
+	const containerClass = '.ac-container',
+		  listClass = '.ac',
 		  answerClass = '.ac-a',
 		  activeClass = 'active';
 
-	//Close all the answers		
-	const _closeAll = ($this) => {
-		$(containerClass)
+	this.Accordion = function() {
+
+		//Defaults	
+		let defaults = {
+			duration: 300,
+			showOnlyOne: true,
+			showFirst: false
+		};
+
+		let that = this;
+
+		this.options = extendDefaults(defaults, arguments[0]);
+
+		$.each($(containerClass), function(index, element) {
+
+			if (that.options.showFirst === true) {
+				showFirstElement(element);
+			}
+
+			$(element).find(listClass).on('click', function(event) {
+				event.preventDefault();
+
+				if (that.options.showOnlyOne === true)
+					closeAll(this, that, element);	
+
+				showAnswer(this, that);
+			});
+		});
+
+	}
+
+	// Extend defaults
+	function extendDefaults(defaults, properties) {
+		for (let property in properties)
+			defaults[property] = properties[property];
+		
+		return defaults;
+	}
+
+	// Show first element
+	function showFirstElement(container) {
+		$(container)
+			.find(listClass)
+			.first()
+			.addClass(activeClass)
+			.children(answerClass)
+			.show();
+	}
+
+	// Close all the answers
+	function closeAll($this, that, container) {
+		$(container)
+			.find(listClass)
 			.not($this)
 			.removeClass(activeClass)
 			.children(answerClass)	
-			.slideUp(defaults.animationTime);	
-	}	
+			.slideUp(that.options.duration);
+	}
 
 	//Show answer
-	const _showOne = ($this) => {
+	function showAnswer($this, that) {
 		$($this)
 			.toggleClass(activeClass)
 			.children(answerClass)
-			.slideToggle(defaults.animationTime);
-	}
-
-	//Core
-	const _core = () => {
-		$(containerClass).click(function(event) {
-			event.preventDefault();
-			
-			if (defaults.showOnlyOne === true)
-				_closeAll(this);	
-
-			_showOne(this);
-
-		});			
-	};
-
-	//Init
-	const _init = (options) => {
-		const result = Object.assign(defaults, options);
-		_core();
-	}
-
-	//Return
-	return {
-		init : _init
+			.slideToggle(that.options.duration);
 	}
 
 })(jQuery);
-
-
