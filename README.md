@@ -1,8 +1,8 @@
 # Accordion
-Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists. It only need jQuery and little CSS.
+Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v1.2.0
+v2.0.0
 
 ## Usage
 
@@ -11,7 +11,6 @@ v1.2.0
 <link rel="stylesheet" href="css/accordion.css"> 
 <script src="js/accordion.min.js"></script>  
 ```
-Script also require jQuery.
 
 ###### Create HTML layout
 ```html
@@ -53,8 +52,7 @@ Script also require jQuery.
 ```
 <script>
 	var accordion = new Accordion({
-		option: value,
-		duration: 500
+		duration: 600  //default
 	});	
 </script>
 ```
@@ -63,6 +61,10 @@ Script also require jQuery.
 
 | Option  | Type | Default value | Description |
 | ----- | ----- | ----- | ----- |
-| duration | number | 300 | Animation duration in ms |
-| showOnlyOne | boolean | true | Show only one element at the same time |
+| duration | number | 600 | Animation duration in ms |
+| closeOthers | boolean | true | Show only one element at the same time |
 | showFirst | boolean | false | Always show first element |
+| containerClass | string | 'ac-container' | Container class |
+| elClass | string | 'ac' | Element class |
+| qClass | string | 'ac-q' | Question class |
+| aClass | string | 'ac-a' | Answer class |
