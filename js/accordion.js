@@ -1,40 +1,42 @@
 /*
-	Simple accordion created with jQuery & CSS. Very useful to create FAQ lists on your website. 
+	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.0.0
+	Version: v2.1.0
 */
 
 (function(){
 
-	let that;
+	let options;
 
-	// Core
-	this.Accordion = function() {
+	/* 
+		Core
+		containerClass = container, where script will be defined [string]
+		userOptions = new options defined by user [object]
+	*/
+	this.Accordion = function(containerClass, userOptions) {
 
 		// Defaults	
 		let defaults = {
 			duration:		600,
 			closeOthers:	true,
 			showFirst:		false,
-			containerClass:	'ac-container',
 			elClass:		'ac',
 			qClass:			'ac-q',
 			aClass:			'ac-a'
 		};
 
-		this.options = extendDefaults(defaults, arguments[0]);
-		that = this;
+		options = extendDefaults(defaults, userOptions);
 
 		// Get all container elements
-		let containers = document.querySelectorAll('.' + that.options.containerClass);
+		let containers = document.querySelectorAll('.' + containerClass);
 
-		containers.forEach(function(container, index) {
+		containers.forEach(function(container) {
 
-			let elements = container.querySelectorAll('.' + that.options.elClass);
+			let elements = container.querySelectorAll('.' + options.elClass);
 
-			for (let i = 0; i < elements.length; i++) {
-
+			for (let i = 0; i < elements.length; i++) 
+			{
 				hideElement(elements[i]);
 				setTransition(elements[i]);
 
@@ -43,29 +45,31 @@
 
 					let _this = this;
 
-					if (event.target.classList.contains(that.options.qClass)) {
-
-						if (that.options.closeOthers === true) {
+					if (event.target.classList.contains(options.qClass)) 
+					{
+						if (options.closeOthers === true) 
+						{
 							closeAllElements(elements, i);	
 						}
 
 						toggleElement(_this);
 					}
-					
 				});
 			}	
 
-			if (that.options.showFirst === true) {
+			if (options.showFirst === true) 
+			{
 				toggleElement(elements[0]);
 			}
 
 		});
 
+		// Window resize
 		window.addEventListener('resize', () => {
 			clearTimeout(window.resizeTimer);
 		    window.resizeTimer = setTimeout(() => {
-		    	containers.forEach(function(container, index) {
-		    		let elements = container.querySelectorAll('.' + that.options.elClass);
+		    	containers.forEach(function(container) {
+		    		let elements = container.querySelectorAll('.' + options.elClass);
 		    		changeHeight(elements);
 		    	});
 		    }, 100);	
@@ -74,89 +78,90 @@
 
 	/* 
 		Extend defaults
-		defaults = defaults options defined in script
-		properties = new options
+		defaults = defaults options defined in script [object]
+		properties = options defined by user [object]
 	*/
 	function extendDefaults(defaults, properties) {
-		for (let property in properties)
-			defaults[property] = properties[property];
-		
+		if (properties != null && properties != undefined && properties != 'undefined') 
+		{
+			for (let property in properties)
+				defaults[property] = properties[property];
+		}
+
 		return defaults;
 	}
 
 	/* 
 		Change element height, when window is resized and when element is active
-		elements = all elements
+		el = all elements [object]
 	*/
-	function changeHeight(elements) {
-		let answer, height
-		for (let i = 0; i < elements.length; i++) {
-			if (elements[i].classList.contains('active')) {
+	function changeHeight(el) {
+		let height, answer
+		for (let i = 0; i < el.length; i++) 
+		{
+			if (el[i].classList.contains('active')) 
+			{
+				answer = el[i].querySelector('.' + options.aClass);
 
-				answer = elements[i].querySelector('.' + that.options.aClass);
 				answer.style.height = 'auto';
 				height = answer.offsetHeight;
-				answer.style.height = 0;
-
-				setTimeout(function() {
-					answer.style.height = height + 'px';
-				}, 0);
+				answer.style.height = height + 'px';
 			}
 		}
 	}
 
 	/*
 	 	Hide element, set height to 0
-	 	element = current element
+	 	element = current element [object]
 	*/
 	function hideElement(element) {
-		let answer = element.querySelector('.' + that.options.aClass);
+		let answer = element.querySelector('.' + options.aClass);
 		answer.style.height = 0;
 	}
 
 	/*
 	 	Set transition 
-	 	element = current element
+	 	element = current element [object]
 	*/
 	function setTransition(element) {
-		let el = element.querySelector('.' + that.options.aClass);
-		el.style.WebkitTransitionDuration = that.options.duration + 'ms'; 
-		el.style.transitionDuration = that.options.duration + 'ms';
+		let el = element.querySelector('.' + options.aClass);
+		el.style.WebkitTransitionDuration = options.duration + 'ms'; 
+		el.style.transitionDuration = options.duration + 'ms';
 	}
 
 	/* 
 		Toggle current element
-		element = current element
+		element = current element [object]
 	*/
 	function toggleElement(element) {
-		let answer = element.querySelector('.' + that.options.aClass);
-		let height;
+		let height, answer = element.querySelector('.' + options.aClass);
 		element.classList.toggle('active');
 
 		if (parseInt(answer.style.height) > 0)
 			answer.style.height = 0;
 		else { 
-			// Set to auto, get height and set to 0
+			// Set to auto, get height and set back to 0
 			answer.style.height = 'auto';
 			height = answer.offsetHeight;
 			answer.style.height = 0;
 
 			setTimeout(function() {
 				answer.style.height = height + 'px';
-			}, 0);
+			}, 10);
 		}
 	}
 
 	/* 
 		Close all elements without the current element
-		el = elements
-		current = current target
+		el = elements [object]
+		current = current target [number]
 	*/
 	function closeAllElements(el, current) {
 		el = Array.prototype.slice.call(el, 0);
 		el.splice(current, 1);
 
-		for (let i = 0; i < el.length; i++) {
+		for (let i = 0; i < el.length; i++) 
+		{
 			el[i].classList.remove('active');
 			hideElement(el[i]);
 		}

@@ -2,7 +2,7 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v2.0.0
+v2.1.0
 
 ## Usage
 
@@ -14,7 +14,7 @@ v2.0.0
 
 ###### Create HTML layout
 ```html
-<div class="ac-container">
+<div class="accordion-container">
 	<div class="ac">
 	    <a href="#" class="ac-q">Lorem ipsum</a>
 	    <div class="ac-a">
@@ -41,18 +41,24 @@ v2.0.0
 ###### Initialize the module
 ```
 <script>
-	var accordion = new Accordion();	
+	var accordion = new Accordion('accordion-container');	
 </script>
 ```
 
 ## API
 
 ###### Example
-
+You can initialize more than one accordion per page.
 ```
 <script>
-	var accordion = new Accordion({
-		duration: 600  //default
+	// Default options
+	var accordion = new Accordion('container-first');	
+
+	// User options
+	// ( 'container-name', {option: value} )
+	var accordion = new Accordion('container-second', {
+		duration: 500,
+		showFirst: true
 	});	
 </script>
 ```
@@ -64,7 +70,6 @@ v2.0.0
 | duration | number | 600 | Animation duration in ms |
 | closeOthers | boolean | true | Show only one element at the same time |
 | showFirst | boolean | false | Always show first element |
-| containerClass | string | 'ac-container' | Container class |
 | elClass | string | 'ac' | Element class |
 | qClass | string | 'ac-q' | Question class |
 | aClass | string | 'ac-a' | Answer class |
