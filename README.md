@@ -49,8 +49,9 @@ v2.1.0
 
 ###### Example
 new Accordion(container, options)
-	- container - string (required), selector of accordion container 
-	- options - object (optional), accordion options
+
+* container - string (required), selector of accordion container 
+* options - object (optional), accordion options
 
 You can initialize more than one accordion per page.
 ```javascript
