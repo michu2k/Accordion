@@ -2,7 +2,7 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.1.0
+	Version: v2.1.1
 */
 
 (function(){
@@ -11,10 +11,10 @@
 
 	/* 
 		Core
-		containerClass = container, where script will be defined [string]
+		selector = container, where script will be defined [string]
 		userOptions = new options defined by user [object]
 	*/
-	this.Accordion = function(containerClass, userOptions) {
+	this.Accordion = function(selector, userOptions) {
 
 		// Defaults	
 		let defaults = {
@@ -29,7 +29,7 @@
 		options = extendDefaults(defaults, userOptions);
 
 		// Get all container elements
-		let containers = document.querySelectorAll('.' + containerClass);
+		let containers = document.querySelectorAll(selector);
 
 		containers.forEach(function(container) {
 

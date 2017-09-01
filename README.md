@@ -39,7 +39,7 @@ v2.1.0
 ```
 
 ###### Initialize the module
-```
+```javascript
 <script>
 	var accordion = new Accordion('accordion-container');	
 </script>
@@ -48,15 +48,18 @@ v2.1.0
 ## API
 
 ###### Example
+new Accordion(container, options)
+	- container - string (required), selector of accordion container 
+	- options - object (optional), accordion options
+
 You can initialize more than one accordion per page.
-```
+```javascript
 <script>
 	// Default options
-	var accordion = new Accordion('container-first');	
+	var accordion = new Accordion('.container-first');	
 
 	// User options
-	// ( 'container-name', {option: value} )
-	var accordion = new Accordion('container-second', {
+	var accordion = new Accordion('.container-second', {
 		duration: 500,
 		showFirst: true
 	});	
