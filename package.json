@@ -1,0 +1,30 @@
+{
+  "name": "accordion-js",
+  "version": "2.2.1",
+  "description": "Simple accordion created in pure Javascript",
+  "main": "dist/accordion.js",
+  "scripts": {
+    "build": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michu2k/Accordion.git"
+  },
+  "keywords": [
+    "html5",
+    "javascript",
+    "accordion",
+    "css",
+    "simple"
+  ],
+  "author": "Michał Strumpf",
+  "homepage": "https://github.com/michu2k/Accordion#readme",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michu2k/Accordion/issues"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}

@@ -1,0 +1,7 @@
+/*
+	Simple accordion created in pure Javascript.
+	Author: Michał Strumpf https://github.com/michu2k
+	License: MIT
+	Version: v2.2.1
+*/
+.ac{margin-top:10px;border:1px solid #ddd;background-color:#fff}.ac>.ac-q{font-family:Arial,sans-serif;font-size:15px;color:#000;text-decoration:none;outline:0;padding-top:10px;padding-right:30px;padding-bottom:10px;padding-left:10px;display:block;cursor:pointer;position:relative}.ac>.ac-q::after{content:"+";text-align:center;width:15px;right:10px;top:50%;transform:translate(0,-50%);position:absolute}.ac>.ac-a{overflow:hidden;-webkit-transition-property:all;-webkit-transition-timing-function:ease;transition-property:all;transition-timing-function:ease}.ac>.ac-a p{font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#888;margin:0;padding:10px}.ac.active>.ac-q::after{content:"\2013"}
