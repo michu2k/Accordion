@@ -9,7 +9,7 @@ On production use files (JS and CSS) only from dist/ folder
 
 ## Install
 ```
-npm install accordion-js --save
+npm install accordion-js
 ```
 
 ###### Include files
