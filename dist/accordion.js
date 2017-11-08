@@ -2,7 +2,7 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.1
+	Version: v2.2.2
 */
 
 'use strict';
@@ -33,22 +33,22 @@
 		// Get all container elements
 		var containers = document.querySelectorAll(selector);
 
-		containers.forEach(function (container) {
+		var _loop = function _loop(i) {
+			var elements = containers[i].querySelectorAll('.' + options.elClass);
 
-			var elements = container.querySelectorAll('.' + options.elClass);
+			var _loop2 = function _loop2(_i) {
+				hideElement(elements[_i]);
+				setTransition(elements[_i]);
 
-			var _loop = function _loop(i) {
-				hideElement(elements[i]);
-				setTransition(elements[i]);
-
-				elements[i].addEventListener('click', function (event) {
-					event.preventDefault();
+				elements[_i].addEventListener('click', function (event) {
+					event.preventDefault ? event.preventDefault() : event.returnValue = false;
 
 					var _this = this;
+					var target = event.target || event.srcElement;
 
-					if (event.target.classList.contains(options.qClass)) {
+					if (target.className.match(options.qClass)) {
 						if (options.closeOthers === true) {
-							closeAllElements(elements, i);
+							closeAllElements(elements, _i);
 						}
 
 						toggleElement(_this);
@@ -56,23 +56,27 @@
 				});
 			};
 
-			for (var i = 0; i < elements.length; i++) {
-				_loop(i);
+			for (var _i = 0; _i < elements.length; _i++) {
+				_loop2(_i);
 			}
 
 			if (options.showFirst === true) {
 				toggleElement(elements[0]);
 			}
-		});
+		};
+
+		for (var i = 0; i < containers.length; i++) {
+			_loop(i);
+		}
 
 		// Window resize
 		window.addEventListener('resize', function () {
 			clearTimeout(window.resizeTimer);
 			window.resizeTimer = setTimeout(function () {
-				containers.forEach(function (container) {
-					var elements = container.querySelectorAll('.' + options.elClass);
-					changeHeight(elements);
-				});
+				for (var i = 0; i < containers.length; i++) {
+					var _elements = containers[i].querySelectorAll('.' + options.elClass);
+					changeHeight(_elements);
+				}
 			}, 100);
 		});
 	};
@@ -100,7 +104,7 @@
 		var height = void 0,
 		    answer = void 0;
 		for (var i = 0; i < el.length; i++) {
-			if (el[i].classList.contains('active')) {
+			if (el[i].className.match('active')) {
 				answer = el[i].querySelector('.' + options.aClass);
 
 				answer.style.height = 'auto';
@@ -136,7 +140,18 @@
 	function toggleElement(element) {
 		var height = void 0,
 		    answer = element.querySelector('.' + options.aClass);
-		element.classList.toggle('active');
+
+		if (element.classList) {
+			element.classList.toggle('active');
+		} else {
+			// For IE
+			var classes = element.className.split(' ');
+			var i = classes.indexOf('active');
+
+			if (i >= 0) classes.splice(i, 1);else classes.push('active');
+
+			element.className = classes.join(' ');
+		}
 
 		if (parseInt(answer.style.height) > 0) answer.style.height = 0;else {
 			// Set to auto, get height and set back to 0
@@ -153,15 +168,22 @@
 	/* 
  	Close all elements without the current element
  	el = elements [object]
- 	current = current target [number]
+ 	current = current element [number]
  */
 	function closeAllElements(el, current) {
-		el = Array.prototype.slice.call(el, 0);
-		el.splice(current, 1);
-
 		for (var i = 0; i < el.length; i++) {
-			el[i].classList.remove('active');
-			hideElement(el[i]);
+			if (i != current) {
+				var newClassName = '';
+				var classes = el[i].className.split(' ');
+
+				for (var _i2 = 0; _i2 < classes.length; _i2++) {
+					if (classes[_i2] !== 'active') newClassName += classes[_i2];
+				}
+
+				el[i].className = newClassName;
+
+				hideElement(el[i]);
+			}
 		}
 	}
 
