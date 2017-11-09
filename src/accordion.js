@@ -2,7 +2,7 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.3
+	Version: v2.2.4
 */
 
 (function(window){
@@ -40,8 +40,6 @@
 			{
 				hideElement(elements[i]);
 				setTransition(elements[i]);
-
-				console.log(elements[i]);
 
 				elements[i].addEventListener('click', function(event)
 				{
