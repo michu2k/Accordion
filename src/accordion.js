@@ -2,7 +2,7 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.2
+	Version: v2.2.3
 */
 
 (function(window){
@@ -41,15 +41,17 @@
 				hideElement(elements[i]);
 				setTransition(elements[i]);
 
+				console.log(elements[i]);
+
 				elements[i].addEventListener('click', function(event)
 				{
-					event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-
 					let _this = this;
 					let target = event.target || event.srcElement;
 
 					if (target.className.match(options.qClass)) 
 					{
+						event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+
 						if (options.closeOthers === true) 
 						{
 							closeAllElements(elements, i);	
