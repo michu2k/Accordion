@@ -2,7 +2,7 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.4
+	Version: v2.2.5
 */
 
 (function(window){

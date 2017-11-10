@@ -1,24 +1,21 @@
+@charset "UTF-8";
 /*
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.4
+	Version: v2.2.5
 */
 .ac {
   margin-top: 10px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+  border: 1px solid #dddddd;
+  background-color: #ffffff;
 }
 .ac > .ac-q {
   font-family: 'Arial', sans-serif;
   font-size: 15px;
-  color: #000;
+  color: #111111;
+  padding: 10px 30px 10px 10px;
   text-decoration: none;
-  outline: 0;
-  padding-top: 10px;
-  padding-right: 30px;
-  padding-bottom: 10px;
-  padding-left: 10px;
   display: block;
   cursor: pointer;
   position: relative;
@@ -29,11 +26,15 @@
   width: 15px;
   right: 10px;
   top: 50%;
+  -ms-transform: translate(0, -50%);
+  -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   position: absolute;
 }
 .ac > .ac-a {
   overflow: hidden;
+  -o-transition-property: all;
+  -o-transition-timing-function: ease;
   -webkit-transition-property: all;
   -webkit-transition-timing-function: ease;
   transition-property: all;
