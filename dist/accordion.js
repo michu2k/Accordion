@@ -2,12 +2,12 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.5
+	Version: v2.2.6
 */
 
-'use strict';
-
 (function (window) {
+
+	'use strict';
 
 	var options = void 0;
 
@@ -25,7 +25,8 @@
 			showFirst: false,
 			elClass: 'ac',
 			qClass: 'ac-q',
-			aClass: 'ac-a'
+			aClass: 'ac-a',
+			targetClass: 'ac-target'
 		};
 
 		options = extendDefaults(defaults, userOptions);
@@ -44,7 +45,7 @@
 					var _this = this;
 					var target = event.target || event.srcElement;
 
-					if (target.className.match(options.qClass)) {
+					if (target.className.match(options.qClass) || target.className.match(options.targetClass)) {
 						event.preventDefault ? event.preventDefault() : event.returnValue = false;
 
 						if (options.closeOthers === true) {
@@ -61,7 +62,7 @@
 			}
 
 			if (options.showFirst === true) {
-				toggleElement(elements[0]);
+				toggleElement(elements[0], false);
 			}
 		};
 
@@ -138,6 +139,8 @@
  	element = current element [object]
  */
 	function toggleElement(element) {
+		var animation = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
 		var height = void 0,
 		    answer = element.querySelector('.' + options.aClass);
 
@@ -154,9 +157,15 @@
 		}
 
 		if (parseInt(answer.style.height) > 0) answer.style.height = 0;else {
-			// Set to auto, get height and set back to 0
+			// Set to auto, get height and set back to 0, if animation is not set to true.
 			answer.style.height = 'auto';
 			height = answer.offsetHeight;
+
+			if (animation == false) {
+				answer.style.height = height + 'px';
+				return;
+			}
+
 			answer.style.height = 0;
 
 			setTimeout(function () {

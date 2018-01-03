@@ -2,7 +2,7 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v2.2.5
+v2.2.6
 
 ## Usage
 On production use files (JS and CSS) only from dist/ folder
@@ -83,3 +83,8 @@ You can initialize more than one accordion per page.
 | elClass | string | 'ac' | Element class |
 | qClass | string | 'ac-q' | Question class |
 | aClass | string | 'ac-a' | Answer class |
+| targetClass | string | 'ac-target' | Target class [Read more below] |
+
+###### Comments
+
+**targetClass** - If an element has the `targetClass` class and is inside box with `qClass` class, then when you click on it, the list will be expanded. Otherwise expanded will not take place and clicked element will take you to the top of the page.

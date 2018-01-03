@@ -2,11 +2,13 @@
 	Simple accordion created in pure Javascript.
 	Author: Michał Strumpf https://github.com/michu2k
 	License: MIT
-	Version: v2.2.5
+	Version: v2.2.6
 */
 
 (function(window){
 
+	'use strict';
+	
 	let options;
 
 	/* 
@@ -24,7 +26,8 @@
 			showFirst:		false,
 			elClass:		'ac',
 			qClass:			'ac-q',
-			aClass:			'ac-a'
+			aClass:			'ac-a',
+			targetClass: 	'ac-target'
 		};
 
 		options = extendDefaults(defaults, userOptions);
@@ -45,8 +48,8 @@
 				{
 					let _this = this;
 					let target = event.target || event.srcElement;
-
-					if (target.className.match(options.qClass)) 
+					
+					if (target.className.match(options.qClass) || target.className.match(options.targetClass)) 
 					{
 						event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
@@ -62,7 +65,7 @@
 
 			if (options.showFirst === true) 
 			{
-				toggleElement(elements[0]);
+				toggleElement(elements[0], false);
 			}
 		}
 
@@ -140,7 +143,7 @@
 		Toggle current element
 		element = current element [object]
 	*/
-	function toggleElement(element)
+	function toggleElement(element, animation = true)
 	{
 		let height, answer = element.querySelector('.' + options.aClass);
 
@@ -166,9 +169,15 @@
 			answer.style.height = 0;
 		else
 		{ 
-			// Set to auto, get height and set back to 0
+			// Set to auto, get height and set back to 0, if animation is not set to true.
 			answer.style.height = 'auto';
 			height = answer.offsetHeight;
+
+			if (animation == false) {
+				answer.style.height = height + 'px';
+				return;
+			}
+
 			answer.style.height = 0;
 
 			setTimeout(() => {
