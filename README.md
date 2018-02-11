@@ -2,7 +2,7 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v2.2.6
+v2.3.0
 
 ## Usage
 On production use files (JS and CSS) only from dist/ folder
@@ -68,7 +68,7 @@ You can initialize more than one accordion per page.
 	// User options
 	var accordion = new Accordion('.container-second', {
 		duration: 500,
-		showFirst: true
+		showItem: true
 	});	
 </script>
 ```
@@ -78,11 +78,12 @@ You can initialize more than one accordion per page.
 | Option  | Type | Default value | Description |
 | ----- | ----- | ----- | ----- |
 | duration | number | 600 | Animation duration in ms |
+| itemNumber | number | 0 | Item number which will be shown (Default first) |
 | closeOthers | boolean | true | Show only one element at the same time |
-| showFirst | boolean | false | Always show first element |
-| elClass | string | 'ac' | Element class |
-| qClass | string | 'ac-q' | Question class |
-| aClass | string | 'ac-a' | Answer class |
+| showItem | boolean | false | Always show element that has `itemNumber` number |
+| elementClass | string | 'ac' | Element class |
+| questionClass | string | 'ac-q' | Question class |
+| answerClass | string | 'ac-a' | Answer class |
 | targetClass | string | 'ac-target' | Target class [Read more below] |
 
 ###### Comments
