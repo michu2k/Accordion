@@ -2,7 +2,7 @@
  * Simple accordion created in pure Javascript.
  * Author: Michał Strumpf https://github.com/michu2k
  * License: MIT
- * Version: v2.3.0
+ * Version: v2.3.1
  */
 
 (function(window){
@@ -89,7 +89,7 @@
 
 	/**
 	 * Change element height, when window is resized and when element is active
-	 * @param elements = all elements [object]
+	 * @param containers = list of containers [object]
 	 */
 	function changeHeight(containers)
 	{
@@ -137,6 +137,7 @@
 	/** 
 	 * Toggle current element
 	 * @param element = current element [object]
+	 * @param animation = turn on animation [boolean]
 	 */
 	function toggleElement(element, animation = true)
 	{
@@ -185,17 +186,17 @@
 
 	/**
 	 * Close all elements without the current element
-	 * @param el = elements [object]
+	 * @param elements = list of elements [object]
 	 * @param current = current element [number]
 	 */
-	function closeAllElements(el, current)
+	function closeAllElements(elements, current)
 	{
-		for (let i = 0; i < el.length; i++) 
+		for (let i = 0; i < elements.length; i++) 
 		{
 			if(i != current)
 			{
  				let newClassName = '';
-				let classes = el[i].className.split(' ');
+				let classes = elements[i].className.split(' ');
 
 				for(let i = 0; i < classes.length; i++)
 				{
@@ -203,9 +204,9 @@
 						newClassName += classes[i];
 				}
 
-				el[i].className = newClassName;
+				elements[i].className = newClassName;
 
-				hideElement(el[i]);
+				hideElement(elements[i]);
 			}
 		}
 	}
