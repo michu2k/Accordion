@@ -47,7 +47,7 @@ npm install accordion-js
 ###### Initialize the module
 ```javascript
 <script>
-	var accordion = new Accordion('accordion-container');	
+	var accordion = new Accordion('.accordion-container');	
 </script>
 ```
 
