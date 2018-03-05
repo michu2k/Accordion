@@ -2,7 +2,7 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v2.3.1
+v2.4.0
 
 ## Usage
 On production use files (JS and CSS) only from dist/ folder

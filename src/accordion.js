@@ -1,8 +1,10 @@
 /**
+ * Accordion v2.4.0
  * Simple accordion created in pure Javascript.
- * Author: Michał Strumpf https://github.com/michu2k
- * License: MIT
- * Version: v2.3.1
+ * https://github.com/michu2k/Accordion
+ *
+ * Copyright 2017-2018 Michał Strumpf
+ * Published under MIT License
  */
 
 (function(window){
@@ -13,22 +15,22 @@
 
 	/**
 	 * Core
-	 * @param selector = container, where script will be defined [string]
-	 * @param userOptions = options defined by user [object]
+	 * @param {string} selector = container, where script will be defined
+	 * @param {object} userOptions = options defined by user
 	 */
 	let Accordion = function(selector, userOptions)
 	{
 
 		// Defaults	
 		let defaults = {
-			duration:		600,
-			itemNumber:  	0,
-			closeOthers:	true,
-			showItem: 		false,
-			elementClass:	'ac',
-			questionClass:	'ac-q',
-			answerClass:	'ac-a',
-			targetClass: 	'ac-target'
+			duration: 600,
+			itemNumber: 0,
+			closeOthers: true,
+			showItem: false,
+			elementClass: 'ac',
+			questionClass: 'ac-q',
+			answerClass: 'ac-a',
+			targetClass: 'ac-target'
 		};
 
 		options = extendDefaults(defaults, userOptions);
@@ -40,6 +42,7 @@
 		{
 			let elements = containers[i].querySelectorAll('.' + options.elementClass);
 
+			// For each element
 			for (let i = 0; i < elements.length; i++)
 			{
 				hideElement(elements[i]);
@@ -50,14 +53,13 @@
 				{
 					let target = event.target || event.srcElement;
 					
+					// Check if target has one of the classes
 					if (target.className.match(options.questionClass) || target.className.match(options.targetClass)) 
 					{
 						event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
 						if (options.closeOthers === true) 
-						{
-							closeAllElements(elements, i);	
-						}
+							closeAllElements(elements, i);
 
 						toggleElement(this);
 					}
@@ -67,29 +69,29 @@
 			// Show element when script is loaded
 			if (options.showItem === true) 
 			{
+				// Default value
 				let el = elements[0];
 
 				if (typeof options.itemNumber === 'number' && options.itemNumber < elements.length)
-				{
 					el = elements[options.itemNumber];
-				}
 
 				toggleElement(el, false);
 			}
 		}
 
 		// Window resize
+		let resize;
 		window.addEventListener('resize', () => {
-			clearTimeout(window.resizeTimer);
-		    window.resizeTimer = setTimeout(() => {
-		    	changeHeight(containers);
-		    }, 100);	
+			cancelAnimationFrame(resize);
+			resize = requestAnimationFrame(() => {
+				changeHeight(containers);
+			});
 		});
 	}
 
 	/**
 	 * Change element height, when window is resized and when element is active
-	 * @param containers = list of containers [object]
+	 * @param {object} containers = list of containers
 	 */
 	function changeHeight(containers)
 	{
@@ -105,9 +107,15 @@
 				{
 					answer = elements[i].querySelector('.' + options.answerClass);
 
-					answer.style.height = 'auto';
-					height = answer.offsetHeight;
-					answer.style.height = height + 'px';
+					// Set to auto and get new height
+					requestAnimationFrame(() => {
+						answer.style.height = 'auto';
+						height = answer.offsetHeight;
+
+						requestAnimationFrame(() => {
+							answer.style.height = height + 'px';
+						});
+					});
 				}
 			}
 		}
@@ -115,33 +123,38 @@
 
 	/**
 	 * Hide element
-	 * @param element = current element [object]
+	 * @param {object} element = current element
 	 */
 	function hideElement(element)
 	{
 		let answer = element.querySelector('.' + options.answerClass);
-		answer.style.height = 0;
+
+		requestAnimationFrame(() => {
+			answer.style.height = 0;
+		});
 	}
 
 	/**
 	 * Set transition 
-	 * @param element = current element [object]
+	 * @param {object} element = current element
 	 */
 	function setTransition(element)
 	{
-		let el = element.querySelector('.' + options.answerClass);
-		el.style.WebkitTransitionDuration = options.duration + 'ms'; 
-		el.style.transitionDuration = options.duration + 'ms';
+		let el = element.querySelector('.' + options.answerClass),
+			transition = getSupportedProperty('Transition');
+
+		el.style[transition] = options.duration + 'ms';
 	}
 
 	/** 
 	 * Toggle current element
-	 * @param element = current element [object]
-	 * @param animation = turn on animation [boolean]
+	 * @param {object} element = current element
+	 * @param {boolean} animation = turn on animation
 	 */
 	function toggleElement(element, animation = true)
 	{
-		let height, answer = element.querySelector('.' + options.answerClass);
+		let answer = element.querySelector('.' + options.answerClass),
+			height = answer.scrollHeight;
 
 		// Toggle class
 		if (element.classList)
@@ -162,32 +175,29 @@
 			element.className = classes.join(' ');
 		} 
 
+		// Open element without animation
+		if (animation === false)
+			answer.style.height = 'auto';
+
 		// Set height
 		if (parseInt(answer.style.height) > 0)
-			answer.style.height = 0;
+		{
+			requestAnimationFrame(() => {
+				answer.style.height = 0;
+			});
+		}
 		else
 		{ 
-			// Set to auto, get height and set back to 0, if animation is not set to true.
-			answer.style.height = 'auto';
-			height = answer.offsetHeight;
-
-			if (animation == false) {
+			requestAnimationFrame(() => {
 				answer.style.height = height + 'px';
-				return;
-			}
-
-			answer.style.height = 0;
-
-			setTimeout(() => {
-				answer.style.height = height + 'px';
-			}, 10);
+			});
 		}
 	}
 
 	/**
 	 * Close all elements without the current element
-	 * @param elements = list of elements [object]
-	 * @param current = current element [number]
+	 * @param {object} elements = list of elements
+	 * @param {number} current = current element
 	 */
 	function closeAllElements(elements, current)
 	{
@@ -195,8 +205,8 @@
 		{
 			if(i != current)
 			{
- 				let newClassName = '';
-				let classes = elements[i].className.split(' ');
+ 				let newClassName = '',
+					classes = elements[i].className.split(' ');
 
 				for(let i = 0; i < classes.length; i++)
 				{
@@ -211,11 +221,35 @@
 		}
 	}
 
+	/**
+	 * Get supported property and add prefix if needed
+	 * @param {string} property = property name
+	 * @return {string} propertyWithPrefix = property prefix
+	 */
+	function getSupportedProperty(property)
+	{
+		let prefix = ['-', 'webkit', 'moz', 'ms', 'o'],
+			propertyWithPrefix;
+
+		for (let i = 0; i < prefix.length; i++) 
+		{
+			if (prefix[i] == '-')
+				propertyWithPrefix = property.toLowerCase();
+			else
+				propertyWithPrefix = prefix[i] + property;
+
+			if (typeof document.body.style[propertyWithPrefix] != 'undefined')
+	           return propertyWithPrefix;
+		}
+
+		return null;	
+	}
+
 	/** 
 	 * Extend defaults
-	 * @param defaults = defaults options defined in script [object]
-	 * @param properties = options defined by user [object]
-	 * @return defaults = modified options [object]
+	 * @param {object} defaults = defaults options defined in script
+	 * @param {object} properties = options defined by user
+	 * @return {object} defaults = modified options
 	 */
 	function extendDefaults(defaults, properties)
 	{
@@ -226,6 +260,29 @@
 		}
 
 		return defaults;
+	}
+
+	/**
+	 * RequestAnimationFrame support
+	 */
+	window.requestAnimationFrame = (() => {
+		return window.requestAnimationFrame ||
+			   window.webkitRequestAnimationFrame ||
+			   window.mozRequestAnimationFrame ||
+			   function(callback) {
+			       window.setTimeout(callback, 1000 / 60);
+			   };
+	})();
+
+	/**
+	 * CancelAnimationFrame support
+	 */
+	if (!window.cancelAnimationFrame)
+	{
+		window.cancelAnimationFrame = (id) =>
+		{
+			clearTimeout(id);
+		};
 	}
 
 	window.Accordion = Accordion;
