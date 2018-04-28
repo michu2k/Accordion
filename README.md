@@ -2,7 +2,7 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v2.4.0
+v2.5.0
 
 ## Usage
 On production use files (JS and CSS) only from dist/ folder
@@ -19,29 +19,30 @@ npm install accordion-js
 ```
 
 ###### Create HTML layout
+This is just an example of a layout. You can create your own HTML structure.
 ```html
 <div class="accordion-container">
-	<div class="ac">
-	    <a href="#" class="ac-q">Lorem ipsum</a>
-	    <div class="ac-a">
-	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-	    </div>
-	</div>
+    <div class="ac">
+        <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
+        <div class="ac-a">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+        </div>
+    </div>
 
-	<div class="ac">
-	    <a href="#" class="ac-q">Lorem ipsum</a>
-	    <div class="ac-a">
-	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-	    </div>
-	</div>	
+    <div class="ac">
+        <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
+        <div class="ac-a">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+        </div>
+    </div>
 
-	<div class="ac">
-	    <a href="#" class="ac-q">Lorem ipsum</a>
-	    <div class="ac-a">
-	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-	    </div>
-	</div>
-</div>
+    <div class="ac">
+        <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
+        <div class="ac-a">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+        </div>
+    </div>
+</div>  
 ```
 
 ###### Initialize the module
@@ -79,6 +80,7 @@ You can initialize more than one accordion per page.
 | ----- | ----- | ----- | ----- |
 | duration | number | 600 | Animation duration in ms |
 | itemNumber | number | 0 | Item number which will be shown (Default first) |
+| aria | boolean | true | Add ARIA elements to the HTML structure |
 | closeOthers | boolean | true | Show only one element at the same time |
 | showItem | boolean | false | Always show element that has `itemNumber` number |
 | elementClass | string | 'ac' | Element class |
