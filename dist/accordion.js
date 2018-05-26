@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.5.0
+ * Accordion v2.5.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -35,6 +35,7 @@
         };
 
         options = extendDefaults(defaults, userOptions);
+        var resize = void 0;
 
         // Get container elements
         var container = document.querySelector(selector);
@@ -56,22 +57,16 @@
                 setARIA(elements[i]);
             }
 
+            // On press Enter
+            elements[i].addEventListener('keydown', function (event) {
+                if (event.keyCode == 13) {
+                    callEvent(elements, i, event);
+                }
+            });
+
             // On click
             elements[i].addEventListener('click', function (event) {
-
-                var target = event.target || event.srcElement;
-
-                // Check if target has one of the classes
-                if (target.className.match(options.questionClass) || target.className.match(options.targetClass)) {
-
-                    event.preventDefault ? event.preventDefault() : event.returnValue = false;
-
-                    if (options.closeOthers === true) {
-                        closeAllElements(elements, i);
-                    }
-
-                    toggleElement(this);
-                }
+                callEvent(elements, i, event);
             });
         };
 
@@ -93,8 +88,6 @@
         }
 
         // Window resize
-        var resize = void 0;
-
         window.addEventListener('resize', function () {
             cancelAnimationFrame(resize);
             resize = requestAnimationFrame(function () {
@@ -102,6 +95,28 @@
             });
         });
     };
+
+    /**
+     * Call event
+     * @param {object} elements = list of elements
+     * @param {number} index = item index
+     * @param {object} event = event type
+     */
+    function callEvent(elements, index, event) {
+        var target = event.target || event.srcElement;
+
+        // Check if target has one of the classes
+        if (target.className.match(options.questionClass) || target.className.match(options.targetClass)) {
+
+            event.preventDefault ? event.preventDefault() : event.returnValue = false;
+
+            if (options.closeOthers === true) {
+                closeAllElements(elements, index);
+            }
+
+            toggleElement(elements[index]);
+        }
+    }
 
     /**
      * Create ARIA
@@ -199,6 +214,7 @@
 
         var answer = element.querySelector('.' + options.answerClass);
         var height = answer.scrollHeight;
+        var ariaValue = void 0;
 
         // Toggle class
         if (element.classList) {
@@ -224,23 +240,20 @@
 
         // Set height
         if (parseInt(answer.style.height) > 0) {
-            // Update ARIA
-            if (options.aria === true) {
-                updateARIA(element, false);
-            }
-
+            ariaValue = false;
             requestAnimationFrame(function () {
                 answer.style.height = 0;
             });
         } else {
-            // Update ARIA
-            if (options.aria === true) {
-                updateARIA(element, true);
-            }
-
+            ariaValue = true;
             requestAnimationFrame(function () {
                 answer.style.height = height + 'px';
             });
+        }
+
+        // Update ARIA
+        if (options.aria === true) {
+            updateARIA(element, ariaValue);
         }
     }
 
