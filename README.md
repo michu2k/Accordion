@@ -2,15 +2,26 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-v2.5.1
+2.5.1
 
-## Usage
-On production use files (JS and CSS) only from dist/ folder
+## Installation
 
-## Install
+###### npm
 ```
 npm install accordion-js
 ```
+
+###### CDN
+```
+https://unpkg.com/accordion-js@2.5.1/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.5.1/dist/accordion.min.js
+```
+
+###### Github
+You can also download files from github.
+
+## Usage
+On production use files (JS and CSS) only from **dist/** folder
 
 ###### Include files
 ```html
