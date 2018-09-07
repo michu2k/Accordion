@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.5.1
+ * Accordion v2.6.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -11,7 +11,6 @@
 
     'use strict';
     
-    let options;
     let uniqueId = 0;
 
     /**
@@ -19,343 +18,336 @@
      * @param {string} selector = container, where script will be defined
      * @param {object} userOptions = options defined by user
      */
-    let Accordion = function(selector, userOptions)
-    {
+    const Accordion = function(selector, userOptions) {
 
-        // Defaults 
-        let defaults = {
-            duration: 600,
-            itemNumber: 0,
-            aria: true,
-            closeOthers: true,
-            showItem: false,
-            elementClass: 'ac',
-            questionClass: 'ac-q',
-            answerClass: 'ac-a',
-            targetClass: 'ac-target'
-        };
+        const ac = {
+            /**
+             * Init accordion
+             */
+            init: function() {
+                // Defaults 
+                const defaults = {
+                    duration: 600, // animation duration in ms {number}
+                    itemNumber: 0, // item number which will be shown {number}
+                    aria: true, // add ARIA elements to the HTML structure {boolean}
+                    closeOthers: true, // show only one element at the same time {boolean}
+                    showItem: false, // always show element that has itemNumber number {boolean}
+                    elementClass: 'ac', // element class {string}
+                    questionClass: 'ac-q', // question class {string}
+                    answerClass: 'ac-a', // answer class {string}
+                    targetClass: 'ac-target' // target class {string}
+                };
 
-        options = extendDefaults(defaults, userOptions);
-        let resize;
+                this.options = extendDefaults(defaults, userOptions);
 
-        // Get container elements
-        let container = document.querySelector(selector);
-        let elements = container.querySelectorAll('.' + options.elementClass);
+                // Get container elements
+                this.container = document.querySelector(selector);
+                this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
 
-        if (options.aria === true) {
-            container.setAttribute('role', 'tablist');
-        }
-
-        // For each element
-        for (let i = 0; i < elements.length; i++)
-        {
-            hideElement(elements[i]);
-            setTransition(elements[i]);
-            generateID(elements[i]);
-
-            // set ARIA
-            if (options.aria === true) {
-                setARIA(elements[i]);
-            }
-
-            // On press Enter
-            elements[i].addEventListener('keydown', (event) => {
-                if (event.keyCode == 13) {
-                    callEvent(elements, i, event);
+                if (this.options.aria === true) {
+                    this.container.setAttribute('role', 'tablist');
                 }
-            });  
 
-            // On click
-            elements[i].addEventListener('click', (event) => {
-                callEvent(elements, i, event);
-            });
-        }   
+                // For each element
+                for (let i = 0; i < this.elements.length; i++)
+                {
+                    let element = this.elements[i];
 
-        // Show element when script is loaded
-        if (options.showItem === true) {
+                    this.hideElement(element);
+                    this.setTransition(element);
+                    this.generateID(element);
 
-            // Default value
-            let el = elements[0];
+                    // Set ARIA
+                    if (this.options.aria === true) {
+                        this.setARIA(element);
+                    }
 
-            if (typeof options.itemNumber === 'number' && options.itemNumber < elements.length) {
-                el = elements[options.itemNumber];
-            }
+                    // On press Enter
+                    element.addEventListener('keydown', (event) => {
+                        if (event.keyCode == 13) {
+                            this.callEvent(i, event);
+                        }
+                    });  
 
-            toggleElement(el, false);
-        }
-   
-        // Window resize
-        window.addEventListener('resize', () => {
-            cancelAnimationFrame(resize);
-            resize = requestAnimationFrame(() => {
-                changeHeight(container);
-            });
-        });
-    }
+                    // On click
+                    element.addEventListener('click', (event) => {
+                        this.callEvent(i, event);
+                    });
+                }   
 
-    /**
-     * Call event
-     * @param {object} elements = list of elements
-     * @param {number} index = item index
-     * @param {object} event = event type
-     */    
-     function callEvent(elements, index, event)
-    {
-        let target = event.target || event.srcElement;
+                // Show accordion element when script is loaded
+                if (this.options.showItem === true) {
 
-        // Check if target has one of the classes
-        if (target.className.match(options.questionClass) || target.className.match(options.targetClass)) {
+                    // Default value
+                    let el = this.elements[0];
 
-            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+                    if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < this.elements.length) {
+                        el = this.elements[this.options.itemNumber];
+                    }
 
-            if (options.closeOthers === true) {
-                closeAllElements(elements, index);
-            }
+                    this.toggleElement(el, false);
+                }
+           
+                this.resize.call(this);
+            },
 
-            toggleElement(elements[index]);
-        }
-    }
+            /**
+             * Hide element
+             * @param {object} element = list item
+             */
+            hideElement: function(element) {
+                let answer = element.querySelector('.' + this.options.answerClass);
+                answer.style.height = 0;   
+            },
 
-    /**
-     * Create ARIA
-     * @param {object} element = list item
-     */
-    function setARIA(element)
-    {
-        let question;
-        let answer;
+            /**
+             * Set transition 
+             * @param {object} element = current element
+             */
+            setTransition: function(element) {
+                let el = element.querySelector('.' + this.options.answerClass);
+                let transition = isWebkit('transition');
 
-        question = element.querySelector('.' + options.questionClass);
-        question.setAttribute('role', 'tab');
-        question.setAttribute('aria-expanded', 'false');
+                el.style[transition] = this.options.duration + 'ms';
+            },
 
-        answer = element.querySelector('.' + options.answerClass);
-        answer.setAttribute('role', 'tabpanel');
-    }
+            /**
+             * Generate unique ID for each element
+             * @param {object} element = list item
+             */
+            generateID: function(element) {
+                element.setAttribute('id', `ac-${uniqueId}`);
+                uniqueId++;
+            },
 
-    /**
-     * Update ARIA
-     * @param {object} element = list item
-     * @param {boolean} value = value of the attribute
-     */
-    function updateARIA(element, value)
-    {
-        let question = element.querySelector('.' + options.questionClass);
-        question.setAttribute('aria-expanded', value); 
-    }
+            /**
+             * Create ARIA
+             * @param {object} element = list item
+             */
+            setARIA: function(element) {
+                let question;
+                let answer;
 
-    /**
-     * Generate unique ID for each element
-     * @param {object} element = list item
-     */
-    function generateID(element)
-    {   
-        element.setAttribute('id', `ac-${uniqueId}`);
-        uniqueId++;
-    }
+                question = element.querySelector('.' + this.options.questionClass);
+                question.setAttribute('role', 'tab');
+                question.setAttribute('aria-expanded', 'false');
 
-    /**
-     * Change element height, when window is resized and when element is active
-     * @param {object} container = accordion container
-     */
-    function changeHeight(container)
-    {
-        let height;
-        let answer;
-        let elements = container.querySelectorAll('.' + options.elementClass);
+                answer = element.querySelector('.' + this.options.answerClass);
+                answer.setAttribute('role', 'tabpanel'); 
+            },
 
-        for (let i = 0; i < elements.length; i++)
-        {
-            if (elements[i].className.match('active')) {
+            /**
+             * Update ARIA
+             * @param {object} element = list item
+             * @param {boolean} value = value of the attribute
+             */
+            updateARIA: function(element, value) {
+                let question = element.querySelector('.' + this.options.questionClass);
+                question.setAttribute('aria-expanded', value);       
+            },
 
-                answer = elements[i].querySelector('.' + options.answerClass);
+            /**
+             * Call event
+             * @param {number} index = item index
+             * @param {object} event = event type
+             */
+            callEvent: function(index, event) {
+                let target = event.target || event.srcElement;
 
-                // Set to auto and get new height
-                requestAnimationFrame(() => {
+                // Check if target has one of the classes
+                if (target.className.match(this.options.questionClass) || target.className.match(this.options.targetClass)) {
+
+                    event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+
+                    if (this.options.closeOthers === true) {
+                        this.closeAllElements(index);
+                    }
+
+                    this.toggleElement(this.elements[index]);
+                }  
+            },
+
+            /** 
+             * Toggle current element
+             * @param {object} element = current element
+             * @param {boolean} animation = turn on animation
+             */
+            toggleElement: function(element, animation = true) {
+                let answer = element.querySelector('.' + this.options.answerClass);
+                let height = answer.scrollHeight;
+                let ariaValue;
+
+                // Toggle class
+                if (element.classList) {
+                    element.classList.toggle('active');
+                } else {
+                    // For IE
+                    let classes = element.className.split(' ');
+                    let j = classes.indexOf('active');
+
+                    if (j >= 0) {
+                        classes.splice(j, 1);
+                    } else {
+                        classes.push('active');
+                    }
+
+                    element.className = classes.join(' ');
+                }
+
+                // Open element without animation
+                if (animation === false) {
                     answer.style.height = 'auto';
-                    height = answer.offsetHeight;
+                }
+
+                // Set height
+                if (parseInt(answer.style.height) > 0) {
+                    ariaValue = false;
+
+                    requestAnimationFrame(() => {
+                        answer.style.height = 0;
+                    });
+                } else {
+                    ariaValue = true;
 
                     requestAnimationFrame(() => {
                         answer.style.height = height + 'px';
                     });
-                });
-            }
-        }
-    }
-
-    /**
-     * Hide element
-     * @param {object} element = list item
-     */
-    function hideElement(element)
-    {
-        let question = element.querySelector('.' + options.questionClass);
-        let answer = element.querySelector('.' + options.answerClass);
-
-        requestAnimationFrame(() => {
-            answer.style.height = 0;
-        });
-    }
-
-    /**
-     * Set transition 
-     * @param {object} element = current element
-     */
-    function setTransition(element)
-    {
-        let el = element.querySelector('.' + options.answerClass);
-        let transition = getSupportedProperty('Transition');
-
-        el.style[transition] = options.duration + 'ms';
-    }
-
-    /** 
-     * Toggle current element
-     * @param {object} element = current element
-     * @param {boolean} animation = turn on animation
-     */
-    function toggleElement(element, animation = true)
-    {
-        let answer = element.querySelector('.' + options.answerClass);
-        let height = answer.scrollHeight;
-        let ariaValue;
-
-        // Toggle class
-        if (element.classList) {
-            element.classList.toggle('active');
-        } else {
-            // For IE
-            let classes = element.className.split(' ');
-            let j = classes.indexOf('active');
-
-            if (j >= 0) {
-                classes.splice(j, 1);
-            } else {
-                classes.push('active');
-            }
-
-            element.className = classes.join(' ');
-        }
-
-        // Open element without animation
-        if (animation === false) {
-            answer.style.height = 'auto';
-        }
-
-        // Set height
-        if (parseInt(answer.style.height) > 0) {
-            ariaValue = false;
-            requestAnimationFrame(() => {
-                answer.style.height = 0;
-            });
-        } else {
-            ariaValue = true;
-            requestAnimationFrame(() => {
-                answer.style.height = height + 'px';
-            });
-        }
-
-        // Update ARIA
-        if (options.aria === true) {
-            updateARIA(element, ariaValue);
-        }
-    }
-
-    /**
-     * Close all elements without the current element
-     * @param {object} elements = list of elements
-     * @param {number} current = current element
-     */
-    function closeAllElements(elements, current)
-    {
-        for (let i = 0; i < elements.length; i++)
-        {
-            if(i != current) {
+                }
 
                 // Update ARIA
-                if (options.aria === true) {
-                    updateARIA(elements[i], false);
-                }
+                if (this.options.aria === true) {
+                    this.updateARIA(element, ariaValue);
+                }   
+            },
 
-                let newClassName = '';
-                let classes = elements[i].className.split(' ');
-
-                for(let i = 0; i < classes.length; i++)
+            /**
+             * Close all elements without the current element
+             * @param {number} current = current element
+             */
+            closeAllElements: function(current) {
+                for (let i = 0; i < this.elements.length; i++)
                 {
-                    if(classes[i] !== 'active') {
-                        newClassName += classes[i];
+                    if(i != current) {
+                        let element = this.elements[i];
+
+                        //Remove active class
+                        if (element.classList) {
+                            if (element.classList.contains('active')) {
+                                element.classList.remove('active');
+                            }
+                        } else {
+                            // For IE
+                            let classes = element.className.split(' ');
+                            let j = classes.indexOf('active');
+
+                            if (j >= 0) {
+                                classes.splice(j, 1);
+                            }
+
+                            element.className = classes.join(' ');
+                        }
+
+                        // Update ARIA
+                        if (this.options.aria === true) {
+                            this.updateARIA(element, false);
+                        }
+
+                        this.hideElement(element);
                     }
-                }
+                }   
+            },
 
-                elements[i].className = newClassName;
+            /**
+             * Change element height, when window is resized and when element is active
+             */
+            changeHeight: function() {
+                let height;
+                let answer;
+                let activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
 
-                hideElement(elements[i]);
+                for (let i = 0; i < activeElement.length; i++)
+                {
+                    answer = activeElement[i].querySelector('.' + this.options.answerClass);
+
+                    // Set to auto and get new height
+                    requestAnimationFrame(() => {
+                        answer.style.height = 'auto';
+                        height = answer.offsetHeight;
+
+                        requestAnimationFrame(() => {
+                            answer.style.height = height + 'px';
+                        });
+                    });
+                }     
+            },
+
+            /**
+             * Calculate the slider when changing the window size
+             */
+            resize: function() {
+                window.addEventListener('resize', () => {
+                    this.changeHeight();
+                });    
             }
-        }
-    }
-
-    /**
-     * Get supported property and add prefix if needed
-     * @param {string} property = property name
-     * @return {string} propertyWithPrefix = property prefix
-     */
-    function getSupportedProperty(property)
-    {
-        let prefix = ['-', 'webkit', 'moz', 'ms', 'o'];
-        let propertyWithPrefix;
-
-        for (let i = 0; i < prefix.length; i++) 
-        {
-            if (prefix[i] == '-') {
-                propertyWithPrefix = property.toLowerCase();
-            } else {
-                propertyWithPrefix = prefix[i] + property;
-            }
-
-            if (typeof document.body.style[propertyWithPrefix] != 'undefined') {
-               return propertyWithPrefix;
-            }
-        }
-
-        return null;
-    }
-
-    /** 
-     * Extend defaults
-     * @param {object} defaults = defaults options defined in script
-     * @param {object} properties = options defined by user
-     * @return {object} defaults = modified options
-     */
-    function extendDefaults(defaults, properties)
-    {
-        if (properties != null && properties != undefined && properties != 'undefined') {
-            for (let property in properties) {
-                defaults[property] = properties[property];
-            }
-        }
-
-        return defaults;
-    }
-
-    /**
-     * RequestAnimationFrame support
-     */
-    window.requestAnimationFrame = (() => {
-        return window.requestAnimationFrame ||
-               window.webkitRequestAnimationFrame ||
-               window.mozRequestAnimationFrame ||
-               function(callback) {
-                   window.setTimeout(callback, 1000 / 60);
-               };
-    })();
-
-    /**
-     * CancelAnimationFrame support
-     */
-    if (!window.cancelAnimationFrame) {
-        window.cancelAnimationFrame = (id) => {
-            clearTimeout(id);
         };
+
+        /**
+         * Get supported property and add webkit prefix if needed
+         * @param {string} property = property name
+         * @return {string} property = property with optional webkit prefix
+         */
+        function isWebkit(property)
+        {
+            if (typeof document.documentElement.style[property] === 'string') {
+                return property;
+            }
+
+            property = capitalizeFirstLetter(property);
+            property = `webkit${property}`;
+
+            return property;
+        }
+
+        /**
+         * Capitalize the first letter in the string
+         * @param {string} string = string
+         * @return {string} string = changed string
+         */
+        function capitalizeFirstLetter(string)
+        {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        /** 
+         * Extend defaults
+         * @param {object} defaults = defaults options defined in script
+         * @param {object} properties = options defined by user
+         * @return {object} defaults = modified options
+         */
+        function extendDefaults(defaults, properties)
+        {
+            if (properties != null && properties != undefined && properties != 'undefined') {
+                for (let property in properties) {
+                    defaults[property] = properties[property];
+                }
+            }
+
+            return defaults;
+        }
+
+        /**
+         * RequestAnimationFrame support
+         */
+        window.requestAnimationFrame = (() => {
+            return window.requestAnimationFrame ||
+                   window.webkitRequestAnimationFrame ||
+                   window.mozRequestAnimationFrame ||
+                   function(callback) {
+                       window.setTimeout(callback, 1000 / 60);
+                   };
+        })();
+
+        ac.init();
     }
 
     window.Accordion = Accordion;

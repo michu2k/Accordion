@@ -2,7 +2,7 @@
 Very light and simple module. With the module you can create accordion on your website, useful for creating FAQ lists.
 
 ## Version
-2.5.1
+2.6.0
 
 ## Installation
 
@@ -13,8 +13,8 @@ npm install accordion-js
 
 ###### CDN
 ```
-https://unpkg.com/accordion-js@2.5.1/dist/accordion.min.css
-https://unpkg.com/accordion-js@2.5.1/dist/accordion.min.js
+https://unpkg.com/accordion-js@2.6.0/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.6.0/dist/accordion.min.js
 ```
 
 ###### Github
@@ -59,7 +59,7 @@ This is just an example of a layout. You can create your own HTML structure.
 ###### Initialize the module
 ```javascript
 <script>
-	var accordion = new Accordion('.accordion-container');	
+    var accordion = new Accordion('.accordion-container');  
 </script>
 ```
 
@@ -74,14 +74,14 @@ new Accordion(container, options)
 You can initialize more than one accordion per page.
 ```javascript
 <script>
-	// Default options
-	var accordion = new Accordion('.container-first');	
+    // Default options
+    var accordion = new Accordion('.container-first');  
 
-	// User options
-	var accordion = new Accordion('.container-second', {
-		duration: 500,
-		showItem: true
-	});	
+    // User options
+    var accordion = new Accordion('.container-second', {
+        duration: 500,
+        showItem: true
+    }); 
 </script>
 ```
 

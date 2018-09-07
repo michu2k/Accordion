@@ -1,11 +1,8 @@
 {
   "name": "accordion-js",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "Simple accordion created in pure Javascript",
   "main": "dist/accordion.js",
-  "scripts": {
-    "build": "babel src -d dist"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michu2k/Accordion.git"
@@ -15,7 +12,9 @@
     "javascript",
     "accordion",
     "css",
-    "simple"
+    "es6",
+    "accesibility",
+    "aria"
   ],
   "author": "Michał Strumpf",
   "homepage": "https://github.com/michu2k/Accordion#readme",
@@ -25,9 +24,14 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
-  },
-  "dependencies": {
-    "npm": "^6.1.0"
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.24.5",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-rename": "^1.3.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-uglify": "^3.0.0"
   }
 }

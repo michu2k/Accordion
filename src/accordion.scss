@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.5.1
+ * Accordion v2.6.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -24,13 +24,11 @@
         position: relative;
 
         &::after {
-            content: "+";
+            content: '+';
             text-align: center;
             width: 15px;    
             right: 10px;
             top: 50%;
-            -ms-transform: translate(0, -50%);
-            -webkit-transform: translate(0, -50%);
             transform: translate(0, -50%);
             position: absolute;
         }
@@ -38,10 +36,6 @@
 
     > .ac-a {
         overflow: hidden;
-        -o-transition-property: all;
-        -o-transition-timing-function: ease;
-        -webkit-transition-property: all;
-        -webkit-transition-timing-function: ease;
         transition-property: all;
         transition-timing-function: ease;
 
@@ -58,7 +52,7 @@
     &.active {
         > .ac-q {
             &::after {
-                content: "\2013";
+                content: '\2013';
             }       
         }
     }
