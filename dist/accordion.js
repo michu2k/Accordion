@@ -224,7 +224,7 @@
                     if (i != current) {
                         var _element = this.elements[i];
 
-                        //Remove active class
+                        // Remove active class
                         if (_element.classList.contains('active')) {
                             _element.classList.remove('active');
                         }

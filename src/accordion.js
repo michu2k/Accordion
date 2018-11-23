@@ -215,7 +215,7 @@
                     if (i != current) {
                         let element = this.elements[i];
 
-                        //Remove active class
+                        // Remove active class
                         if (element.classList.contains('active')) {
                             element.classList.remove('active');
                         }
