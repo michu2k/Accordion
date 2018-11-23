@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.6.0
+ * Accordion v2.6.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -10,7 +10,7 @@
 (function(window) {
 
     'use strict';
-    
+
     let uniqueId = 0;
 
     /**
@@ -39,18 +39,18 @@
                 };
 
                 this.options = extendDefaults(defaults, userOptions);
-
-                // Get container elements
                 this.container = document.querySelector(selector);
                 this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
+                let length = this.elements.length;
 
+                // Set ARIA
                 if (this.options.aria === true) {
                     this.container.setAttribute('role', 'tablist');
                 }
 
                 // For each element
-                for (let i = 0; i < this.elements.length; i++)
-                {
+                for (let i = 0; i < length; i++) {
+
                     let element = this.elements[i];
 
                     this.hideElement(element);
@@ -73,7 +73,7 @@
                     element.addEventListener('click', (event) => {
                         this.callEvent(i, event);
                     });
-                }   
+                }
 
                 // Show accordion element when script is loaded
                 if (this.options.showItem === true) {
@@ -81,13 +81,13 @@
                     // Default value
                     let el = this.elements[0];
 
-                    if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < this.elements.length) {
+                    if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < length) {
                         el = this.elements[this.options.itemNumber];
                     }
 
                     this.toggleElement(el, false);
                 }
-           
+
                 this.resize.call(this);
             },
 
@@ -125,14 +125,12 @@
              * @param {object} element = list item
              */
             setARIA: function(element) {
-                let question;
-                let answer;
+                let question = element.querySelector('.' + this.options.questionClass);
+                let answer = element.querySelector('.' + this.options.answerClass);
 
-                question = element.querySelector('.' + this.options.questionClass);
                 question.setAttribute('role', 'tab');
                 question.setAttribute('aria-expanded', 'false');
 
-                answer = element.querySelector('.' + this.options.answerClass);
                 answer.setAttribute('role', 'tabpanel'); 
             },
 
@@ -152,12 +150,12 @@
              * @param {object} event = event type
              */
             callEvent: function(index, event) {
-                let target = event.target || event.srcElement;
+                let target = event.target.className;
 
                 // Check if target has one of the classes
-                if (target.className.match(this.options.questionClass) || target.className.match(this.options.targetClass)) {
+                if (target.match(this.options.questionClass) || target.match(this.options.targetClass)) {
 
-                    event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+                    event.preventDefault();
 
                     if (this.options.closeOthers === true) {
                         this.closeAllElements(index);
@@ -178,21 +176,7 @@
                 let ariaValue;
 
                 // Toggle class
-                if (element.classList) {
-                    element.classList.toggle('active');
-                } else {
-                    // For IE
-                    let classes = element.className.split(' ');
-                    let j = classes.indexOf('active');
-
-                    if (j >= 0) {
-                        classes.splice(j, 1);
-                    } else {
-                        classes.push('active');
-                    }
-
-                    element.className = classes.join(' ');
-                }
+                element.classList.toggle('active');
 
                 // Open element without animation
                 if (animation === false) {
@@ -217,7 +201,7 @@
                 // Update ARIA
                 if (this.options.aria === true) {
                     this.updateARIA(element, ariaValue);
-                }   
+                }
             },
 
             /**
@@ -225,26 +209,15 @@
              * @param {number} current = current element
              */
             closeAllElements: function(current) {
-                for (let i = 0; i < this.elements.length; i++)
-                {
-                    if(i != current) {
+                let length = this.elements.length;
+
+                for (let i = 0; i < length; i++) {
+                    if (i != current) {
                         let element = this.elements[i];
 
                         //Remove active class
-                        if (element.classList) {
-                            if (element.classList.contains('active')) {
-                                element.classList.remove('active');
-                            }
-                        } else {
-                            // For IE
-                            let classes = element.className.split(' ');
-                            let j = classes.indexOf('active');
-
-                            if (j >= 0) {
-                                classes.splice(j, 1);
-                            }
-
-                            element.className = classes.join(' ');
+                        if (element.classList.contains('active')) {
+                            element.classList.remove('active');
                         }
 
                         // Update ARIA
@@ -265,8 +238,7 @@
                 let answer;
                 let activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
 
-                for (let i = 0; i < activeElement.length; i++)
-                {
+                for (let i = 0; i < activeElement.length; i++) {
                     answer = activeElement[i].querySelector('.' + this.options.answerClass);
 
                     // Set to auto and get new height
@@ -287,7 +259,7 @@
             resize: function() {
                 window.addEventListener('resize', () => {
                     this.changeHeight();
-                });    
+                });
             }
         };
 
@@ -341,7 +313,6 @@
         window.requestAnimationFrame = (() => {
             return window.requestAnimationFrame ||
                    window.webkitRequestAnimationFrame ||
-                   window.mozRequestAnimationFrame ||
                    function(callback) {
                        window.setTimeout(callback, 1000 / 60);
                    };

@@ -1,6 +1,6 @@
 {
   "name": "accordion-js",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "Simple accordion created in pure Javascript",
   "main": "dist/accordion.js",
   "repository": {

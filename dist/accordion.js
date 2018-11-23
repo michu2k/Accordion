@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.6.0
+ * Accordion v2.6.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -41,11 +41,11 @@
                 };
 
                 this.options = extendDefaults(defaults, userOptions);
-
-                // Get container elements
                 this.container = document.querySelector(selector);
                 this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
+                var length = this.elements.length;
 
+                // Set ARIA
                 if (this.options.aria === true) {
                     this.container.setAttribute('role', 'tablist');
                 }
@@ -53,6 +53,7 @@
                 // For each element
 
                 var _loop = function _loop(i) {
+
                     var element = _this.elements[i];
 
                     _this.hideElement(element);
@@ -77,7 +78,7 @@
                     });
                 };
 
-                for (var i = 0; i < this.elements.length; i++) {
+                for (var i = 0; i < length; i++) {
                     _loop(i);
                 }
 
@@ -87,7 +88,7 @@
                     // Default value
                     var el = this.elements[0];
 
-                    if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < this.elements.length) {
+                    if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < length) {
                         el = this.elements[this.options.itemNumber];
                     }
 
@@ -131,14 +132,12 @@
              * @param {object} element = list item
              */
             setARIA: function setARIA(element) {
-                var question = void 0;
-                var answer = void 0;
+                var question = element.querySelector('.' + this.options.questionClass);
+                var answer = element.querySelector('.' + this.options.answerClass);
 
-                question = element.querySelector('.' + this.options.questionClass);
                 question.setAttribute('role', 'tab');
                 question.setAttribute('aria-expanded', 'false');
 
-                answer = element.querySelector('.' + this.options.answerClass);
                 answer.setAttribute('role', 'tabpanel');
             },
 
@@ -158,12 +157,12 @@
              * @param {object} event = event type
              */
             callEvent: function callEvent(index, event) {
-                var target = event.target || event.srcElement;
+                var target = event.target.className;
 
                 // Check if target has one of the classes
-                if (target.className.match(this.options.questionClass) || target.className.match(this.options.targetClass)) {
+                if (target.match(this.options.questionClass) || target.match(this.options.targetClass)) {
 
-                    event.preventDefault ? event.preventDefault() : event.returnValue = false;
+                    event.preventDefault();
 
                     if (this.options.closeOthers === true) {
                         this.closeAllElements(index);
@@ -186,21 +185,7 @@
                 var ariaValue = void 0;
 
                 // Toggle class
-                if (element.classList) {
-                    element.classList.toggle('active');
-                } else {
-                    // For IE
-                    var classes = element.className.split(' ');
-                    var j = classes.indexOf('active');
-
-                    if (j >= 0) {
-                        classes.splice(j, 1);
-                    } else {
-                        classes.push('active');
-                    }
-
-                    element.className = classes.join(' ');
-                }
+                element.classList.toggle('active');
 
                 // Open element without animation
                 if (animation === false) {
@@ -233,25 +218,15 @@
              * @param {number} current = current element
              */
             closeAllElements: function closeAllElements(current) {
-                for (var i = 0; i < this.elements.length; i++) {
+                var length = this.elements.length;
+
+                for (var i = 0; i < length; i++) {
                     if (i != current) {
                         var _element = this.elements[i];
 
                         //Remove active class
-                        if (_element.classList) {
-                            if (_element.classList.contains('active')) {
-                                _element.classList.remove('active');
-                            }
-                        } else {
-                            // For IE
-                            var classes = _element.className.split(' ');
-                            var j = classes.indexOf('active');
-
-                            if (j >= 0) {
-                                classes.splice(j, 1);
-                            }
-
-                            _element.className = classes.join(' ');
+                        if (_element.classList.contains('active')) {
+                            _element.classList.remove('active');
                         }
 
                         // Update ARIA
@@ -344,7 +319,7 @@
          * RequestAnimationFrame support
          */
         window.requestAnimationFrame = function () {
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
+            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (callback) {
                 window.setTimeout(callback, 1000 / 60);
             };
         }();
