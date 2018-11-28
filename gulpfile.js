@@ -6,6 +6,7 @@ var uglify       = require('gulp-uglify');
 var browserSync  = require('browser-sync');
 var rename       = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
+var prettier     = require('gulp-prettier');
 
 // Config
 var config = {
@@ -25,7 +26,11 @@ gulp.task('browser-sync', function() {
 // Javascript
 gulp.task('js', function() {
     return gulp.src(config.srcJS)
-        .pipe(babel())
+        .pipe(babel({retainLines: true}))
+        .pipe(prettier({
+            printWidth: 120,
+            singleQuote: true
+        }))
         .pipe(gulp.dest(config.distJS)) 
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
@@ -37,19 +42,7 @@ gulp.task('js', function() {
 gulp.task('sass', function() {
     return gulp.src(config.srcCSS)
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(autoprefixer({
-            browsers: [
-                'Chrome >= 30',
-                'Firefox >= 26',
-                'Edge >= 12',
-                'Explorer >= 10',
-                'Opera >= 26',
-                'iOS >= 7.1',
-                'Safari >= 8',
-                'Android >= 4.3'
-            ],
-            cascade: false
-        }))
+        .pipe(autoprefixer({cascade: false}))
         .pipe(gulp.dest(config.distCSS))
         .pipe(browserSync.stream())
         .pipe(cleanCSS())
