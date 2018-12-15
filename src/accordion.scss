@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.6.2
+ * Accordion v2.6.3
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -36,6 +36,7 @@
 
     > .ac-a {
         overflow: hidden;
+        visibility: hidden;
         transition-property: all;
         transition-timing-function: ease;
 
@@ -50,6 +51,10 @@
     }
 
     &.active {
+        > .ac-a {
+            visibility: visible;
+        }
+
         > .ac-q {
             &::after {
                 content: '\2013';

@@ -27,6 +27,10 @@ gulp.task('browser-sync', function() {
 gulp.task('js', function() {
     return gulp.src(config.srcJS)
         .pipe(babel({retainLines: true}))
+        .on('error', function(error) {
+            console.log(error.toString())
+            this.emit('end')
+        })
         .pipe(prettier({
             printWidth: 120,
             singleQuote: true
@@ -41,7 +45,8 @@ gulp.task('js', function() {
 // Sass
 gulp.task('sass', function() {
     return gulp.src(config.srcCSS)
-        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(sass({outputStyle: 'expanded'})
+        .on('error', sass.logError))
         .pipe(autoprefixer({cascade: false}))
         .pipe(gulp.dest(config.distCSS))
         .pipe(browserSync.stream())

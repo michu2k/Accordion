@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.6.2
+ * Accordion v2.6.3
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -34,7 +34,8 @@
           elementClass: 'ac', // element class {string}
           questionClass: 'ac-q', // question class {string}
           answerClass: 'ac-a', // answer class {string}
-          targetClass: 'ac-target' // target class {string}
+          targetClass: 'ac-target', // target class {string}
+          callFunction: function callFunction() {} // calls when toggling item {function}
         };
 
         this.options = extendDefaults(defaults, userOptions);
@@ -43,7 +44,7 @@
         var length = this.elements.length;
 
         // Set ARIA
-        if (this.options.aria === true) {
+        if (this.options.aria) {
           this.container.setAttribute('role', 'tablist');
         }
 
@@ -56,7 +57,7 @@
           _this.generateID(element);
 
           // Set ARIA
-          if (_this.options.aria === true) {
+          if (_this.options.aria) {
             _this.setARIA(element);
           }
 
@@ -77,7 +78,7 @@
         }
 
         // Show accordion element when script is loaded
-        if (this.options.showItem === true) {
+        if (this.options.showItem) {
           // Default value
           var el = this.elements[0];
 
@@ -88,7 +89,7 @@
           this.toggleElement(el, false);
         }
 
-        this.resize.call(this);
+        this.resize();
       },
 
       /**
@@ -156,7 +157,7 @@
         if (target.match(this.options.questionClass) || target.match(this.options.targetClass)) {
           event.preventDefault();
 
-          if (this.options.closeOthers === true) {
+          if (this.options.closeOthers) {
             this.closeAllElements(index);
           }
 
@@ -179,7 +180,7 @@
         element.classList.toggle('active');
 
         // Open element without animation
-        if (animation === false) {
+        if (!animation) {
           answer.style.height = 'auto';
         }
 
@@ -199,8 +200,13 @@
         }
 
         // Update ARIA
-        if (this.options.aria === true) {
+        if (this.options.aria) {
           this.updateARIA(element, ariaValue);
+        }
+
+        // Call callFunction function
+        if (animation) {
+          this.options.callFunction(element, this.elements);
         }
       },
 
@@ -221,7 +227,7 @@
             }
 
             // Update ARIA
-            if (this.options.aria === true) {
+            if (this.options.aria) {
               this.updateARIA(element, false);
             }
 

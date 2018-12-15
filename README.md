@@ -3,7 +3,7 @@ Very light and simple module. With the module you can create accordion on your w
 <br> Browsers support: All modern browsers, Internet Explorer 10+
 
 ## Version
-2.6.2
+2.6.3
 
 ## Installation
 
@@ -14,8 +14,8 @@ npm install accordion-js
 
 ###### CDN
 ```
-https://unpkg.com/accordion-js@2.6.2-1/dist/accordion.min.css
-https://unpkg.com/accordion-js@2.6.2-1/dist/accordion.min.js
+https://unpkg.com/accordion-js@2.6.3/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.6.3/dist/accordion.min.js
 ```
 
 ###### Github
@@ -81,7 +81,10 @@ You can initialize more than one accordion per page.
     // User options
     var accordion = new Accordion('.container-second', {
         duration: 500,
-        showItem: true
+        showItem: true,
+        callFunction: function(currentElement, allElements) {
+            console.log(currentElement);
+        }
     }); 
 </script>
 ```
@@ -99,7 +102,10 @@ You can initialize more than one accordion per page.
 | questionClass | string | 'ac-q' | Question class |
 | answerClass | string | 'ac-a' | Answer class |
 | targetClass | string | 'ac-target' | Target class [Read more below] |
+| callFunction | function | - | Function called after clicking on the element. Can take two params <br> **1st** - element that was clicked <br> **2nd** - list of all accordion elements <br> [Read more below]|
 
 ###### Comments
 
 **targetClass** - If an element has the `targetClass` class and is inside box with `qClass` class, then when you click on it, the list will be expanded. Otherwise expanded will not take place and clicked element will take you to the top of the page.
+
+**callFunction** - Function is not working on initiated element, when `showItem` is set to `true`

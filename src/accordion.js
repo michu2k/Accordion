@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.6.2
+ * Accordion v2.6.3
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -24,7 +24,7 @@
             /**
              * Init accordion
              */
-            init: function() {
+            init() {
                 // Defaults 
                 const defaults = {
                     duration: 600, // animation duration in ms {number}
@@ -35,7 +35,8 @@
                     elementClass: 'ac', // element class {string}
                     questionClass: 'ac-q', // question class {string}
                     answerClass: 'ac-a', // answer class {string}
-                    targetClass: 'ac-target' // target class {string}
+                    targetClass: 'ac-target', // target class {string}
+                    callFunction: () => {} // calls when toggling item {function}
                 };
 
                 this.options = extendDefaults(defaults, userOptions);
@@ -44,7 +45,7 @@
                 let length = this.elements.length;
 
                 // Set ARIA
-                if (this.options.aria === true) {
+                if (this.options.aria) {
                     this.container.setAttribute('role', 'tablist');
                 }
 
@@ -58,7 +59,7 @@
                     this.generateID(element);
 
                     // Set ARIA
-                    if (this.options.aria === true) {
+                    if (this.options.aria) {
                         this.setARIA(element);
                     }
 
@@ -76,7 +77,7 @@
                 }
 
                 // Show accordion element when script is loaded
-                if (this.options.showItem === true) {
+                if (this.options.showItem) {
 
                     // Default value
                     let el = this.elements[0];
@@ -88,23 +89,23 @@
                     this.toggleElement(el, false);
                 }
 
-                this.resize.call(this);
+                this.resize();
             },
 
             /**
              * Hide element
              * @param {object} element = list item
              */
-            hideElement: function(element) {
+            hideElement(element) {
                 let answer = element.querySelector('.' + this.options.answerClass);
-                answer.style.height = 0;   
+                answer.style.height = 0; 
             },
 
             /**
              * Set transition 
              * @param {object} element = current element
              */
-            setTransition: function(element) {
+            setTransition(element) {
                 let el = element.querySelector('.' + this.options.answerClass);
                 let transition = isWebkit('transition');
 
@@ -115,7 +116,7 @@
              * Generate unique ID for each element
              * @param {object} element = list item
              */
-            generateID: function(element) {
+            generateID(element) {
                 element.setAttribute('id', `ac-${uniqueId}`);
                 uniqueId++;
             },
@@ -124,7 +125,7 @@
              * Create ARIA
              * @param {object} element = list item
              */
-            setARIA: function(element) {
+            setARIA(element) {
                 let question = element.querySelector('.' + this.options.questionClass);
                 let answer = element.querySelector('.' + this.options.answerClass);
 
@@ -139,7 +140,7 @@
              * @param {object} element = list item
              * @param {boolean} value = value of the attribute
              */
-            updateARIA: function(element, value) {
+            updateARIA(element, value) {
                 let question = element.querySelector('.' + this.options.questionClass);
                 question.setAttribute('aria-expanded', value);       
             },
@@ -149,7 +150,7 @@
              * @param {number} index = item index
              * @param {object} event = event type
              */
-            callEvent: function(index, event) {
+            callEvent(index, event) {
                 let target = event.target.className;
 
                 // Check if target has one of the classes
@@ -157,7 +158,7 @@
 
                     event.preventDefault();
 
-                    if (this.options.closeOthers === true) {
+                    if (this.options.closeOthers) {
                         this.closeAllElements(index);
                     }
 
@@ -170,7 +171,7 @@
              * @param {object} element = current element
              * @param {boolean} animation = turn on animation
              */
-            toggleElement: function(element, animation = true) {
+            toggleElement(element, animation = true) {
                 let answer = element.querySelector('.' + this.options.answerClass);
                 let height = answer.scrollHeight;
                 let ariaValue;
@@ -179,7 +180,7 @@
                 element.classList.toggle('active');
 
                 // Open element without animation
-                if (animation === false) {
+                if (!animation) {
                     answer.style.height = 'auto';
                 }
 
@@ -199,8 +200,13 @@
                 }
 
                 // Update ARIA
-                if (this.options.aria === true) {
+                if (this.options.aria) {
                     this.updateARIA(element, ariaValue);
+                }
+
+                // Call callFunction function
+                if (animation) {
+                    this.options.callFunction(element, this.elements);
                 }
             },
 
@@ -208,7 +214,7 @@
              * Close all elements without the current element
              * @param {number} current = current element
              */
-            closeAllElements: function(current) {
+            closeAllElements(current) {
                 let length = this.elements.length;
 
                 for (let i = 0; i < length; i++) {
@@ -221,7 +227,7 @@
                         }
 
                         // Update ARIA
-                        if (this.options.aria === true) {
+                        if (this.options.aria) {
                             this.updateARIA(element, false);
                         }
 
@@ -233,7 +239,7 @@
             /**
              * Change element height, when window is resized and when element is active
              */
-            changeHeight: function() {
+            changeHeight() {
                 let height;
                 let answer;
                 let activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
@@ -256,7 +262,7 @@
             /**
              * Calculate the slider when changing the window size
              */
-            resize: function() {
+            resize() {
                 window.addEventListener('resize', () => {
                     this.changeHeight();
                 });
@@ -268,8 +274,7 @@
          * @param {string} property = property name
          * @return {string} property = property with optional webkit prefix
          */
-        function isWebkit(property)
-        {
+        function isWebkit(property) {
             if (typeof document.documentElement.style[property] === 'string') {
                 return property;
             }
@@ -285,8 +290,7 @@
          * @param {string} string = string
          * @return {string} string = changed string
          */
-        function capitalizeFirstLetter(string)
-        {
+        function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
@@ -296,8 +300,7 @@
          * @param {object} properties = options defined by user
          * @return {object} defaults = modified options
          */
-        function extendDefaults(defaults, properties)
-        {
+        function extendDefaults(defaults, properties) {
             if (properties != null && properties != undefined && properties != 'undefined') {
                 for (let property in properties) {
                     defaults[property] = properties[property];
