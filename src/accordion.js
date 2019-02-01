@@ -1,9 +1,9 @@
 /*!
- * Accordion v2.6.3
+ * Accordion v2.6.4
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2018 Michał Strumpf
+ * Copyright 2017-2019 Michał Strumpf
  * Published under MIT License
  */
 
@@ -15,11 +15,11 @@
 
     /**
      * Core
-     * @param {string} selector = container, where script will be defined
+     * @param {string} selector = container in which the script will be initialized
      * @param {object} userOptions = options defined by user
      */
     const Accordion = function(selector, userOptions) {
-
+        
         const ac = {
             /**
              * Init accordion
@@ -42,7 +42,7 @@
                 this.options = extendDefaults(defaults, userOptions);
                 this.container = document.querySelector(selector);
                 this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
-                let length = this.elements.length;
+                const length = this.elements.length;
 
                 // Set ARIA
                 if (this.options.aria) {
@@ -52,7 +52,7 @@
                 // For each element
                 for (let i = 0; i < length; i++) {
 
-                    let element = this.elements[i];
+                    const element = this.elements[i];
 
                     this.hideElement(element);
                     this.setTransition(element);
@@ -97,7 +97,7 @@
              * @param {object} element = list item
              */
             hideElement(element) {
-                let answer = element.querySelector('.' + this.options.answerClass);
+                const answer = element.querySelector('.' + this.options.answerClass);
                 answer.style.height = 0; 
             },
 
@@ -106,8 +106,8 @@
              * @param {object} element = current element
              */
             setTransition(element) {
-                let el = element.querySelector('.' + this.options.answerClass);
-                let transition = isWebkit('transition');
+                const el = element.querySelector('.' + this.options.answerClass);
+                const transition = isWebkit('transition');
 
                 el.style[transition] = this.options.duration + 'ms';
             },
@@ -126,12 +126,11 @@
              * @param {object} element = list item
              */
             setARIA(element) {
-                let question = element.querySelector('.' + this.options.questionClass);
-                let answer = element.querySelector('.' + this.options.answerClass);
+                const question = element.querySelector('.' + this.options.questionClass);
+                const answer = element.querySelector('.' + this.options.answerClass);
 
                 question.setAttribute('role', 'tab');
                 question.setAttribute('aria-expanded', 'false');
-
                 answer.setAttribute('role', 'tabpanel'); 
             },
 
@@ -141,7 +140,7 @@
              * @param {boolean} value = value of the attribute
              */
             updateARIA(element, value) {
-                let question = element.querySelector('.' + this.options.questionClass);
+                const question = element.querySelector('.' + this.options.questionClass);
                 question.setAttribute('aria-expanded', value);       
             },
 
@@ -151,7 +150,7 @@
              * @param {object} event = event type
              */
             callEvent(index, event) {
-                let target = event.target.className;
+                const target = event.target.className;
 
                 // Check if target has one of the classes
                 if (target.match(this.options.questionClass) || target.match(this.options.targetClass)) {
@@ -172,8 +171,8 @@
              * @param {boolean} animation = turn on animation
              */
             toggleElement(element, animation = true) {
-                let answer = element.querySelector('.' + this.options.answerClass);
-                let height = answer.scrollHeight;
+                const answer = element.querySelector('.' + this.options.answerClass);
+                const height = answer.scrollHeight;
                 let ariaValue;
 
                 // Toggle class
@@ -215,11 +214,11 @@
              * @param {number} current = current element
              */
             closeAllElements(current) {
-                let length = this.elements.length;
+                const length = this.elements.length;
 
                 for (let i = 0; i < length; i++) {
                     if (i != current) {
-                        let element = this.elements[i];
+                        const element = this.elements[i];
 
                         // Remove active class
                         if (element.classList.contains('active')) {
@@ -242,7 +241,7 @@
             changeHeight() {
                 let height;
                 let answer;
-                let activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
+                const activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
 
                 for (let i = 0; i < activeElement.length; i++) {
                     answer = activeElement[i].querySelector('.' + this.options.answerClass);

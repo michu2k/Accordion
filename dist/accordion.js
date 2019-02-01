@@ -1,9 +1,9 @@
 /*!
- * Accordion v2.6.3
+ * Accordion v2.6.4
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2018 Michał Strumpf
+ * Copyright 2017-2019 Michał Strumpf
  * Published under MIT License
  */
 
@@ -14,7 +14,7 @@
 
   /**
    * Core
-   * @param {string} selector = container, where script will be defined
+   * @param {string} selector = container in which the script will be initialized
    * @param {object} userOptions = options defined by user
    */
   var Accordion = function Accordion(selector, userOptions) {
@@ -131,7 +131,6 @@
 
         question.setAttribute('role', 'tab');
         question.setAttribute('aria-expanded', 'false');
-
         answer.setAttribute('role', 'tabpanel');
       },
 

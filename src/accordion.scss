@@ -1,20 +1,20 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.6.3
+ * Accordion v2.6.4
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2018 Michał Strumpf
+ * Copyright 2017-2019 Michał Strumpf
  * Published under MIT License
  */
 .ac {
     margin-top: 10px;
     border: 1px solid #ddd;
     background-color: #fff;
+    box-sizing: border-box;
 
     > .ac-q {
-        font-family: 'Arial', sans-serif;
-        font-size: 15px;    
+        font: bold 15px 'Arial', sans-serif;   
         color: #111;
         padding: 10px 30px 10px 10px;
         margin: 0;
@@ -41,9 +41,7 @@
         transition-timing-function: ease;
 
         p {
-            font-family: 'Arial', sans-serif;   
-            font-size: 14px;
-            line-height: 1.5;
+            font: 14px/1.5 'Arial', sans-serif;   
             color: #777;
             margin: 0;
             padding: 10px;
