@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.6.4
+ * Accordion v2.7.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -37,6 +37,17 @@
           targetClass: 'ac-target', // target class {string}
           callFunction: function callFunction() {} // calls when toggling item {function}
         };
+
+        // Break the array with the selectors
+        if (Array.isArray(selector)) {
+          if (selector.length) {
+            selector.map(function(single) {
+              return new Accordion(single, userOptions);
+            });
+          }
+
+          return false;
+        }
 
         this.options = extendDefaults(defaults, userOptions);
         this.container = document.querySelector(selector);
@@ -274,7 +285,7 @@
      * @param {string} property = property name
      * @return {string} property = property with optional webkit prefix
      */
-    function isWebkit(property) {
+    var isWebkit = function isWebkit(property) {
       if (typeof document.documentElement.style[property] === 'string') {
         return property;
       }
@@ -283,16 +294,16 @@
       property = 'webkit'.concat(property);
 
       return property;
-    }
+    };
 
     /**
      * Capitalize the first letter in the string
      * @param {string} string = string
      * @return {string} string = changed string
      */
-    function capitalizeFirstLetter(string) {
+    var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+    };
 
     /**
      * Extend defaults
@@ -300,7 +311,7 @@
      * @param {object} properties = options defined by user
      * @return {object} defaults = modified options
      */
-    function extendDefaults(defaults, properties) {
+    var extendDefaults = function extendDefaults(defaults, properties) {
       if (properties != null && properties != undefined && properties != 'undefined') {
         for (var property in properties) {
           defaults[property] = properties[property];
@@ -308,7 +319,7 @@
       }
 
       return defaults;
-    }
+    };
 
     /**
      * RequestAnimationFrame support

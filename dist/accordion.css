@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.6.4
+ * Accordion v2.7.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -39,7 +39,6 @@
 
 .ac > .ac-a {
   overflow: hidden;
-  visibility: hidden;
   -webkit-transition-property: all;
   transition-property: all;
   -webkit-transition-timing-function: ease;
@@ -51,10 +50,6 @@
   color: #777;
   margin: 0;
   padding: 10px;
-}
-
-.ac.active > .ac-a {
-  visibility: visible;
 }
 
 .ac.active > .ac-q::after {

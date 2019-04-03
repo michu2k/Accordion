@@ -3,7 +3,7 @@ Very light and simple module. With the module you can create accordion on your w
 <br> Browsers support: All modern browsers, Internet Explorer 10+
 
 ## Version
-2.6.4
+2.7.0
 
 ## Installation
 
@@ -14,8 +14,8 @@ npm install accordion-js
 
 ###### CDN
 ```
-https://unpkg.com/accordion-js@2.6.4/dist/accordion.min.css
-https://unpkg.com/accordion-js@2.6.4/dist/accordion.min.js
+https://unpkg.com/accordion-js@2.7.0/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.7.0/dist/accordion.min.js
 ```
 
 ###### Github
@@ -86,6 +86,9 @@ You can initialize more than one accordion per page.
             console.log(currentElement);
         }
     }); 
+
+    // Define several accordions with the same options
+    var accordion = new Accordion(['.container-first', '.container-second']); 
 </script>
 ```
 
