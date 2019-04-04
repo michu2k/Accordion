@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.7.0
+ * Accordion v2.7.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -62,6 +62,9 @@
         // For each element
         var _loop = function _loop(i) {
           var element = _this.elements[i];
+
+          // When JS is enabled, add the class to the elements
+          element.classList.add('js-enabled');
 
           _this.hideElement(element);
           _this.setTransition(element);

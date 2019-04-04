@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.7.0
+ * Accordion v2.7.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -50,6 +50,14 @@
   color: #777;
   margin: 0;
   padding: 10px;
+}
+
+.ac.js-enabled > .ac-a {
+  visibility: hidden;
+}
+
+.ac.active > .ac-a {
+  visibility: visible;
 }
 
 .ac.active > .ac-q::after {

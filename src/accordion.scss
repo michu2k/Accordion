@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.7.0
+ * Accordion v2.7.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -13,6 +13,7 @@
     background-color: #fff;
     box-sizing: border-box;
 
+    // Question class
     > .ac-q {
         font: bold 15px 'Arial', sans-serif;   
         color: #111;
@@ -34,6 +35,7 @@
         }
     }
 
+    // Answer class
     > .ac-a {
         overflow: hidden;
         transition-property: all;
@@ -47,7 +49,19 @@
         }   
     }
 
+    // Hide content when Javascript is enabled
+    &.js-enabled {
+        > .ac-a {
+            visibility: hidden;
+        }
+    }
+
+    // Active class
     &.active {
+        > .ac-a {
+            visibility: visible;
+        }
+
         > .ac-q {
             &::after {
                 content: '\2013';
