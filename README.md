@@ -3,7 +3,7 @@ Very light and simple module. With the module you can create accordion on your w
 <br> Browsers support: All modern browsers, Internet Explorer 10+
 
 ## Version
-2.7.1
+2.7.2
 
 ## Installation
 
@@ -14,8 +14,8 @@ npm install accordion-js
 
 ###### CDN
 ```
-https://unpkg.com/accordion-js@2.7.1/dist/accordion.min.css
-https://unpkg.com/accordion-js@2.7.1/dist/accordion.min.js
+https://unpkg.com/accordion-js@2.7.2/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.7.2/dist/accordion.min.js
 ```
 
 ###### Github
@@ -60,7 +60,7 @@ This is just an example of a layout. You can create your own HTML structure.
 ###### Initialize the module
 ```javascript
 <script>
-    var accordion = new Accordion('.accordion-container');  
+    new Accordion('.accordion-container');  
 </script>
 ```
 
@@ -76,19 +76,19 @@ You can initialize more than one accordion per page.
 ```javascript
 <script>
     // Default options
-    var accordion = new Accordion('.container-first');  
+    new Accordion('.container-first');  
 
     // User options
-    var accordion = new Accordion('.container-second', {
+    new Accordion('.container-second', {
         duration: 500,
         showItem: true,
-        callFunction: function(currentElement, allElements) {
+        onToggle: function(currentElement, allElements) {
             console.log(currentElement);
         }
     }); 
 
     // Define several accordions with the same options
-    var accordion = new Accordion(['.container-first', '.container-second']); 
+    new Accordion(['.container-first', '.container-second']); 
 </script>
 ```
 
@@ -105,10 +105,10 @@ You can initialize more than one accordion per page.
 | questionClass | string | 'ac-q' | Question class |
 | answerClass | string | 'ac-a' | Answer class |
 | targetClass | string | 'ac-target' | Target class [Read more below] |
-| callFunction | function | - | Function called after clicking on the element. Can take two params <br> **1st** - element that was clicked <br> **2nd** - list of all accordion elements <br> [Read more below]|
+| onToggle | function | - | Function called after clicking on the element. Can take two params <br> **1st** - element that was clicked <br> **2nd** - list of all accordion elements <br> [Read more below]|
 
 ###### Comments
 
 **targetClass** - If an element has the `targetClass` class and is inside box with `qClass` class, then when you click on it, the list will be expanded. Otherwise expanded will not take place and clicked element will take you to the top of the page.
 
-**callFunction** - Function is not working on initiated element, when `showItem` is set to `true`
+**onToggle** - Function is not working on initiated element, when `showItem` is set to `true`

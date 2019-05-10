@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.7.1
+ * Accordion v2.7.2
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -36,7 +36,7 @@
                     questionClass: 'ac-q', // question class {string}
                     answerClass: 'ac-a', // answer class {string}
                     targetClass: 'ac-target', // target class {string}
-                    callFunction: () => {} // calls when toggling item {function}
+                    onToggle: () => {} // calls when toggling an item {function}
                 };
 
                 // Break the array with the selectors
@@ -60,7 +60,6 @@
 
                 // For each element
                 for (let i = 0; i < length; i++) {
-
                     const element = this.elements[i];
 
                     // When JS is enabled, add the class to the elements
@@ -90,7 +89,6 @@
 
                 // Show accordion element when script is loaded
                 if (this.options.showItem) {
-
                     // Default value
                     let el = this.elements[0];
 
@@ -101,7 +99,7 @@
                     this.toggleElement(el, false);
                 }
 
-                this.resize();
+                this.resizeHandler();
             },
 
             /**
@@ -188,7 +186,7 @@
                 let ariaValue;
 
                 // Toggle class
-                element.classList.toggle('active');
+                element.classList.toggle('is-active');
 
                 // Open element without animation
                 if (!animation) {
@@ -215,9 +213,9 @@
                     this.updateARIA(element, ariaValue);
                 }
 
-                // Call callFunction function
+                // Call onToggle function
                 if (animation) {
-                    this.options.callFunction(element, this.elements);
+                    this.options.onToggle(element, this.elements);
                 }
             },
 
@@ -233,8 +231,8 @@
                         const element = this.elements[i];
 
                         // Remove active class
-                        if (element.classList.contains('active')) {
-                            element.classList.remove('active');
+                        if (element.classList.contains('is-active')) {
+                            element.classList.remove('is-active');
                         }
 
                         // Update ARIA
@@ -253,7 +251,7 @@
             changeHeight() {
                 let height;
                 let answer;
-                const activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
+                const activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.is-active');
 
                 for (let i = 0; i < activeElement.length; i++) {
                     answer = activeElement[i].querySelector('.' + this.options.answerClass);
@@ -271,9 +269,9 @@
             },
 
             /**
-             * Calculate the slider when changing the window size
+             * Resize handler
              */
-            resize() {
+            resizeHandler() {
                 window.addEventListener('resize', () => {
                     this.changeHeight();
                 });
@@ -310,10 +308,8 @@
          * @return {object} defaults = modified options
          */
         const extendDefaults = (defaults, properties) => {
-            if (properties != null && properties != undefined && properties != 'undefined') {
-                for (let property in properties) {
-                    defaults[property] = properties[property];
-                }
+            for (let property in properties) {
+                defaults[property] = properties[property];
             }
 
             return defaults;

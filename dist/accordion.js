@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.7.1
+ * Accordion v2.7.2
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -35,7 +35,7 @@
           questionClass: 'ac-q', // question class {string}
           answerClass: 'ac-a', // answer class {string}
           targetClass: 'ac-target', // target class {string}
-          callFunction: function callFunction() {} // calls when toggling item {function}
+          onToggle: function onToggle() {} // calls when toggling an item {function}
         };
 
         // Break the array with the selectors
@@ -103,7 +103,7 @@
           this.toggleElement(el, false);
         }
 
-        this.resize();
+        this.resizeHandler();
       },
 
       /**
@@ -190,7 +190,7 @@
         var ariaValue;
 
         // Toggle class
-        element.classList.toggle('active');
+        element.classList.toggle('is-active');
 
         // Open element without animation
         if (!animation) {
@@ -217,9 +217,9 @@
           this.updateARIA(element, ariaValue);
         }
 
-        // Call callFunction function
+        // Call onToggle function
         if (animation) {
-          this.options.callFunction(element, this.elements);
+          this.options.onToggle(element, this.elements);
         }
       },
 
@@ -235,8 +235,8 @@
             var element = this.elements[i];
 
             // Remove active class
-            if (element.classList.contains('active')) {
-              element.classList.remove('active');
+            if (element.classList.contains('is-active')) {
+              element.classList.remove('is-active');
             }
 
             // Update ARIA
@@ -255,7 +255,7 @@
       changeHeight: function changeHeight() {
         var height;
         var answer;
-        var activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.active');
+        var activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.is-active');
 
         for (var i = 0; i < activeElement.length; i++) {
           answer = activeElement[i].querySelector('.' + this.options.answerClass);
@@ -273,9 +273,9 @@
       },
 
       /**
-       * Calculate the slider when changing the window size
+       * Resize handler
        */
-      resize: function resize() {
+      resizeHandler: function resizeHandler() {
         var _this2 = this;
         window.addEventListener('resize', function() {
           _this2.changeHeight();
@@ -315,10 +315,8 @@
      * @return {object} defaults = modified options
      */
     var extendDefaults = function extendDefaults(defaults, properties) {
-      if (properties != null && properties != undefined && properties != 'undefined') {
-        for (var property in properties) {
-          defaults[property] = properties[property];
-        }
+      for (var property in properties) {
+        defaults[property] = properties[property];
       }
 
       return defaults;

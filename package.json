@@ -1,8 +1,8 @@
 {
   "name": "accordion-js",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "description": "Simple accordion created in pure Javascript",
-  "main": "dist/accordion.js",
+  "main": "dist/accordion.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michu2k/Accordion.git"
