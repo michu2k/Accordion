@@ -32,8 +32,8 @@ https://unpkg.com/accordion-js@2.7.3/dist/accordion.min.js
 ```
 
 ###### Github
-You can also download files from github and attach them manually to your project. <br>
-On production use files (JS and CSS) only from **dist/** folder
+You can also download files from Github and attach them manually to your project. <br>
+Note: On production use files (JS and CSS) only from **dist/** folder
 
 ```html
 <link rel="stylesheet" href="accordion.min.css"> 
