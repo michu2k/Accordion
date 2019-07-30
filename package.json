@@ -39,10 +39,11 @@
   "browserslist": [
     ">0.15%",
     "not dead",
-    "edge >= 12",
-    "firefox >= 50",
-    "chrome >= 50",
-    "opera >= 50",
+    "Chrome >= 50",
+    "Edge >= 12",
+    "Explorer >= 10",
+    "Firefox >= 50",
+    "Opera >= 50",
     "not op_mini all"
   ]
 }

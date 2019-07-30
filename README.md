@@ -3,64 +3,79 @@ Very light and simple module. With the module you can create accordion on your w
 <br> Browsers support: All modern browsers, Internet Explorer 10+
 
 ## Version
-2.7.2
+2.7.3
 
 ## Installation
 
 ###### npm
+Install package & import files
 ```
 npm install accordion-js
 ```
 
-###### CDN
+```javascript
+import Accordion from 'accordion-js';
+import 'accordion-js/dist/accordion.min.css';
 ```
-https://unpkg.com/accordion-js@2.7.2/dist/accordion.min.css
-https://unpkg.com/accordion-js@2.7.2/dist/accordion.min.js
+
+###### CDN
+Include files using CDN.
+
+```
+https://unpkg.com/accordion-js@2.7.3/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.7.3/dist/accordion.min.js
+```
+
+```html
+<link rel="stylesheet" href="[CDN CSS URL]"> 
+<script src="[CDN JS URL]"></script>
 ```
 
 ###### Github
-You can also download files from github.
-
-## Usage
+You can also download files from github and attach them manually to your project. <br>
 On production use files (JS and CSS) only from **dist/** folder
 
-###### Include files
 ```html
 <link rel="stylesheet" href="accordion.min.css"> 
 <script src="accordion.min.js"></script>  
 ```
 
+## Usage
+
+###### Include files
+See the section above.
+
 ###### Create HTML layout
 This is just an example of a layout. You can create your own HTML structure.
 ```html
 <div class="accordion-container">
-    <div class="ac">
-        <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
-        <div class="ac-a">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-        </div>
+  <div class="ac">
+    <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
+    <div class="ac-a">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
     </div>
+  </div>
 
-    <div class="ac">
-        <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
-        <div class="ac-a">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-        </div>
+  <div class="ac">
+    <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
+    <div class="ac-a">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
     </div>
+  </div>
 
-    <div class="ac">
-        <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
-        <div class="ac-a">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
-        </div>
+  <div class="ac">
+    <h2 class="ac-q" tabindex="0">Lorem ipsum</h2>
+    <div class="ac-a">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
     </div>
-</div>  
+  </div>
+</div>
 ```
 
 ###### Initialize the module
 ```javascript
 <script>
-    new Accordion('.accordion-container');  
+  new Accordion('.accordion-container');  
 </script>
 ```
 
@@ -75,20 +90,20 @@ new Accordion(container, options)
 You can initialize more than one accordion per page.
 ```javascript
 <script>
-    // Default options
-    new Accordion('.container-first');  
+  // Default options
+  new Accordion('.container-first');  
 
-    // User options
-    new Accordion('.container-second', {
-        duration: 500,
-        showItem: true,
-        onToggle: function(currentElement, allElements) {
-            console.log(currentElement);
-        }
-    }); 
+  // User options
+  new Accordion('.container-second', {
+    duration: 500,
+    showItem: true,
+    onToggle: function(currentElement, allElements) {
+      console.log(currentElement);
+    }
+  }); 
 
-    // Define several accordions with the same options
-    new Accordion(['.container-first', '.container-second']); 
+  // Define several accordions with the same options
+  new Accordion(['.container-first', '.container-second']); 
 </script>
 ```
 
