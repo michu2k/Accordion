@@ -35,5 +35,14 @@
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-uglify": "^3.0.2"
-  }
+  },
+  "browserslist": [
+    ">0.15%",
+    "not dead",
+    "edge >= 12",
+    "firefox >= 50",
+    "chrome >= 50",
+    "opera >= 50",
+    "not op_mini all"
+  ]
 }
