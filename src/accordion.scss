@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.7.2
+ * Accordion v2.7.3
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -8,64 +8,64 @@
  * Published under MIT License
  */
 .ac {
-    margin-top: 10px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    box-sizing: border-box;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  box-sizing: border-box;
 
-    // Question class
-    > .ac-q {
-        font: bold 15px 'Arial', sans-serif;   
-        color: #111;
-        padding: 10px 30px 10px 10px;
-        margin: 0;
-        text-decoration: none;
-        display: block;
-        cursor: pointer;
-        position: relative;
+  // Question class
+  > .ac-q {
+    font: bold 15px 'Arial', sans-serif;   
+    color: #111;
+    padding: 10px 30px 10px 10px;
+    margin: 0;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    position: relative;
 
-        &::after {
-            content: '+';
-            text-align: center;
-            width: 15px;    
-            right: 10px;
-            top: 50%;
-            transform: translate(0, -50%);
-            position: absolute;
-        }
+    &::after {
+      content: '+';
+      text-align: center;
+      width: 15px;    
+      right: 10px;
+      top: 50%;
+      transform: translate(0, -50%);
+      position: absolute;
     }
+  }
 
-    // Answer class
+  // Answer class
+  > .ac-a {
+    overflow: hidden;
+    transition-property: all;
+    transition-timing-function: ease;
+
+    p {
+      font: 14px/1.5 'Arial', sans-serif;   
+      color: #777;
+      margin: 0;
+      padding: 10px;
+    }   
+  }
+
+  // Hide content when Javascript is enabled
+  &.js-enabled {
     > .ac-a {
-        overflow: hidden;
-        transition-property: all;
-        transition-timing-function: ease;
+      visibility: hidden;
+    }
+  }
 
-        p {
-            font: 14px/1.5 'Arial', sans-serif;   
-            color: #777;
-            margin: 0;
-            padding: 10px;
-        }   
+  // Active class
+  &.is-active {
+    > .ac-a {
+      visibility: visible;
     }
 
-    // Hide content when Javascript is enabled
-    &.js-enabled {
-        > .ac-a {
-            visibility: hidden;
-        }
+    > .ac-q {
+      &::after {
+        content: '\2013';
+      }       
     }
-
-    // Active class
-    &.is-active {
-        > .ac-a {
-            visibility: visible;
-        }
-
-        > .ac-q {
-            &::after {
-                content: '\2013';
-            }       
-        }
-    }
+  }
 }

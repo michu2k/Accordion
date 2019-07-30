@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.7.2
+ * Accordion v2.7.3
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -338,5 +338,9 @@
     ac.init();
   };
 
-  window.Accordion = Accordion;
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = Accordion;
+  } else {
+    window.Accordion = Accordion;
+  }
 })(window);
