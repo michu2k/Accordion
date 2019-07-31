@@ -8,7 +8,7 @@ Very light and simple module. With the module you can create accordion on your w
 ## Installation
 
 ###### npm
-Install package & import files
+Install the package & import files
 ```
 npm install accordion-js
 ```
@@ -33,7 +33,7 @@ https://unpkg.com/accordion-js@2.7.3/dist/accordion.min.js
 
 ###### Github
 You can also download files from Github and attach them manually to your project. <br>
-Note: On production use files (JS and CSS) only from **dist/** folder
+Note: On production use files (JS and CSS) only from **dist/** folder.
 
 ```html
 <link rel="stylesheet" href="accordion.min.css"> 
@@ -126,4 +126,4 @@ You can initialize more than one accordion per page.
 
 **targetClass** - If an element has the `targetClass` class and is inside box with `qClass` class, then when you click on it, the list will be expanded. Otherwise expanded will not take place and clicked element will take you to the top of the page.
 
-**onToggle** - Function is not working on initiated element, when `showItem` is set to `true`
+**onToggle** - Function is not working on initiated element, when `showItem` is set to `true`.
