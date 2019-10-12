@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.7.3
+ * Accordion v2.8.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -18,12 +18,13 @@
    * @param {object} userOptions = options defined by user
    */
   var Accordion = function Accordion(selector, userOptions) {
+    var _this = this;
+
     var ac = {
       /**
        * Init accordion
        */
       init: function init() {
-        var _this = this;
         // Defaults
         var defaults = {
           duration: 600, // animation duration in ms {number}
@@ -52,67 +53,44 @@
         this.options = extendDefaults(defaults, userOptions);
         this.container = document.querySelector(selector);
         this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
-        var length = this.elements.length;
+        var _this$options = this.options,
+          aria = _this$options.aria,
+          showItem = _this$options.showItem,
+          itemNumber = _this$options.itemNumber;
 
         // Set ARIA
-        if (this.options.aria) {
+        if (aria) {
           this.container.setAttribute('role', 'tablist');
         }
 
         // For each element
-        var _loop = function _loop(i) {
-          var element = _this.elements[i];
+        for (var i = 0; i < this.elements.length; i++) {
+          var element = this.elements[i];
 
           // When JS is enabled, add the class to the elements
           element.classList.add('js-enabled');
 
-          _this.hideElement(element);
-          _this.setTransition(element);
-          _this.generateID(element);
+          this.hideElement(element);
+          this.setTransition(element);
+          this.generateID(element);
 
           // Set ARIA
-          if (_this.options.aria) {
-            _this.setARIA(element);
+          if (aria) {
+            this.setARIA(element);
           }
-
-          // On press Enter
-          element.addEventListener('keydown', function(event) {
-            if (event.keyCode == 13) {
-              _this.callEvent(i, event);
-            }
-          });
-
-          // On click
-          element.addEventListener('click', function(event) {
-            _this.callEvent(i, event);
-          });
-        };
-        for (var i = 0; i < length; i++) {
-          _loop(i);
         }
 
         // Show accordion element when script is loaded
-        if (this.options.showItem) {
-          // Default value
-          var el = this.elements[0];
-
-          if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < length) {
-            el = this.elements[this.options.itemNumber];
+        if (showItem) {
+          var el = this.elements[0]; // Default value
+          if (typeof itemNumber === 'number' && itemNumber < this.elements.length) {
+            el = this.elements[itemNumber];
           }
 
           this.toggleElement(el, false);
         }
 
-        this.resizeHandler();
-      },
-
-      /**
-       * Hide element
-       * @param {object} element = list item
-       */
-      hideElement: function hideElement(element) {
-        var answer = element.querySelector('.' + this.options.answerClass);
-        answer.style.height = 0;
+        _this.attachEvents();
       },
 
       /**
@@ -120,10 +98,13 @@
        * @param {object} element = current element
        */
       setTransition: function setTransition(element) {
-        var el = element.querySelector('.' + this.options.answerClass);
+        var _this$options2 = this.options,
+          duration = _this$options2.duration,
+          answerClass = _this$options2.answerClass;
+        var el = element.querySelector('.' + answerClass);
         var transition = isWebkit('transition');
 
-        el.style[transition] = this.options.duration + 'ms';
+        el.style[transition] = duration + 'ms';
       },
 
       /**
@@ -140,8 +121,11 @@
        * @param {object} element = list item
        */
       setARIA: function setARIA(element) {
-        var question = element.querySelector('.' + this.options.questionClass);
-        var answer = element.querySelector('.' + this.options.answerClass);
+        var _this$options3 = this.options,
+          questionClass = _this$options3.questionClass,
+          answerClass = _this$options3.answerClass;
+        var question = element.querySelector('.' + questionClass);
+        var answer = element.querySelector('.' + answerClass);
 
         question.setAttribute('role', 'tab');
         question.setAttribute('aria-expanded', 'false');
@@ -154,28 +138,48 @@
        * @param {boolean} value = value of the attribute
        */
       updateARIA: function updateARIA(element, value) {
-        var question = element.querySelector('.' + this.options.questionClass);
+        var questionClass = this.options.questionClass;
+        var question = element.querySelector('.' + questionClass);
         question.setAttribute('aria-expanded', value);
       },
 
       /**
-       * Call event
-       * @param {number} index = item index
-       * @param {object} event = event type
+       * Show specific accordion element
+       * @param {object} e = event
        */
-      callEvent: function callEvent(index, event) {
-        var target = event.target.className;
+      callSpecificElement: function callSpecificElement(e) {
+        var target = e.target;
+        var _this$options4 = this.options,
+          questionClass = _this$options4.questionClass,
+          targetClass = _this$options4.targetClass,
+          closeOthers = _this$options4.closeOthers;
 
-        // Check if target has one of the classes
-        if (target.match(this.options.questionClass) || target.match(this.options.targetClass)) {
-          event.preventDefault();
+        for (var i = 0; i < this.elements.length; i++) {
+          if (this.elements[i].contains(target)) {
+            // Check if target has one of the classes
+            if (target.className.match(questionClass) || target.className.match(targetClass)) {
+              e.preventDefault();
 
-          if (this.options.closeOthers) {
-            this.closeAllElements(index);
+              if (closeOthers) {
+                this.closeAllElements(i);
+              }
+
+              this.toggleElement(this.elements[i]);
+            }
+
+            break;
           }
-
-          this.toggleElement(this.elements[index]);
         }
+      },
+
+      /**
+       * Hide element
+       * @param {object} element = list item
+       */
+      hideElement: function hideElement(element) {
+        var answerClass = this.options.answerClass;
+        var answer = element.querySelector('.' + answerClass);
+        answer.style.height = 0;
       },
 
       /**
@@ -185,7 +189,11 @@
        */
       toggleElement: function toggleElement(element) {
         var animation = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        var answer = element.querySelector('.' + this.options.answerClass);
+        var _this$options5 = this.options,
+          answerClass = _this$options5.answerClass,
+          aria = _this$options5.aria,
+          onToggle = _this$options5.onToggle;
+        var answer = element.querySelector('.' + answerClass);
         var height = answer.scrollHeight;
         var ariaValue;
 
@@ -213,13 +221,13 @@
         }
 
         // Update ARIA
-        if (this.options.aria) {
+        if (aria) {
           this.updateARIA(element, ariaValue);
         }
 
         // Call onToggle function
         if (animation) {
-          this.options.onToggle(element, this.elements);
+          onToggle(element, this.elements);
         }
       },
 
@@ -228,6 +236,7 @@
        * @param {number} current = current element
        */
       closeAllElements: function closeAllElements(current) {
+        var aria = this.options.aria;
         var length = this.elements.length;
 
         for (var i = 0; i < length; i++) {
@@ -240,7 +249,7 @@
             }
 
             // Update ARIA
-            if (this.options.aria) {
+            if (aria) {
               this.updateARIA(element, false);
             }
 
@@ -250,15 +259,18 @@
       },
 
       /**
-       * Change element height, when window is resized and when element is active
+       * Resize handler
        */
-      changeHeight: function changeHeight() {
-        var height;
-        var answer;
-        var activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.is-active');
+      resizeHandler: function resizeHandler() {
+        var height, answer;
+        var _this$options6 = this.options,
+          elementClass = _this$options6.elementClass,
+          answerClass = _this$options6.answerClass;
+        var activeElement = this.container.querySelectorAll('.' + elementClass + '.is-active');
 
+        // Change element height, when window is resized and when element is active
         for (var i = 0; i < activeElement.length; i++) {
-          answer = activeElement[i].querySelector('.' + this.options.answerClass);
+          answer = activeElement[i].querySelector('.' + answerClass);
 
           // Set to auto and get new height
           requestAnimationFrame(function() {
@@ -273,14 +285,49 @@
       },
 
       /**
-       * Resize handler
+       * Click handler
+       * @param {object} e = event
        */
-      resizeHandler: function resizeHandler() {
-        var _this2 = this;
-        window.addEventListener('resize', function() {
-          _this2.changeHeight();
-        });
+      clickHandler: function clickHandler(e) {
+        this.callSpecificElement(e);
+      },
+
+      /**
+       * Keydown handler
+       * @param {object} e = event
+       */
+      keydownHandler: function keydownHandler(e) {
+        var ENTER = 13;
+        if (e.keyCode === ENTER) {
+          this.callSpecificElement(e);
+        }
       }
+    };
+
+    /**
+     * Attach events
+     */
+    this.attachEvents = function() {
+      var _this = ac;
+
+      _this.clickHandler = _this.clickHandler.bind(_this);
+      _this.keydownHandler = _this.keydownHandler.bind(_this);
+      _this.resizeHandler = _this.resizeHandler.bind(_this);
+
+      _this.container.addEventListener('click', _this.clickHandler);
+      _this.container.addEventListener('keydown', _this.keydownHandler);
+      window.addEventListener('resize', _this.resizeHandler);
+    };
+
+    /**
+     * Detach events
+     */
+    this.detachEvents = function() {
+      var _this = ac;
+
+      _this.container.removeEventListener('click', _this.clickHandler);
+      _this.container.removeEventListener('keydown', _this.keydownHandler);
+      window.removeEventListener('resize', _this.resizeHandler);
     };
 
     /**
