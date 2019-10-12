@@ -3,7 +3,7 @@ Very light and simple module. With the module you can create accordion on your w
 <br> Browsers support: All modern browsers, Internet Explorer 10+
 
 ## Version
-2.7.3
+2.8.0
 
 ## Installation
 
@@ -22,8 +22,8 @@ import 'accordion-js/dist/accordion.min.css';
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@2.7.3/dist/accordion.min.css
-https://unpkg.com/accordion-js@2.7.3/dist/accordion.min.js
+https://unpkg.com/accordion-js@2.8.0/dist/accordion.min.css
+https://unpkg.com/accordion-js@2.8.0/dist/accordion.min.js
 ```
 
 ```html
@@ -104,6 +104,10 @@ You can initialize more than one accordion per page.
 
   // Define several accordions with the same options
   new Accordion(['.container-first', '.container-second']); 
+
+  // Detach events
+  var accordion = new Accordion('.container-first');
+  accordion.detachEvents();
 </script>
 ```
 
@@ -121,6 +125,8 @@ You can initialize more than one accordion per page.
 | answerClass | string | 'ac-a' | Answer class |
 | targetClass | string | 'ac-target' | Target class [Read more below] |
 | onToggle | function | - | Function called after clicking on the element. Can take two params <br> **1st** - element that was clicked <br> **2nd** - list of all accordion elements <br> [Read more below]|
+| .attachEvents() | function | - | Attach events |
+| .detachEvents() | function | - | Detach events |
 
 ###### Comments
 

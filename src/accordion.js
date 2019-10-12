@@ -1,5 +1,5 @@
 /*!
- * Accordion v2.7.3
+ * Accordion v2.8.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -19,6 +19,7 @@
    * @param {object} userOptions = options defined by user
    */
   const Accordion = function(selector, userOptions) {
+    const _this = this;
         
     const ac = {
       /**
@@ -51,15 +52,15 @@
         this.options = extendDefaults(defaults, userOptions);
         this.container = document.querySelector(selector);
         this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
-        const length = this.elements.length;
+        const { aria, showItem, itemNumber } = this.options;
 
         // Set ARIA
-        if (this.options.aria) {
+        if (aria) {
           this.container.setAttribute('role', 'tablist');
         }
 
         // For each element
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
           const element = this.elements[i];
 
           // When JS is enabled, add the class to the elements
@@ -70,45 +71,22 @@
           this.generateID(element);
 
           // Set ARIA
-          if (this.options.aria) {
+          if (aria) {
             this.setARIA(element);
           }
-
-          // On press Enter
-          element.addEventListener('keydown', event => {
-            if (event.keyCode == 13) {
-              this.callEvent(i, event);
-            }
-          });  
-
-          // On click
-          element.addEventListener('click', event => {
-            this.callEvent(i, event);
-          });
         }
 
         // Show accordion element when script is loaded
-        if (this.options.showItem) {
-          // Default value
-          let el = this.elements[0];
-
-          if (typeof this.options.itemNumber === 'number' && this.options.itemNumber < length) {
-            el = this.elements[this.options.itemNumber];
+        if (showItem) {
+          let el = this.elements[0]; // Default value
+          if (typeof itemNumber === 'number' && itemNumber < this.elements.length) {
+            el = this.elements[itemNumber];
           }
 
           this.toggleElement(el, false);
         }
 
-        this.resizeHandler();
-      },
-
-      /**
-       * Hide element
-       * @param {object} element = list item
-       */
-      hideElement(element) {
-        const answer = element.querySelector('.' + this.options.answerClass);
-        answer.style.height = 0; 
+        _this.attachEvents();
       },
 
       /**
@@ -116,10 +94,11 @@
        * @param {object} element = current element
        */
       setTransition(element) {
-        const el = element.querySelector('.' + this.options.answerClass);
+        const { duration, answerClass } = this.options;
+        const el = element.querySelector('.' + answerClass);
         const transition = isWebkit('transition');
 
-        el.style[transition] = this.options.duration + 'ms';
+        el.style[transition] = duration + 'ms';
       },
 
       /**
@@ -136,8 +115,9 @@
        * @param {object} element = list item
        */
       setARIA(element) {
-        const question = element.querySelector('.' + this.options.questionClass);
-        const answer = element.querySelector('.' + this.options.answerClass);
+        const { questionClass, answerClass } = this.options;
+        const question = element.querySelector('.' + questionClass);
+        const answer = element.querySelector('.' + answerClass);
 
         question.setAttribute('role', 'tab');
         question.setAttribute('aria-expanded', 'false');
@@ -150,29 +130,46 @@
        * @param {boolean} value = value of the attribute
        */
       updateARIA(element, value) {
-        const question = element.querySelector('.' + this.options.questionClass);
+        const { questionClass } = this.options;
+        const question = element.querySelector('.' + questionClass);
         question.setAttribute('aria-expanded', value);       
       },
 
       /**
-       * Call event
-       * @param {number} index = item index
-       * @param {object} event = event type
+       * Show specific accordion element
+       * @param {object} e = event
        */
-      callEvent(index, event) {
-        const target = event.target.className;
+      callSpecificElement(e) {
+        const target = e.target;
+        const { questionClass, targetClass, closeOthers } = this.options;
 
-        // Check if target has one of the classes
-        if (target.match(this.options.questionClass) || target.match(this.options.targetClass)) {
+        for (let i = 0; i < this.elements.length; i++) {
+          if (this.elements[i].contains(target)) {
 
-          event.preventDefault();
+            // Check if target has one of the classes
+            if (target.className.match(questionClass) || target.className.match(targetClass)) {
+              e.preventDefault();
 
-          if (this.options.closeOthers) {
-            this.closeAllElements(index);
-          }
+              if (closeOthers) {
+                this.closeAllElements(i);
+              }
 
-          this.toggleElement(this.elements[index]);
-        }  
+              this.toggleElement(this.elements[i]);
+            } 
+
+            break;
+          } 
+        }
+      },
+
+      /**
+       * Hide element
+       * @param {object} element = list item
+       */
+      hideElement(element) {
+        const { answerClass } = this.options;
+        const answer = element.querySelector('.' + answerClass);
+        answer.style.height = 0; 
       },
 
       /** 
@@ -181,7 +178,8 @@
        * @param {boolean} animation = turn on animation
        */
       toggleElement(element, animation = true) {
-        const answer = element.querySelector('.' + this.options.answerClass);
+        const { answerClass, aria, onToggle } = this.options;
+        const answer = element.querySelector('.' + answerClass);
         const height = answer.scrollHeight;
         let ariaValue;
 
@@ -209,13 +207,13 @@
         }
 
         // Update ARIA
-        if (this.options.aria) {
+        if (aria) {
           this.updateARIA(element, ariaValue);
         }
 
         // Call onToggle function
         if (animation) {
-          this.options.onToggle(element, this.elements);
+          onToggle(element, this.elements);
         }
       },
 
@@ -224,6 +222,7 @@
        * @param {number} current = current element
        */
       closeAllElements(current) {
+        const { aria } = this.options;
         const length = this.elements.length;
 
         for (let i = 0; i < length; i++) {
@@ -236,7 +235,7 @@
             }
 
             // Update ARIA
-            if (this.options.aria) {
+            if (aria) {
               this.updateARIA(element, false);
             }
 
@@ -246,15 +245,16 @@
       },
 
       /**
-       * Change element height, when window is resized and when element is active
+       * Resize handler
        */
-      changeHeight() {
-        let height;
-        let answer;
-        const activeElement = this.container.querySelectorAll('.' + this.options.elementClass + '.is-active');
+      resizeHandler() {
+        let height, answer;
+        const { elementClass, answerClass } = this.options;
+        const activeElement = this.container.querySelectorAll('.' + elementClass + '.is-active');
 
+        // Change element height, when window is resized and when element is active
         for (let i = 0; i < activeElement.length; i++) {
-          answer = activeElement[i].querySelector('.' + this.options.answerClass);
+          answer = activeElement[i].querySelector('.' + answerClass);
 
           // Set to auto and get new height
           requestAnimationFrame(() => {
@@ -265,17 +265,53 @@
               answer.style.height = height + 'px';
             });
           });
-        }     
+        }   
       },
 
       /**
-       * Resize handler
+       * Click handler
+       * @param {object} e = event
        */
-      resizeHandler() {
-        window.addEventListener('resize', () => {
-          this.changeHeight();
-        });
+      clickHandler(e) {
+        this.callSpecificElement(e);
+      },
+
+      /**
+       * Keydown handler
+       * @param {object} e = event
+       */
+      keydownHandler(e) {
+        const ENTER = 13;
+        if (e.keyCode === ENTER) {
+          this.callSpecificElement(e);
+        }
       }
+    };
+
+    /**
+     * Attach events
+     */
+    this.attachEvents = () => {
+      const _this = ac;
+
+      _this.clickHandler = _this.clickHandler.bind(_this);
+      _this.keydownHandler = _this.keydownHandler.bind(_this);
+      _this.resizeHandler = _this.resizeHandler.bind(_this);
+
+      _this.container.addEventListener('click', _this.clickHandler);
+      _this.container.addEventListener('keydown', _this.keydownHandler);
+      window.addEventListener('resize', _this.resizeHandler);
+    };
+
+    /**
+     * Detach events
+     */
+    this.detachEvents = () => {
+      const _this = ac;
+
+      _this.container.removeEventListener('click', _this.clickHandler);
+      _this.container.removeEventListener('keydown', _this.keydownHandler);
+      window.removeEventListener('resize', _this.resizeHandler);
     };
 
     /**
