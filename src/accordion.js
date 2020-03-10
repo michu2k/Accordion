@@ -15,18 +15,18 @@
 
   /**
    * Core
-   * @param {string} selector = container in which the script will be initialized
+   * @param {string|HTMLElement} selectorOrElement = container in which the script will be initialized
    * @param {object} userOptions = options defined by user
    */
-  const Accordion = function(selector, userOptions) {
+  const Accordion = function(selectorOrElement, userOptions) {
     const _this = this;
-        
+
     const ac = {
       /**
        * Init accordion
        */
       init() {
-        // Defaults 
+        // Defaults
         const defaults = {
           duration: 600, // animation duration in ms {number}
           itemNumber: 0, // item number which will be shown {number}
@@ -41,16 +41,18 @@
         };
 
         // Break the array with the selectors
-        if (Array.isArray(selector)) {
-          if (selector.length) {
-            selector.map(single => new Accordion(single, userOptions));
+        if (Array.isArray(selectorOrElement)) {
+          if (selectorOrElement.length) {
+            selectorOrElement.map(single => new Accordion(single, userOptions));
           }
 
           return false;
         }
 
         this.options = extendDefaults(defaults, userOptions);
-        this.container = document.querySelector(selector);
+        this.container = typeof selectorOrElement === 'string'
+          ? document.querySelector(selectorOrElement)
+          : selectorOrElement;
         this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
         const { aria, showItem, itemNumber } = this.options;
 
@@ -90,7 +92,7 @@
       },
 
       /**
-       * Set transition 
+       * Set transition
        * @param {object} element = current element
        */
       setTransition(element) {
@@ -121,7 +123,7 @@
 
         question.setAttribute('role', 'tab');
         question.setAttribute('aria-expanded', 'false');
-        answer.setAttribute('role', 'tabpanel'); 
+        answer.setAttribute('role', 'tabpanel');
       },
 
       /**
@@ -132,7 +134,7 @@
       updateARIA(element, value) {
         const { questionClass } = this.options;
         const question = element.querySelector('.' + questionClass);
-        question.setAttribute('aria-expanded', value);       
+        question.setAttribute('aria-expanded', value);
       },
 
       /**
@@ -155,10 +157,10 @@
               }
 
               this.toggleElement(this.elements[i]);
-            } 
+            }
 
             break;
-          } 
+          }
         }
       },
 
@@ -169,10 +171,10 @@
       hideElement(element) {
         const { answerClass } = this.options;
         const answer = element.querySelector('.' + answerClass);
-        answer.style.height = 0; 
+        answer.style.height = 0;
       },
 
-      /** 
+      /**
        * Toggle current element
        * @param {object} element = current element
        * @param {boolean} animation = turn on animation
@@ -241,7 +243,7 @@
 
             this.hideElement(element);
           }
-        }   
+        }
       },
 
       /**
@@ -265,7 +267,7 @@
               answer.style.height = height + 'px';
             });
           });
-        }   
+        }
       },
 
       /**
@@ -337,7 +339,7 @@
      */
     const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
 
-    /** 
+    /**
      * Extend defaults
      * @param {object} defaults = defaults options defined in script
      * @param {object} properties = options defined by user
