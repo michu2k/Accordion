@@ -7,6 +7,7 @@ const browserSync  = require('browser-sync').create();
 const rename       = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 const prettier     = require('gulp-prettier');
+const eslint       = require('gulp-eslint');
 
 // Config
 const config = {
@@ -14,7 +15,7 @@ const config = {
   distCSS: 'dist',
   srcJS: 'src/**/*.js',
   distJS: 'dist'
-}
+};
 
 // Server
 function server() {
@@ -35,7 +36,7 @@ function reload(done) {
 function compileSass() {
   return gulp.src(config.srcCSS)
     .pipe(sass({outputStyle: 'expanded'})
-    .on('error', sass.logError))
+      .on('error', sass.logError))
     .pipe(autoprefixer({cascade: false}))
     .pipe(gulp.dest(config.distCSS))
     .pipe(browserSync.stream())
@@ -53,14 +54,14 @@ function compileJs() {
       retainLines: true
     }))
     .on('error', function(error) {
-      console.log(error.toString())
-      this.emit('end')
+      console.log(error.toString());
+      this.emit('end');
     })
     .pipe(prettier({
       printWidth: 120,
       singleQuote: true
     }))
-    .pipe(gulp.dest(config.distJS)) 
+    .pipe(gulp.dest(config.distJS))
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest(config.distJS))
@@ -69,12 +70,12 @@ function compileJs() {
 
 // Watch Sass files
 function watchSass() {
-  gulp.watch(config.srcCSS, gulp.series(compileSass, reload));   
+  gulp.watch(config.srcCSS, gulp.series(compileSass, reload));
 }
 
 // Watch Javascript files
 function watchJs() {
-  gulp.watch(config.srcJS, gulp.series(compileJs, reload));   
+  gulp.watch(config.srcJS, gulp.series(compileJs, reload));
 }
 
 // Watch HTML files
@@ -82,5 +83,17 @@ function watchHtml() {
   gulp.watch('*.html', gulp.series(reload));
 }
 
+// Fix all errors
+function lintFix() {
+  return gulp.src(['**/*.js', '!node_modules/**'])
+    .pipe(eslint({fix: true}))
+    .pipe(gulp.dest(function(file) {
+      return file.base;
+    }));
+}
+
 // Main task
 gulp.task('default', gulp.parallel(server, watchSass, watchJs, watchHtml));
+
+// Run ESLint
+gulp.task('lint', gulp.parallel(lintFix));
