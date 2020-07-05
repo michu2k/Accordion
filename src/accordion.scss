@@ -1,33 +1,38 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.8.0
+ * Accordion v2.9.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2019 Michał Strumpf
+ * Copyright 2017-2020 Michał Strumpf
  * Published under MIT License
  */
+
+$color-white: #fff;
+$color-light-grey: #eee;
+$color-black: #111;
+
 .ac {
   margin-top: 10px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+  border: 1px solid $color-light-grey;
+  background-color: $color-white;
   box-sizing: border-box;
 
   // Question class
   > .ac-q {
-    font: bold 15px 'Arial', sans-serif;   
-    color: #111;
+    font: bold 16px 'Arial', sans-serif;
+    color: $color-black;
     padding: 10px 30px 10px 10px;
-    margin: 0;
-    text-decoration: none;
     display: block;
     cursor: pointer;
     position: relative;
+    text-decoration: none;
+    margin: 0;
 
     &::after {
       content: '+';
       text-align: center;
-      width: 15px;    
+      width: 15px;
       right: 10px;
       top: 50%;
       transform: translate(0, -50%);
@@ -42,11 +47,11 @@
     transition-timing-function: ease;
 
     p {
-      font: 14px/1.5 'Arial', sans-serif;   
-      color: #777;
-      margin: 0;
+      font: 15px/1.5 'Arial', sans-serif;
+      color: $color-black;
       padding: 10px;
-    }   
+      margin: 0;
+    }
   }
 
   // Hide content when Javascript is enabled
@@ -65,7 +70,7 @@
     > .ac-q {
       &::after {
         content: '\2013';
-      }       
+      }
     }
   }
 }

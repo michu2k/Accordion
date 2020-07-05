@@ -1,13 +1,13 @@
-const gulp         = require('gulp');
-const sass         = require('gulp-sass');
-const babel        = require('gulp-babel');
-const cleanCSS     = require('gulp-clean-css');
-const uglify       = require('gulp-uglify');
-const browserSync  = require('browser-sync').create();
-const rename       = require('gulp-rename');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const babel = require('gulp-babel');
+const cleanCSS = require('gulp-clean-css');
+const uglify = require('gulp-uglify');
+const browserSync = require('browser-sync').create();
+const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
-const prettier     = require('gulp-prettier');
-const eslint       = require('gulp-eslint');
+const prettier = require('gulp-prettier');
+const eslint = require('gulp-eslint');
 
 // Config
 const config = {

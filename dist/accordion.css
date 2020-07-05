@@ -1,28 +1,28 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.8.0
+ * Accordion v2.9.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2019 Michał Strumpf
+ * Copyright 2017-2020 Michał Strumpf
  * Published under MIT License
  */
 .ac {
   margin-top: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #eee;
   background-color: #fff;
   box-sizing: border-box;
 }
 
 .ac > .ac-q {
-  font: bold 15px 'Arial', sans-serif;
+  font: bold 16px 'Arial', sans-serif;
   color: #111;
   padding: 10px 30px 10px 10px;
-  margin: 0;
-  text-decoration: none;
   display: block;
   cursor: pointer;
   position: relative;
+  text-decoration: none;
+  margin: 0;
 }
 
 .ac > .ac-q::after {
@@ -45,10 +45,10 @@
 }
 
 .ac > .ac-a p {
-  font: 14px/1.5 'Arial', sans-serif;
-  color: #777;
-  margin: 0;
+  font: 15px/1.5 'Arial', sans-serif;
+  color: #111;
   padding: 10px;
+  margin: 0;
 }
 
 .ac.js-enabled > .ac-a {
