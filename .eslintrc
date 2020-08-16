@@ -10,7 +10,8 @@
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "single", { "allowTemplateLiterals": true }],
-    "indent": ["error", 2],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "object-curly-spacing": ["error", "always"],
     "no-console": "off",
     "no-unused-vars": "off"
   },
