@@ -1,10 +1,8 @@
-@charset "UTF-8";
-/*!
+@charset "UTF-8";/*!
  * Accordion v2.9.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
  * Copyright 2017-2020 Michał Strumpf
  * Published under MIT License
- */
-.ac{margin-top:10px;border:1px solid #eee;background-color:#fff;box-sizing:border-box}.ac>.ac-q{font:bold 16px Arial,sans-serif;color:#111;padding:10px 30px 10px 10px;display:block;cursor:pointer;position:relative;text-decoration:none;margin:0}.ac>.ac-q::after{content:'+';text-align:center;width:15px;right:10px;top:50%;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);position:absolute}.ac>.ac-a{overflow:hidden;-webkit-transition-property:all;transition-property:all;-webkit-transition-timing-function:ease;transition-timing-function:ease}.ac>.ac-a p{font:15px/1.5 Arial,sans-serif;color:#111;padding:10px;margin:0}.ac.js-enabled>.ac-a{visibility:hidden}.ac.is-active>.ac-a{visibility:visible}.ac.is-active>.ac-q::after{content:'\2013'}
+ */.ac{margin-top:10px;border:1px solid #eee;background-color:#fff;box-sizing:border-box}.ac .ac-header{margin:0;padding:0}.ac .ac-trigger{font:bold 16px Arial,sans-serif;color:#111;text-align:left;width:100%;padding:10px 30px 10px 10px;display:block;cursor:pointer;position:relative;text-decoration:none;background-color:transparent;-webkit-transition:color .25s ease;transition:color .25s ease;margin:0;border:0}.ac .ac-trigger::after{content:'+';text-align:center;width:15px;right:10px;top:50%;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);position:absolute}.ac .ac-trigger:focus{color:#8a8a8a}.ac .ac-panel{overflow:hidden;-webkit-transition-property:height,visibility;transition-property:height,visibility;-webkit-transition-timing-function:ease;transition-timing-function:ease}.ac .ac-panel .ac-text{font:15px/1.5 Arial,sans-serif;color:#111;padding:10px;margin:0}.ac.js-enabled .ac-panel{visibility:hidden}.ac.is-active .ac-panel{visibility:visible}.ac.is-active .ac-trigger::after{content:'\2013'}

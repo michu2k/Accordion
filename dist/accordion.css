@@ -14,18 +14,29 @@
   box-sizing: border-box;
 }
 
-.ac > .ac-q {
+.ac .ac-header {
+  margin: 0;
+  padding: 0;
+}
+
+.ac .ac-trigger {
   font: bold 16px 'Arial', sans-serif;
   color: #111;
+  text-align: left;
+  width: 100%;
   padding: 10px 30px 10px 10px;
   display: block;
   cursor: pointer;
   position: relative;
   text-decoration: none;
+  background-color: transparent;
+  -webkit-transition: color .25s ease;
+  transition: color .25s ease;
   margin: 0;
+  border: 0;
 }
 
-.ac > .ac-q::after {
+.ac .ac-trigger::after {
   content: '+';
   text-align: center;
   width: 15px;
@@ -36,29 +47,33 @@
   position: absolute;
 }
 
-.ac > .ac-a {
+.ac .ac-trigger:focus {
+  color: #8a8a8a;
+}
+
+.ac .ac-panel {
   overflow: hidden;
-  -webkit-transition-property: all;
-  transition-property: all;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
   -webkit-transition-timing-function: ease;
   transition-timing-function: ease;
 }
 
-.ac > .ac-a p {
+.ac .ac-panel .ac-text {
   font: 15px/1.5 'Arial', sans-serif;
   color: #111;
   padding: 10px;
   margin: 0;
 }
 
-.ac.js-enabled > .ac-a {
+.ac.js-enabled .ac-panel {
   visibility: hidden;
 }
 
-.ac.is-active > .ac-a {
+.ac.is-active .ac-panel {
   visibility: visible;
 }
 
-.ac.is-active > .ac-q::after {
+.ac.is-active .ac-trigger::after {
   content: '\2013';
 }

@@ -10,6 +10,7 @@
 
 $color-white: #fff;
 $color-light-grey: #eee;
+$color-grey: #8a8a8a;
 $color-black: #111;
 
 .ac {
@@ -18,16 +19,27 @@ $color-black: #111;
   background-color: $color-white;
   box-sizing: border-box;
 
-  // Question class
-  > .ac-q {
+  // Header class
+  .ac-header {
+    margin: 0;
+    padding: 0;
+  }
+
+  // Trigger class
+  .ac-trigger {
     font: bold 16px 'Arial', sans-serif;
     color: $color-black;
+    text-align: left;
+    width: 100%;
     padding: 10px 30px 10px 10px;
     display: block;
     cursor: pointer;
     position: relative;
     text-decoration: none;
+    background-color: transparent;
+    transition: color .25s ease;
     margin: 0;
+    border: 0;
 
     &::after {
       content: '+';
@@ -38,15 +50,19 @@ $color-black: #111;
       transform: translate(0, -50%);
       position: absolute;
     }
+
+    &:focus {
+      color: $color-grey;
+    }
   }
 
-  // Answer class
-  > .ac-a {
+  // Panel class
+  .ac-panel {
     overflow: hidden;
-    transition-property: all;
+    transition-property: height, visibility;
     transition-timing-function: ease;
 
-    p {
+    .ac-text {
       font: 15px/1.5 'Arial', sans-serif;
       color: $color-black;
       padding: 10px;
@@ -56,18 +72,18 @@ $color-black: #111;
 
   // Hide content when Javascript is enabled
   &.js-enabled {
-    > .ac-a {
+    .ac-panel {
       visibility: hidden;
     }
   }
 
   // Active class
   &.is-active {
-    > .ac-a {
+    .ac-panel {
       visibility: visible;
     }
 
-    > .ac-q {
+    .ac-trigger {
       &::after {
         content: '\2013';
       }
