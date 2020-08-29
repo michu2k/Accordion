@@ -37,8 +37,8 @@
       init() {
         const defaults = {
           duration: 600, // animation duration in ms {number}
-          aria: true, // add ARIA elements to the HTML structure {boolean}
-          collapse: true, // TODO:
+          ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
+          collapse: true, // allow collapse expanded panel
           showMultiple: false, // show multiple elements at the same time {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
@@ -127,16 +127,16 @@
        * @param {object} element = accordion item
        */
       setARIA(element) {
-        const { aria, triggerClass, panelClass } = this.options;
-        if (!aria) return;
+        const { ariaEnabled, triggerClass, panelClass } = this.options;
+        if (!ariaEnabled) return;
 
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
         trigger.setAttribute('role', 'button');
         trigger.setAttribute('aria-controls', `ac-panel-${uniqueId}`);
-        trigger.setAttribute('aria-disabled', 'false');
-        trigger.setAttribute('aria-expanded', 'false');
+        trigger.setAttribute('aria-disabled', false);
+        trigger.setAttribute('aria-expanded', false);
 
         panel.setAttribute('role', 'region');
         panel.setAttribute('aria-labelledby', `ac-trigger-${uniqueId}`);
@@ -145,14 +145,17 @@
       /**
        * Update ARIA
        * @param {object} element = accordion item
-       * @param {boolean} value = value of the attribute
+       * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA(element, value) {
-        const { aria, triggerClass } = this.options;
-        if (!aria) return;
+      updateARIA(element, ariaExpanded) {
+        const { ariaEnabled, collapse, triggerClass } = this.options;
+        if (!ariaEnabled) return;
 
         const trigger = element.querySelector(`.${triggerClass}`);
-        trigger.setAttribute('aria-expanded', value);
+        trigger.setAttribute('aria-expanded', ariaExpanded);
+
+        if (collapse) return;
+        trigger.setAttribute('aria-disabled', true);
       },
 
       /**
@@ -264,8 +267,10 @@
        * @param {object} element = accordion item
        */
       toggleElement(element) {
-        const { activeClass } = this.options;
+        const { activeClass, collapse } = this.options;
         const isActive = element.classList.contains(activeClass);
+
+        if (isActive && !collapse) return;
         return isActive ? this.hideElement(element) : this.showElement(element);
       },
 
