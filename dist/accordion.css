@@ -1,10 +1,10 @@
 @charset "UTF-8";
 /*!
- * Accordion v2.9.0
+ * Accordion v3.0.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2020 Michał Strumpf
+ * Copyright (c) Michał Strumpf
  * Published under MIT License
  */
 .ac {
@@ -27,11 +27,11 @@
   padding: 10px 30px 10px 10px;
   display: block;
   cursor: pointer;
-  position: relative;
-  text-decoration: none;
   background-color: transparent;
   -webkit-transition: color .25s ease;
   transition: color .25s ease;
+  position: relative;
+  text-decoration: none;
   margin: 0;
   border: 0;
 }
@@ -40,11 +40,11 @@
   content: '+';
   text-align: center;
   width: 15px;
-  right: 10px;
-  top: 50%;
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   position: absolute;
+  right: 10px;
+  top: 50%;
 }
 
 .ac .ac-trigger:focus {

@@ -3,7 +3,7 @@
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2020 Michał Strumpf
+ * Copyright (c) Michał Strumpf
  * Published under MIT License
  */
 
