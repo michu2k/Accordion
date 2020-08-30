@@ -12,6 +12,7 @@
     "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "object-curly-spacing": ["error", "always"],
+    "arrow-parens": ["error", "always"],
     "no-console": "off",
     "no-unused-vars": "off"
   },
