@@ -24,7 +24,7 @@
     // Break the array with the selectors
     if (Array.isArray(selectorOrElement)) {
       if (selectorOrElement.length) {
-        return selectorOrElement.map(single => new Accordion(single, userOptions));
+        return selectorOrElement.map((single) => new Accordion(single, userOptions));
       }
 
       return false;
@@ -38,7 +38,7 @@
         const defaults = {
           duration: 600, // animation duration in ms {number}
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
-          collapse: true, // allow collapse expanded panel
+          collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
@@ -55,7 +55,7 @@
         // Extend default options
         this.options = Object.assign(defaults, userOptions);
 
-        const { elementClass } = this.options;
+        const { elementClass, openOnInit } = this.options;
         const isString = (typeof selectorOrElement === 'string');
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
@@ -65,35 +65,19 @@
         this.lastElement = this.elements[this.elements.length - 1];
         this.currFocusedIdx = 0;
 
-        this.elements.map(element => {
+        this.elements.map((element, idx) => {
           // When JS is enabled, add the class to the element
           element.classList.add('js-enabled');
 
-          this.hideElement(element);
-          this.setTransition(element);
           this.generateIDs(element);
           this.setARIA(element);
+          this.setTransition(element);
 
           uniqueId++;
+          return openOnInit.includes(idx) ? this.showElement(element, false) : this.hideElement(element, false);
         });
 
-        this.showElementsOnInit();
         _this.attachEvents();
-      },
-
-      /**
-       * Show accordion elements during initialization
-       */
-      showElementsOnInit() {
-        const { openOnInit } = this.options;
-        if (!openOnInit.length) return;
-
-        openOnInit.map((elementIdx) => {
-          if (elementIdx < this.elements.length) {
-            const element = this.elements[elementIdx];
-            this.showElement(element, false);
-          }
-        });
       },
 
       /**
@@ -105,7 +89,7 @@
         const el = element.querySelector(`.${panelClass}`);
         const transition = isWebkit('transitionDuration');
 
-        el.style[transition] = duration + 'ms';
+        el.style[transition] = `${duration}ms`;
       },
 
       /**
@@ -225,7 +209,6 @@
 
         element.classList.add(activeClass);
         if (calcHeight) beforeOpen(element);
-
         panel.style.height = calcHeight ? `${height}px` : 'auto';
 
         this.updateARIA(element, true);
@@ -234,19 +217,19 @@
       /**
        * Hide element
        * @param {object} element = accordion item
+       * @param {boolean} calcHeight = calculate the height of the panel
        */
-      hideElement(element) {
+      hideElement(element, calcHeight = true) {
         const { panelClass, activeClass, beforeClose } = this.options;
         const panel = element.querySelector(`.${panelClass}`);
         const height = panel.scrollHeight;
-        const isElActive = element.classList.contains(activeClass);
 
         element.classList.remove(activeClass);
 
-        if (isElActive) {
+        if (calcHeight) {
           beforeClose(element);
 
-          // Animation X => 0
+          // Animation [X]px => 0
           requestAnimationFrame(() => {
             panel.style.height = `${height}px`;
 
@@ -278,27 +261,15 @@
        * Close all elements without the current element
        */
       closeAllElements() {
-        const { showMultiple } = this.options;
+        const { activeClass, showMultiple } = this.options;
         if (showMultiple) return;
 
         this.elements.map((element, idx) => {
-          if (idx != this.currFocusedIdx) {
+          const isActive = element.classList.contains(activeClass);
+
+          if (isActive && idx != this.currFocusedIdx) {
             this.hideElement(element);
           }
-        });
-      },
-
-      /**
-       * Show all elements
-       */
-      showAllElements() {
-        const { panelClass, activeClass } = this.options;
-
-        this.elements.map(element => {
-          element.classList.add(activeClass);
-          const panel = element.querySelector(`.${panelClass}`);
-          panel.style.height = 'auto';
-          this.showElement(element, false);
         });
       },
 
@@ -359,26 +330,24 @@
           const { onOpen, onClose } = this.options;
           const panel = e.currentTarget;
           const height = parseInt(panel.style.height);
-          const element = this.elements.find(element => element.contains(panel));
+          const element = this.elements.find((element) => element.contains(panel));
 
           if (height > 0) {
             panel.style.height = 'auto';
+            console.log('on open', element);
             onOpen(element);
           } else {
+            console.log('on close', element);
             onClose(element);
           }
         }
       }
     };
 
-    let eventsAttached = null;
-
     /**
      * Attach events
      */
     this.attachEvents = () => {
-      if (eventsAttached) return;
-
       const _this = ac;
       const { triggerClass, panelClass } = _this.options;
 
@@ -386,31 +355,25 @@
       _this.handleKeydown = _this.handleKeydown.bind(_this);
       _this.handleTransitionEnd = _this.handleTransitionEnd.bind(_this);
 
-      _this.elements.map(element => {
+      _this.elements.map((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
         trigger.addEventListener('click', _this.handleClick);
         trigger.addEventListener('keydown', _this.handleKeydown);
         panel.addEventListener('transitionend', _this.handleTransitionEnd);
-      });
 
-      // if (eventsAttached !== null) {
-      //   _this.showElementsOnInit();
-      // }
-      eventsAttached = true;
+      });
     };
 
     /**
      * Detach events
      */
     this.detachEvents = () => {
-      if (!eventsAttached) return;
-
       const _this = ac;
       const { triggerClass, panelClass } = _this.options;
 
-      _this.elements.map(element => {
+      _this.elements.map((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
@@ -418,9 +381,6 @@
         trigger.removeEventListener('keydown', _this.handleKeydown);
         panel.removeEventListener('transitionend', _this.handleTransitionEnd);
       });
-
-      // _this.showAllElements();
-      eventsAttached = false;
     };
 
     /**
@@ -428,7 +388,7 @@
      * @param {string} property = property name
      * @return {string} property = property with optional webkit prefix
      */
-    const isWebkit = property => {
+    const isWebkit = (property) => {
       if (typeof document.documentElement.style[property] === 'string') {
         return property;
       }
@@ -444,7 +404,7 @@
      * @param {string} string = string
      * @return {string} string = changed string
      */
-    const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
+    const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
     ac.init();
   };
