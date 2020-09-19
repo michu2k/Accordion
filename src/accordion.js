@@ -20,6 +20,7 @@
    */
   const Accordion = function(selectorOrElement, userOptions) {
     const _this = this;
+    let eventsAttached = false;
 
     // Break the array with the selectors
     if (Array.isArray(selectorOrElement)) {
@@ -30,7 +31,7 @@
       return false;
     }
 
-    const ac = {
+    const core = {
       /**
        * Init accordion
        */
@@ -260,7 +261,7 @@
       /**
        * Close all elements without the current element
        */
-      closeAllElements() {
+      closeElements() {
         const { activeClass, showMultiple } = this.options;
         if (showMultiple) return;
 
@@ -284,7 +285,7 @@
           if (element.contains(target) && e.target.nodeName !== 'A') {
             this.currFocusedIdx = idx;
 
-            this.closeAllElements();
+            this.closeElements();
             this.focus(e, element);
             this.toggleElement(element);
           }
@@ -326,20 +327,18 @@
        * @param {object} e = event
        */
       handleTransitionEnd(e) {
-        if (e.propertyName === 'height') {
-          const { onOpen, onClose } = this.options;
-          const panel = e.currentTarget;
-          const height = parseInt(panel.style.height);
-          const element = this.elements.find((element) => element.contains(panel));
+        if (e.propertyName !== 'height') return;
 
-          if (height > 0) {
-            panel.style.height = 'auto';
-            console.log('on open', element);
-            onOpen(element);
-          } else {
-            console.log('on close', element);
-            onClose(element);
-          }
+        const { onOpen, onClose } = this.options;
+        const panel = e.currentTarget;
+        const height = parseInt(panel.style.height);
+        const element = this.elements.find((element) => element.contains(panel));
+
+        if (height > 0) {
+          panel.style.height = 'auto';
+          onOpen(element);
+        } else {
+          onClose(element);
         }
       }
     };
@@ -348,39 +347,50 @@
      * Attach events
      */
     this.attachEvents = () => {
-      const _this = ac;
-      const { triggerClass, panelClass } = _this.options;
+      if (eventsAttached) return;
+      const { triggerClass, panelClass } = core.options;
 
-      _this.handleClick = _this.handleClick.bind(_this);
-      _this.handleKeydown = _this.handleKeydown.bind(_this);
-      _this.handleTransitionEnd = _this.handleTransitionEnd.bind(_this);
+      core.handleClick = core.handleClick.bind(core);
+      core.handleKeydown = core.handleKeydown.bind(core);
+      core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      _this.elements.map((element) => {
+      core.elements.map((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
-        trigger.addEventListener('click', _this.handleClick);
-        trigger.addEventListener('keydown', _this.handleKeydown);
-        panel.addEventListener('transitionend', _this.handleTransitionEnd);
-
+        trigger.addEventListener('click', core.handleClick);
+        trigger.addEventListener('keydown', core.handleKeydown);
+        panel.addEventListener('transitionend', core.handleTransitionEnd);
       });
+
+      eventsAttached = true;
     };
 
     /**
      * Detach events
      */
     this.detachEvents = () => {
-      const _this = ac;
-      const { triggerClass, panelClass } = _this.options;
+      if (!eventsAttached) return;
+      const { triggerClass, panelClass } = core.options;
 
-      _this.elements.map((element) => {
+      core.elements.map((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
-        trigger.removeEventListener('click', _this.handleClick);
-        trigger.removeEventListener('keydown', _this.handleKeydown);
-        panel.removeEventListener('transitionend', _this.handleTransitionEnd);
+        trigger.removeEventListener('click', core.handleClick);
+        trigger.removeEventListener('keydown', core.handleKeydown);
+        panel.removeEventListener('transitionend', core.handleTransitionEnd);
       });
+
+      eventsAttached = false;
+    };
+
+    this.openAll = () => {
+      core.elements.map((element) => core.showElement(element, false));
+    };
+
+    this.hideAll = () => {
+      core.elements.map((element) => core.hideElement(element, false));
     };
 
     /**
@@ -406,7 +416,7 @@
      */
     const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-    ac.init();
+    core.init();
   };
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
