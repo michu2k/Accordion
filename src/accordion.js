@@ -360,6 +360,7 @@
 
         trigger.addEventListener('click', core.handleClick);
         trigger.addEventListener('keydown', core.handleKeydown);
+        panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
         panel.addEventListener('transitionend', core.handleTransitionEnd);
       });
 
@@ -379,6 +380,7 @@
 
         trigger.removeEventListener('click', core.handleClick);
         trigger.removeEventListener('keydown', core.handleKeydown);
+        panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
         panel.removeEventListener('transitionend', core.handleTransitionEnd);
       });
 
