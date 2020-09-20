@@ -75,7 +75,7 @@
           this.setTransition(element);
 
           uniqueId++;
-          return openOnInit.includes(idx) ? this.showElement(element, false) : this.hideElement(element, false);
+          return openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
         });
 
         _this.attachEvents();
@@ -216,11 +216,11 @@
       },
 
       /**
-       * Hide element
+       * Close element
        * @param {object} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
-      hideElement(element, calcHeight = true) {
+      closeElement(element, calcHeight = true) {
         const { panelClass, activeClass, beforeClose } = this.options;
         const panel = element.querySelector(`.${panelClass}`);
         const height = panel.scrollHeight;
@@ -255,7 +255,7 @@
         const isActive = element.classList.contains(activeClass);
 
         if (isActive && !collapse) return;
-        return isActive ? this.hideElement(element) : this.showElement(element);
+        return isActive ? this.closeElement(element) : this.showElement(element);
       },
 
       /**
@@ -269,7 +269,7 @@
           const isActive = element.classList.contains(activeClass);
 
           if (isActive && idx != this.currFocusedIdx) {
-            this.hideElement(element);
+            this.closeElement(element);
           }
         });
       },
@@ -385,12 +385,37 @@
       eventsAttached = false;
     };
 
+    /**
+     * Open accordion element
+     * @param {number} elIdx = element index
+     */
+    this.open = (elIdx) => {
+      console.log({ open }, core.elements, elIdx);
+      const el = core.elements.find((element, idx) => idx === elIdx);
+      if (el) core.showElement(el);
+    };
+
+    /**
+     * Open all elements
+     */
     this.openAll = () => {
       core.elements.map((element) => core.showElement(element, false));
     };
 
-    this.hideAll = () => {
-      core.elements.map((element) => core.hideElement(element, false));
+    /**
+     * Close accordion element
+     * @param {number} elIdx = element index
+     */
+    this.close = (elIdx) => {
+      const el = core.elements.find((element, idx) => idx === elIdx);
+      if (el) core.closeElement(el);
+    };
+
+    /**
+     * Close all elements
+     */
+    this.closeAll = () => {
+      core.elements.map((element) => core.closeElement(element, false));
     };
 
     /**
