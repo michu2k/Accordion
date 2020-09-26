@@ -45,8 +45,8 @@
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}
           panelClass: 'ac-panel', // panel class {string}
-          targetClass: 'ac-target', // target class {string}
           activeClass: 'is-active', // active element class {string}
+          targetClass: 'ac-target', // target class {string}
           beforeOpen: () => {}, // calls before the item is opened {function}
           onOpen: () => {}, // calls when the item is opened {function}
           beforeClose: () => {}, // calls before the item is closed {function}
@@ -210,7 +210,12 @@
 
         element.classList.add(activeClass);
         if (calcHeight) beforeOpen(element);
-        panel.style.height = calcHeight ? `${height}px` : 'auto';
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            panel.style.height = calcHeight ? `${height}px` : 'auto';
+          });
+        });
 
         this.updateARIA(element, true);
       },
@@ -231,10 +236,12 @@
           beforeClose(element);
 
           // Animation [X]px => 0
-          panel.style.height = `${height}px`;
-
           requestAnimationFrame(() => {
-            panel.style.height = 0;
+            panel.style.height = `${height}px`;
+
+            requestAnimationFrame(() => {
+              panel.style.height = 0;
+            });
           });
 
           this.updateARIA(element, false);
