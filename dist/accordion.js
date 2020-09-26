@@ -251,12 +251,10 @@
           beforeClose(element);
 
           // Animation [X]px => 0
-          requestAnimationFrame(function () {
-            panel.style.height = ''.concat(height, 'px');
+          panel.style.height = ''.concat(height, 'px');
 
-            requestAnimationFrame(function () {
-              panel.style.height = 0;
-            });
+          requestAnimationFrame(function () {
+            panel.style.height = 0;
           });
 
           this.updateARIA(element, false);

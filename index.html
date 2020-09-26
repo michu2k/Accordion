@@ -11,37 +11,13 @@
 <div class="accordion-container">
   <div class="ac">
     <h2 class="ac-header">
-      <button class="ac-trigger">Lorem <a href="#dont-focus-me">DON'T Focus</a> ipsum dolor sit amet.</button>
-    </h2>
-    <div class="ac-panel">
-      <p class="ac-text">Nulla et <a href="#focus-me-too">Focus me too</a> sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
-  </div>
-
-  <div class="ac">
-    <h2 class="ac-header">
-      <button class="ac-trigger">
-        <span>Lorem ipsum dolor sit amet. <span id="click-me1">CLICK ME HEADER!</span> SPAN</span>
-      </button>
-    </h2>
-    <div class="ac-panel">
-      <p class="ac-text">Nulla et sodales nisl.
-
-        <span id="click-me2">CLICK ME !</span>Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
-  </div>
-
-  <div class="ac">
-    <h2 class="ac-header">
       <button class="ac-trigger">Lorem ipsum dolor sit amet.</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
   </div>
-</div>
 
-<div class="accordion-container">
   <div class="ac">
     <h2 class="ac-header">
       <button class="ac-trigger">Lorem ipsum dolor sit amet.</button>
@@ -59,82 +35,12 @@
       <p class="ac-text">Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
   </div>
-
-  <div class="ac">
-    <h2 class="ac-header">
-      <button class="ac-trigger"><a href="#">Lorem url</a> Lorem ipsum dolor sit amet.</button>
-    </h2>
-    <div class="ac-panel">
-      <p class="ac-text">Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
-  </div>
-
-  <div class="ac">
-    <h2 class="ac-header">
-      <button class="ac-trigger"><a href="#">Lorem url</a> Lorem ipsum dolor sit amet.</button>
-    </h2>
-    <div class="ac-panel">
-      <p class="ac-text">Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
-  </div>
-
-  <div class="ac">
-    <h2 class="ac-header">
-      <button class="ac-trigger"><a href="#">Lorem url</a> Lorem ipsum dolor sit amet.</button>
-    </h2>
-    <div class="ac-panel">
-      <p class="ac-text">Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
-  </div>
 </div>
 
-<button id="attach">Attach Events</button>
-<button id="detach">Detach Events</button>
-
-<script src="src/accordion.js"></script>
+<script src="dist/accordion.min.js"></script>
 
 <script>
-  const accordions = Array.from(document.querySelectorAll('.accordion-container'));
-  const accordion = document.querySelector('.accordion-container');
-
-  const ac = new Accordion(accordions, {
-    openOnInit: [1, 3],
-    onOpened: (el) => {
-      console.log('opened !', el);
-    }
-    // showMultiple: true
-  });
-
-  const attach = document.getElementById('attach');
-  const detach = document.getElementById('detach');
-
-  const clickme1 = document.getElementById('click-me1');
-  const clickme2 = document.getElementById('click-me2');
-
-  clickme1.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('clicked 1!');
-  });
-
-  clickme2.addEventListener('click', (e) => {
-    ac.attachEvents();
-    console.log('clicked 2!');
-  });
-
-  attach.addEventListener('click', () => {
-    ac.map((singleAc) => {
-      console.log('attach !!', singleAc.container);
-      singleAc.attachEvents();
-    })
-  });
-
-  detach.addEventListener('click', () => {
-    ac.map((singleAc) => {
-      console.log('detach !!', singleAc);
-      singleAc.detachEvents();
-    })
-  });
+  new Accordion('.accordion-container');
 </script>
 
 </body>
