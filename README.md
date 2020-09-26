@@ -1,6 +1,5 @@
 # Accordion
-Light and accessible accordion module. With the module you can create accordion on your website, useful for creating FAQ lists.
-<br> Browsers support: All modern browsers, Internet Explorer 10+
+Lightweight and accessible accordion module with an extensible API. With the module you can create accordion on your website, useful especially for creating FAQ lists.
 
 ## Version
 3.0.0
@@ -42,7 +41,6 @@ See the section above.
 
 ###### Create HTML layout
 This is just an example of a layout. You can create your own HTML structure.
-
 ```html
 <div class="accordion-container">
   <div class="ac">
@@ -50,7 +48,7 @@ This is just an example of a layout. You can create your own HTML structure.
       <button class="ac-trigger">Lorem ipsum dolor sit amet.</button>
     </h2>
     <div class="ac-panel">
-      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
   </div>
 
@@ -59,7 +57,7 @@ This is just an example of a layout. You can create your own HTML structure.
       <button class="ac-trigger">Lorem ipsum dolor sit amet.</button>
     </h2>
     <div class="ac-panel">
-      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
   </div>
 
@@ -68,7 +66,7 @@ This is just an example of a layout. You can create your own HTML structure.
       <button class="ac-trigger">Lorem ipsum dolor sit amet.</button>
     </h2>
     <div class="ac-panel">
-      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis lacinia nibh.</p>
+      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
   </div>
 </div>
@@ -84,9 +82,7 @@ This is just an example of a layout. You can create your own HTML structure.
 ## API
 
 ###### Example
-```javascript
 new Accordion(container, options)
-```
 
 * `container` - string | HTMLElement (required), selector of accordion container
 * `options` - object (optional), accordion options
@@ -104,11 +100,15 @@ new Accordion('.container-second', {
   }
 });
 
-// Define several accordions with the same options
+// Define several accordions with the same options (pass an array with selectors)
 new Accordion(['.container-first', '.container-second'], {});
 
+// or pass an array with HTMLElements
+const accordions = Array.from(document.querySelectorAll('.accordion-container'));
+new Accordion(accordions, {});
+
 // Detach events
-var accordion = new Accordion('.container-first');
+const accordion = new Accordion('.container-first');
 accordion.detachEvents();
 ```
 
@@ -125,19 +125,22 @@ accordion.detachEvents();
 | triggerClass | string | 'ac-trigger' | Trigger class |
 | panelClass | string | 'ac-panel' | Panel class |
 | activeClass | string | 'is-active' | Active element class |
-| beforeOpen | function | - | Calls before the item is opened. <br> `beforeOpen: (currentElement) => {}`|
-| onOpen | function | - | Calls when the item is opened. <br> `onOpen: (currentElement) => {}`|
-| beforeClose | function | - | Calls before the item is closed. <br> `beforeClose: (currentElement) => {}`|
-| onClose | function | - | Calls when the item is closed. <br> `onClose: (currentElement) => {}`|
+| beforeOpen | function | - | Calls before the item is opened. <br> `beforeOpen: (currElement) => {}`|
+| onOpen | function | - | Calls when the item is opened. <br> `onOpen: (currElement) => {}`|
+| beforeClose | function | - | Calls before the item is closed. <br> `beforeClose: (currElement) => {}`|
+| onClose | function | - | Calls when the item is closed. <br> `onClose: (currElement) => {}`|
 
 ###### Methods
 
-| Option  | Description | Parameters |
+| Option  | Description | Arguments |
 | ----- | ----- | ----- |
-| attachEvents | Attach events | - |
-| detachEvents | Detach events | - |
-| open | Open the accordion element with the given idx | `idx` - element index (required) |
-| close | Close the accordion element with the given idx| `idx` - element index (required) |
-| openAll | It will open all accordion elements without animation | - |
-| closeAll | It will close all accordion elements without animations | - |
-| destroy | Destroy accordion instance | - |
+| attachEvents() | Attach events | - |
+| detachEvents() | Detach events | - |
+| open() | Open the accordion element with the given idx <br> E.g. `acc.open(1)` | `idx` - element index |
+| close() | Close the accordion element with the given idx <br> E.g. `acc.close(1)`| `idx` - element index |
+| openAll() | Open all accordion elements | - |
+| closeAll() | Close all accordion elements | - |
+| destroy() | Destroy accordion instance | - |
+
+## v3 Release Info
+There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), we recommend updating the package to the latest version with new structure and options.
