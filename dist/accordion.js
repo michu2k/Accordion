@@ -1,12 +1,11 @@
-'use strict'
 /*!
  * Accordion v3.0.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2020 Michał Strumpf
+ * Copyright (c) Michał Strumpf
  * Published under MIT License
- */;
+ */
 
 (function (window) {
   'use strict';
@@ -20,6 +19,7 @@
    */
   var Accordion = function Accordion(selectorOrElement, userOptions) {
     var _this = this;
+    var eventsAttached = false;
 
     // Break the array with the selectors
     if (Array.isArray(selectorOrElement)) {
@@ -32,7 +32,7 @@
       return false;
     }
 
-    var ac = {
+    var core = {
       /**
        * Init accordion
        */
@@ -40,8 +40,8 @@
         var _this2 = this;
         var defaults = {
           duration: 600, // animation duration in ms {number}
-          aria: true, // add ARIA elements to the HTML structure {boolean}
-          collapse: true, // TODO:
+          ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
+          collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
@@ -57,7 +57,9 @@
 
         // Extend default options
         this.options = Object.assign(defaults, userOptions);
-        var elementClass = this.options.elementClass;
+        var _this$options = this.options,
+          elementClass = _this$options.elementClass,
+          openOnInit = _this$options.openOnInit;
         var isString = typeof selectorOrElement === 'string';
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
@@ -67,36 +69,19 @@
         this.lastElement = this.elements[this.elements.length - 1];
         this.currFocusedIdx = 0;
 
-        this.elements.map(function (element) {
+        this.elements.map(function (element, idx) {
           // When JS is enabled, add the class to the element
           element.classList.add('js-enabled');
 
-          _this2.hideElement(element);
-          _this2.setTransition(element);
           _this2.generateIDs(element);
           _this2.setARIA(element);
+          _this2.setTransition(element);
 
           uniqueId++;
+          return openOnInit.includes(idx) ? _this2.showElement(element, false) : _this2.closeElement(element, false);
         });
 
-        this.showElementsOnInit();
         _this.attachEvents();
-      },
-
-      /**
-       * Show accordion elements during initialization
-       */
-      showElementsOnInit: function showElementsOnInit() {
-        var _this3 = this;
-        var openOnInit = this.options.openOnInit;
-        if (!openOnInit.length) return;
-
-        openOnInit.map(function (elementIdx) {
-          if (elementIdx < _this3.elements.length) {
-            var element = _this3.elements[elementIdx];
-            _this3.showElement(element, false);
-          }
-        });
       },
 
       /**
@@ -104,13 +89,13 @@
        * @param {object} element = accordion item
        */
       setTransition: function setTransition(element) {
-        var _this$options = this.options,
-          duration = _this$options.duration,
-          panelClass = _this$options.panelClass;
+        var _this$options2 = this.options,
+          duration = _this$options2.duration,
+          panelClass = _this$options2.panelClass;
         var el = element.querySelector('.'.concat(panelClass));
         var transition = isWebkit('transitionDuration');
 
-        el.style[transition] = duration + 'ms';
+        el.style[transition] = ''.concat(duration, 'ms');
       },
 
       /**
@@ -118,9 +103,9 @@
        * @param {object} element = accordion item
        */
       generateIDs: function generateIDs(element) {
-        var _this$options2 = this.options,
-          triggerClass = _this$options2.triggerClass,
-          panelClass = _this$options2.panelClass;
+        var _this$options3 = this.options,
+          triggerClass = _this$options3.triggerClass,
+          panelClass = _this$options3.panelClass;
         var trigger = element.querySelector('.'.concat(triggerClass));
         var panel = element.querySelector('.'.concat(panelClass));
 
@@ -134,19 +119,19 @@
        * @param {object} element = accordion item
        */
       setARIA: function setARIA(element) {
-        var _this$options3 = this.options,
-          aria = _this$options3.aria,
-          triggerClass = _this$options3.triggerClass,
-          panelClass = _this$options3.panelClass;
-        if (!aria) return;
+        var _this$options4 = this.options,
+          ariaEnabled = _this$options4.ariaEnabled,
+          triggerClass = _this$options4.triggerClass,
+          panelClass = _this$options4.panelClass;
+        if (!ariaEnabled) return;
 
         var trigger = element.querySelector('.'.concat(triggerClass));
         var panel = element.querySelector('.'.concat(panelClass));
 
         trigger.setAttribute('role', 'button');
         trigger.setAttribute('aria-controls', 'ac-panel-'.concat(uniqueId));
-        trigger.setAttribute('aria-disabled', 'false');
-        trigger.setAttribute('aria-expanded', 'false');
+        trigger.setAttribute('aria-disabled', false);
+        trigger.setAttribute('aria-expanded', false);
 
         panel.setAttribute('role', 'region');
         panel.setAttribute('aria-labelledby', 'ac-trigger-'.concat(uniqueId));
@@ -155,16 +140,20 @@
       /**
        * Update ARIA
        * @param {object} element = accordion item
-       * @param {boolean} value = value of the attribute
+       * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA: function updateARIA(element, value) {
-        var _this$options4 = this.options,
-          aria = _this$options4.aria,
-          triggerClass = _this$options4.triggerClass;
-        if (!aria) return;
+      updateARIA: function updateARIA(element, ariaExpanded) {
+        var _this$options5 = this.options,
+          ariaEnabled = _this$options5.ariaEnabled,
+          collapse = _this$options5.collapse,
+          triggerClass = _this$options5.triggerClass;
+        if (!ariaEnabled) return;
 
         var trigger = element.querySelector('.'.concat(triggerClass));
-        trigger.setAttribute('aria-expanded', value);
+        trigger.setAttribute('aria-expanded', ariaExpanded);
+
+        if (collapse) return;
+        trigger.setAttribute('aria-disabled', true);
       },
 
       /**
@@ -228,40 +217,40 @@
        */
       showElement: function showElement(element) {
         var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        var _this$options5 = this.options,
-          panelClass = _this$options5.panelClass,
-          activeClass = _this$options5.activeClass,
-          beforeOpen = _this$options5.beforeOpen;
+        var _this$options6 = this.options,
+          panelClass = _this$options6.panelClass,
+          activeClass = _this$options6.activeClass,
+          beforeOpen = _this$options6.beforeOpen;
         var panel = element.querySelector('.'.concat(panelClass));
         var height = panel.scrollHeight;
 
         element.classList.add(activeClass);
         if (calcHeight) beforeOpen(element);
-
         panel.style.height = calcHeight ? ''.concat(height, 'px') : 'auto';
 
         this.updateARIA(element, true);
       },
 
       /**
-       * Hide element
+       * Close element
        * @param {object} element = accordion item
+       * @param {boolean} calcHeight = calculate the height of the panel
        */
-      hideElement: function hideElement(element) {
-        var _this$options6 = this.options,
-          panelClass = _this$options6.panelClass,
-          activeClass = _this$options6.activeClass,
-          beforeClose = _this$options6.beforeClose;
+      closeElement: function closeElement(element) {
+        var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        var _this$options7 = this.options,
+          panelClass = _this$options7.panelClass,
+          activeClass = _this$options7.activeClass,
+          beforeClose = _this$options7.beforeClose;
         var panel = element.querySelector('.'.concat(panelClass));
         var height = panel.scrollHeight;
-        var isElActive = element.classList.contains(activeClass);
 
         element.classList.remove(activeClass);
 
-        if (isElActive) {
+        if (calcHeight) {
           beforeClose(element);
 
-          // Animation X => 0
+          // Animation [X]px => 0
           requestAnimationFrame(function () {
             panel.style.height = ''.concat(height, 'px');
 
@@ -282,40 +271,31 @@
        * @param {object} element = accordion item
        */
       toggleElement: function toggleElement(element) {
-        var activeClass = this.options.activeClass;
+        var _this$options8 = this.options,
+          activeClass = _this$options8.activeClass,
+          collapse = _this$options8.collapse;
         var isActive = element.classList.contains(activeClass);
-        return isActive ? this.hideElement(element) : this.showElement(element);
+
+        if (isActive && !collapse) return;
+        return isActive ? this.closeElement(element) : this.showElement(element);
       },
 
       /**
        * Close all elements without the current element
        */
-      closeAllElements: function closeAllElements() {
-        var _this4 = this;
-        var showMultiple = this.options.showMultiple;
+      closeElements: function closeElements() {
+        var _this3 = this;
+        var _this$options9 = this.options,
+          activeClass = _this$options9.activeClass,
+          showMultiple = _this$options9.showMultiple;
         if (showMultiple) return;
 
         this.elements.map(function (element, idx) {
-          if (idx != _this4.currFocusedIdx) {
-            _this4.hideElement(element);
+          var isActive = element.classList.contains(activeClass);
+
+          if (isActive && idx != _this3.currFocusedIdx) {
+            _this3.closeElement(element);
           }
-        });
-      },
-
-      /**
-       * Show all elements
-       */
-      showAllElements: function showAllElements() {
-        var _this5 = this;
-        var _this$options7 = this.options,
-          panelClass = _this$options7.panelClass,
-          activeClass = _this$options7.activeClass;
-
-        this.elements.map(function (element) {
-          element.classList.add(activeClass);
-          var panel = element.querySelector('.'.concat(panelClass));
-          panel.style.height = 'auto';
-          _this5.showElement(element, false);
         });
       },
 
@@ -324,16 +304,16 @@
        * @param {object} e = event
        */
       handleClick: function handleClick(e) {
-        var _this6 = this;
+        var _this4 = this;
         var target = e.currentTarget;
 
         this.elements.map(function (element, idx) {
           if (element.contains(target) && e.target.nodeName !== 'A') {
-            _this6.currFocusedIdx = idx;
+            _this4.currFocusedIdx = idx;
 
-            _this6.closeAllElements();
-            _this6.focus(e, element);
-            _this6.toggleElement(element);
+            _this4.closeElements();
+            _this4.focus(e, element);
+            _this4.toggleElement(element);
           }
         });
       },
@@ -373,55 +353,48 @@
        * @param {object} e = event
        */
       handleTransitionEnd: function handleTransitionEnd(e) {
-        if (e.propertyName === 'height') {
-          var _this$options8 = this.options,
-            onOpen = _this$options8.onOpen,
-            onClose = _this$options8.onClose;
-          var panel = e.currentTarget;
-          var height = parseInt(panel.style.height);
-          var element = this.elements.find(function (element) {
-            return element.contains(panel);
-          });
+        if (e.propertyName !== 'height') return;
+        var _this$options10 = this.options,
+          onOpen = _this$options10.onOpen,
+          onClose = _this$options10.onClose;
+        var panel = e.currentTarget;
+        var height = parseInt(panel.style.height);
+        var element = this.elements.find(function (element) {
+          return element.contains(panel);
+        });
 
-          if (height > 0) {
-            panel.style.height = 'auto';
-            onOpen(element);
-          } else {
-            onClose(element);
-          }
+        if (height > 0) {
+          panel.style.height = 'auto';
+          onOpen(element);
+        } else {
+          onClose(element);
         }
       },
     };
-
-    var eventsAttached = null;
 
     /**
      * Attach events
      */
     this.attachEvents = function () {
       if (eventsAttached) return;
+      var _core$options = core.options,
+        triggerClass = _core$options.triggerClass,
+        panelClass = _core$options.panelClass;
 
-      var _this = ac;
-      var _this$options9 = _this.options,
-        triggerClass = _this$options9.triggerClass,
-        panelClass = _this$options9.panelClass;
+      core.handleClick = core.handleClick.bind(core);
+      core.handleKeydown = core.handleKeydown.bind(core);
+      core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      _this.handleClick = _this.handleClick.bind(_this);
-      _this.handleKeydown = _this.handleKeydown.bind(_this);
-      _this.handleTransitionEnd = _this.handleTransitionEnd.bind(_this);
-
-      _this.elements.map(function (element) {
+      core.elements.map(function (element) {
         var trigger = element.querySelector('.'.concat(triggerClass));
         var panel = element.querySelector('.'.concat(panelClass));
 
-        trigger.addEventListener('click', _this.handleClick);
-        trigger.addEventListener('keydown', _this.handleKeydown);
-        panel.addEventListener('transitionend', _this.handleTransitionEnd);
+        trigger.addEventListener('click', core.handleClick);
+        trigger.addEventListener('keydown', core.handleKeydown);
+        panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
+        panel.addEventListener('transitionend', core.handleTransitionEnd);
       });
 
-      if (eventsAttached !== null) {
-        _this.showElementsOnInit();
-      }
       eventsAttached = true;
     };
 
@@ -430,23 +403,62 @@
      */
     this.detachEvents = function () {
       if (!eventsAttached) return;
+      var _core$options2 = core.options,
+        triggerClass = _core$options2.triggerClass,
+        panelClass = _core$options2.panelClass;
 
-      var _this = ac;
-      var _this$options10 = _this.options,
-        triggerClass = _this$options10.triggerClass,
-        panelClass = _this$options10.panelClass;
-
-      _this.elements.map(function (element) {
+      core.elements.map(function (element) {
         var trigger = element.querySelector('.'.concat(triggerClass));
         var panel = element.querySelector('.'.concat(panelClass));
 
-        trigger.removeEventListener('click', _this.handleClick);
-        trigger.removeEventListener('keydown', _this.handleKeydown);
-        panel.removeEventListener('transitionend', _this.handleTransitionEnd);
+        trigger.removeEventListener('click', core.handleClick);
+        trigger.removeEventListener('keydown', core.handleKeydown);
+        panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
+        panel.removeEventListener('transitionend', core.handleTransitionEnd);
       });
 
-      _this.showAllElements();
       eventsAttached = false;
+    };
+
+    /**
+     * Open accordion element
+     * @param {number} elIdx = element index
+     */
+    this.open = function (elIdx) {
+      console.log({ open: open }, core.elements, elIdx);
+      var el = core.elements.find(function (_, idx) {
+        return idx === elIdx;
+      });
+      if (el) core.showElement(el);
+    };
+
+    /**
+     * Open all accordion elements
+     */
+    this.openAll = function () {
+      core.elements.map(function (element) {
+        return core.showElement(element, false);
+      });
+    };
+
+    /**
+     * Close accordion element
+     * @param {number} elIdx = element index
+     */
+    this.close = function (elIdx) {
+      var el = core.elements.find(function (_, idx) {
+        return idx === elIdx;
+      });
+      if (el) core.closeElement(el);
+    };
+
+    /**
+     * Close all accordion elements
+     */
+    this.closeAll = function () {
+      core.elements.map(function (element) {
+        return core.closeElement(element, false);
+      });
     };
 
     /**
@@ -474,7 +486,7 @@
       return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
-    ac.init();
+    core.init();
   };
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

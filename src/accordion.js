@@ -393,12 +393,12 @@
      */
     this.open = (elIdx) => {
       console.log({ open }, core.elements, elIdx);
-      const el = core.elements.find((element, idx) => idx === elIdx);
+      const el = core.elements.find((_, idx) => idx === elIdx);
       if (el) core.showElement(el);
     };
 
     /**
-     * Open all elements
+     * Open all accordion elements
      */
     this.openAll = () => {
       core.elements.map((element) => core.showElement(element, false));
@@ -409,12 +409,12 @@
      * @param {number} elIdx = element index
      */
     this.close = (elIdx) => {
-      const el = core.elements.find((element, idx) => idx === elIdx);
+      const el = core.elements.find((_, idx) => idx === elIdx);
       if (el) core.closeElement(el);
     };
 
     /**
-     * Close all elements
+     * Close all accordion elements
      */
     this.closeAll = () => {
       core.elements.map((element) => core.closeElement(element, false));
