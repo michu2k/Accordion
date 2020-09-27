@@ -1,7 +1,7 @@
 {
   "name": "accordion-js",
   "version": "2.8.0",
-  "description": "Lightweight and accessible accordion module with an extensible API created in pure Javascript",
+  "description": "Lightweight and accessible accordion module created in pure Javascript",
   "main": "dist/accordion.min.js",
   "repository": {
     "type": "git",
