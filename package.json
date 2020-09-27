@@ -1,17 +1,16 @@
 {
   "name": "accordion-js",
   "version": "2.8.0",
-  "description": "Simple accordion created in pure Javascript",
+  "description": "Lightweight and accessible accordion module with an extensible API created in pure Javascript",
   "main": "dist/accordion.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michu2k/Accordion.git"
   },
   "keywords": [
-    "html5",
     "javascript",
     "accordion",
-    "css",
+    "a11y",
     "es6",
     "accesibility",
     "aria",

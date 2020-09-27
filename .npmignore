@@ -1,0 +1,5 @@
+src/
+.eslintrc
+.eslintignore
+gulpfile.js
+index.html
