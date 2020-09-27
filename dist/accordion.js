@@ -18,6 +18,7 @@
    * @param {object} userOptions = options defined by user
    */
   var Accordion = function Accordion(selectorOrElement, userOptions) {
+    var _this5 = this;
     var _this = this;
     var eventsAttached = false;
 
@@ -47,7 +48,6 @@
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}
           panelClass: 'ac-panel', // panel class {string}
-          targetClass: 'ac-target', // target class {string}
           activeClass: 'is-active', // active element class {string}
           beforeOpen: function beforeOpen() {}, // calls before the item is opened {function}
           onOpen: function onOpen() {}, // calls when the item is opened {function}
@@ -87,15 +87,17 @@
       /**
        * Set transition
        * @param {object} element = accordion item
+       * @param {boolean} clear = clear transition duration
        */
       setTransition: function setTransition(element) {
+        var clear = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         var _this$options2 = this.options,
           duration = _this$options2.duration,
           panelClass = _this$options2.panelClass;
         var el = element.querySelector('.'.concat(panelClass));
         var transition = isWebkit('transitionDuration');
 
-        el.style[transition] = ''.concat(duration, 'ms');
+        el.style[transition] = clear ? null : ''.concat(duration, 'ms');
       },
 
       /**
@@ -115,14 +117,30 @@
       },
 
       /**
+       * Remove IDs
+       * @param {object} element = accordion item
+       */
+      removeIDs: function removeIDs(element) {
+        var _this$options4 = this.options,
+          triggerClass = _this$options4.triggerClass,
+          panelClass = _this$options4.panelClass;
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        element.removeAttribute('id');
+        trigger.removeAttribute('id');
+        panel.removeAttribute('id');
+      },
+
+      /**
        * Create ARIA
        * @param {object} element = accordion item
        */
       setARIA: function setARIA(element) {
-        var _this$options4 = this.options,
-          ariaEnabled = _this$options4.ariaEnabled,
-          triggerClass = _this$options4.triggerClass,
-          panelClass = _this$options4.panelClass;
+        var _this$options5 = this.options,
+          ariaEnabled = _this$options5.ariaEnabled,
+          triggerClass = _this$options5.triggerClass,
+          panelClass = _this$options5.panelClass;
         if (!ariaEnabled) return;
 
         var trigger = element.querySelector('.'.concat(triggerClass));
@@ -143,10 +161,10 @@
        * @param {boolean} ariaExpanded = value of the attribute
        */
       updateARIA: function updateARIA(element, ariaExpanded) {
-        var _this$options5 = this.options,
-          ariaEnabled = _this$options5.ariaEnabled,
-          collapse = _this$options5.collapse,
-          triggerClass = _this$options5.triggerClass;
+        var _this$options6 = this.options,
+          ariaEnabled = _this$options6.ariaEnabled,
+          collapse = _this$options6.collapse,
+          triggerClass = _this$options6.triggerClass;
         if (!ariaEnabled) return;
 
         var trigger = element.querySelector('.'.concat(triggerClass));
@@ -154,6 +172,29 @@
 
         if (collapse) return;
         trigger.setAttribute('aria-disabled', true);
+      },
+
+      /**
+       * Remove ARIA
+       * @param {object} element = accordion item
+       */
+      removeARIA: function removeARIA(element) {
+        var _this$options7 = this.options,
+          ariaEnabled = _this$options7.ariaEnabled,
+          triggerClass = _this$options7.triggerClass,
+          panelClass = _this$options7.panelClass;
+        if (!ariaEnabled) return;
+
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        trigger.removeAttribute('role');
+        trigger.removeAttribute('aria-controls');
+        trigger.removeAttribute('aria-disabled');
+        trigger.removeAttribute('aria-expanded');
+
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-labelledby');
       },
 
       /**
@@ -217,16 +258,21 @@
        */
       showElement: function showElement(element) {
         var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        var _this$options6 = this.options,
-          panelClass = _this$options6.panelClass,
-          activeClass = _this$options6.activeClass,
-          beforeOpen = _this$options6.beforeOpen;
+        var _this$options8 = this.options,
+          panelClass = _this$options8.panelClass,
+          activeClass = _this$options8.activeClass,
+          beforeOpen = _this$options8.beforeOpen;
         var panel = element.querySelector('.'.concat(panelClass));
         var height = panel.scrollHeight;
 
         element.classList.add(activeClass);
         if (calcHeight) beforeOpen(element);
-        panel.style.height = calcHeight ? ''.concat(height, 'px') : 'auto';
+
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            panel.style.height = calcHeight ? ''.concat(height, 'px') : 'auto';
+          });
+        });
 
         this.updateARIA(element, true);
       },
@@ -238,10 +284,10 @@
        */
       closeElement: function closeElement(element) {
         var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        var _this$options7 = this.options,
-          panelClass = _this$options7.panelClass,
-          activeClass = _this$options7.activeClass,
-          beforeClose = _this$options7.beforeClose;
+        var _this$options9 = this.options,
+          panelClass = _this$options9.panelClass,
+          activeClass = _this$options9.activeClass,
+          beforeClose = _this$options9.beforeClose;
         var panel = element.querySelector('.'.concat(panelClass));
         var height = panel.scrollHeight;
 
@@ -251,10 +297,12 @@
           beforeClose(element);
 
           // Animation [X]px => 0
-          panel.style.height = ''.concat(height, 'px');
-
           requestAnimationFrame(function () {
-            panel.style.height = 0;
+            panel.style.height = ''.concat(height, 'px');
+
+            requestAnimationFrame(function () {
+              panel.style.height = 0;
+            });
           });
 
           this.updateARIA(element, false);
@@ -269,9 +317,9 @@
        * @param {object} element = accordion item
        */
       toggleElement: function toggleElement(element) {
-        var _this$options8 = this.options,
-          activeClass = _this$options8.activeClass,
-          collapse = _this$options8.collapse;
+        var _this$options10 = this.options,
+          activeClass = _this$options10.activeClass,
+          collapse = _this$options10.collapse;
         var isActive = element.classList.contains(activeClass);
 
         if (isActive && !collapse) return;
@@ -283,9 +331,9 @@
        */
       closeElements: function closeElements() {
         var _this3 = this;
-        var _this$options9 = this.options,
-          activeClass = _this$options9.activeClass,
-          showMultiple = _this$options9.showMultiple;
+        var _this$options11 = this.options,
+          activeClass = _this$options11.activeClass,
+          showMultiple = _this$options11.showMultiple;
         if (showMultiple) return;
 
         this.elements.map(function (element, idx) {
@@ -352,9 +400,9 @@
        */
       handleTransitionEnd: function handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
-        var _this$options10 = this.options,
-          onOpen = _this$options10.onOpen,
-          onClose = _this$options10.onClose;
+        var _this$options12 = this.options,
+          onOpen = _this$options12.onOpen,
+          onClose = _this$options12.onClose;
         var panel = e.currentTarget;
         var height = parseInt(panel.style.height);
         var element = this.elements.find(function (element) {
@@ -423,7 +471,6 @@
      * @param {number} elIdx = element index
      */
     this.open = function (elIdx) {
-      console.log({ open: open }, core.elements, elIdx);
       var el = core.elements.find(function (_, idx) {
         return idx === elIdx;
       });
@@ -457,6 +504,22 @@
       core.elements.map(function (element) {
         return core.closeElement(element, false);
       });
+    };
+
+    /**
+     * Destroy accordion instance
+     */
+    this.destroy = function () {
+      _this5.detachEvents();
+      _this5.closeAll();
+
+      core.elements.map(function (element) {
+        core.removeIDs(element);
+        core.removeARIA(element);
+        core.setTransition(element, true);
+      });
+
+      eventsAttached = true;
     };
 
     /**

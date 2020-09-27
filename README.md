@@ -81,7 +81,7 @@ This is just an example of a layout. You can create your own HTML structure.
 
 ## API
 
-###### Example
+###### Examples
 new Accordion(container, options)
 
 * `container` - string | HTMLElement (required), selector of accordion container
@@ -140,7 +140,7 @@ accordion.detachEvents();
 | close() | Close the accordion element with the given idx <br> E.g. `acc.close(1)`| `idx` - element index |
 | openAll() | Open all accordion elements | - |
 | closeAll() | Close all accordion elements | - |
-| destroy() | Destroy accordion instance | - |
+| destroy() | Destroy accordion instance: <br> Close elements, remove events, IDs & ARIA | - |
 
 ## v3 Release Info
 There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), we recommend updating the package to the latest version with new structure and options.

@@ -46,7 +46,6 @@
           triggerClass: 'ac-trigger', // trigger class {string}
           panelClass: 'ac-panel', // panel class {string}
           activeClass: 'is-active', // active element class {string}
-          targetClass: 'ac-target', // target class {string}
           beforeOpen: () => {}, // calls before the item is opened {function}
           onOpen: () => {}, // calls when the item is opened {function}
           beforeClose: () => {}, // calls before the item is closed {function}
@@ -84,13 +83,14 @@
       /**
        * Set transition
        * @param {object} element = accordion item
+       * @param {boolean} clear = clear transition duration
        */
-      setTransition(element) {
+      setTransition(element, clear = false) {
         const { duration, panelClass } = this.options;
         const el = element.querySelector(`.${panelClass}`);
         const transition = isWebkit('transitionDuration');
 
-        el.style[transition] = `${duration}ms`;
+        el.style[transition] = clear ? null : `${duration}ms`;
       },
 
       /**
@@ -105,6 +105,20 @@
         element.setAttribute('id', `ac-${uniqueId}`);
         trigger.setAttribute('id', `ac-trigger-${uniqueId}`);
         panel.setAttribute('id', `ac-panel-${uniqueId}`);
+      },
+
+      /**
+       * Remove IDs
+       * @param {object} element = accordion item
+       */
+      removeIDs(element) {
+        const { triggerClass, panelClass } = this.options;
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        element.removeAttribute('id');
+        trigger.removeAttribute('id');
+        panel.removeAttribute('id');
       },
 
       /**
@@ -141,6 +155,26 @@
 
         if (collapse) return;
         trigger.setAttribute('aria-disabled', true);
+      },
+
+      /**
+       * Remove ARIA
+       * @param {object} element = accordion item
+       */
+      removeARIA(element) {
+        const { ariaEnabled, triggerClass, panelClass } = this.options;
+        if (!ariaEnabled) return;
+
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        trigger.removeAttribute('role');
+        trigger.removeAttribute('aria-controls');
+        trigger.removeAttribute('aria-disabled');
+        trigger.removeAttribute('aria-expanded');
+
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-labelledby');
       },
 
       /**
@@ -397,7 +431,6 @@
      * @param {number} elIdx = element index
      */
     this.open = (elIdx) => {
-      console.log({ open }, core.elements, elIdx);
       const el = core.elements.find((_, idx) => idx === elIdx);
       if (el) core.showElement(el);
     };
@@ -423,6 +456,22 @@
      */
     this.closeAll = () => {
       core.elements.map((element) => core.closeElement(element, false));
+    };
+
+    /**
+     * Destroy accordion instance
+     */
+    this.destroy = () => {
+      this.detachEvents();
+      this.closeAll();
+
+      core.elements.map((element) => {
+        core.removeIDs(element);
+        core.removeARIA(element);
+        core.setTransition(element, true);
+      });
+
+      eventsAttached = true;
     };
 
     /**
