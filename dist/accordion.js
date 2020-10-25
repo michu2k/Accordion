@@ -160,18 +160,17 @@
        * @param {object} element = accordion item
        * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA: function updateARIA(element, ariaExpanded) {
+      updateARIA: function updateARIA(element, _ref) {
+        var ariaExpanded = _ref.ariaExpanded,
+          ariaDisabled = _ref.ariaDisabled;
         var _this$options6 = this.options,
           ariaEnabled = _this$options6.ariaEnabled,
-          collapse = _this$options6.collapse,
           triggerClass = _this$options6.triggerClass;
         if (!ariaEnabled) return;
 
         var trigger = element.querySelector('.'.concat(triggerClass));
         trigger.setAttribute('aria-expanded', ariaExpanded);
-
-        if (collapse) return;
-        trigger.setAttribute('aria-disabled', true);
+        trigger.setAttribute('aria-disabled', ariaDisabled);
       },
 
       /**
@@ -261,6 +260,7 @@
         var _this$options8 = this.options,
           panelClass = _this$options8.panelClass,
           activeClass = _this$options8.activeClass,
+          collapse = _this$options8.collapse,
           beforeOpen = _this$options8.beforeOpen;
         var panel = element.querySelector('.'.concat(panelClass));
         var height = panel.scrollHeight;
@@ -274,7 +274,7 @@
           });
         });
 
-        this.updateARIA(element, true);
+        this.updateARIA(element, { ariaExpanded: true, ariaDisabled: collapse ? false : true });
       },
 
       /**
@@ -305,7 +305,7 @@
             });
           });
 
-          this.updateARIA(element, false);
+          this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
         } else {
           // Hide element without animation 'auto' => 0
           panel.style.height = 0;

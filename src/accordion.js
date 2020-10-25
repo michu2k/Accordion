@@ -146,15 +146,13 @@
        * @param {object} element = accordion item
        * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA(element, ariaExpanded) {
-        const { ariaEnabled, collapse, triggerClass } = this.options;
+      updateARIA(element, { ariaExpanded, ariaDisabled }) {
+        const { ariaEnabled, triggerClass } = this.options;
         if (!ariaEnabled) return;
 
         const trigger = element.querySelector(`.${triggerClass}`);
         trigger.setAttribute('aria-expanded', ariaExpanded);
-
-        if (collapse) return;
-        trigger.setAttribute('aria-disabled', true);
+        trigger.setAttribute('aria-disabled', ariaDisabled);
       },
 
       /**
@@ -238,7 +236,7 @@
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       showElement(element, calcHeight = true) {
-        const { panelClass, activeClass, beforeOpen } = this.options;
+        const { panelClass, activeClass, collapse, beforeOpen } = this.options;
         const panel = element.querySelector(`.${panelClass}`);
         const height = panel.scrollHeight;
 
@@ -251,7 +249,7 @@
           });
         });
 
-        this.updateARIA(element, true);
+        this.updateARIA(element, { ariaExpanded: true, ariaDisabled: collapse ? false : true });
       },
 
       /**
@@ -278,7 +276,7 @@
             });
           });
 
-          this.updateARIA(element, false);
+          this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
         } else {
           // Hide element without animation 'auto' => 0
           panel.style.height = 0;
