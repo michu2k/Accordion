@@ -425,6 +425,15 @@
     };
 
     /**
+     * Toggle accordion element
+     * @param {number} elIdx = element index
+     */
+    this.toggle = (elIdx) => {
+      const el = core.elements.find((_, idx) => idx === elIdx);
+      if (el) core.toggleElement(el);
+    };
+
+    /**
      * Open accordion element
      * @param {number} elIdx = element index
      */
@@ -461,7 +470,7 @@
      */
     this.destroy = () => {
       this.detachEvents();
-      this.closeAll();
+      this.openAll();
 
       core.elements.map((element) => {
         core.removeIDs(element);

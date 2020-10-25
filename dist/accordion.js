@@ -467,6 +467,17 @@
     };
 
     /**
+     * Toggle accordion element
+     * @param {number} elIdx = element index
+     */
+    this.toggle = function (elIdx) {
+      var el = core.elements.find(function (_, idx) {
+        return idx === elIdx;
+      });
+      if (el) core.toggleElement(el);
+    };
+
+    /**
      * Open accordion element
      * @param {number} elIdx = element index
      */
@@ -511,7 +522,7 @@
      */
     this.destroy = function () {
       _this5.detachEvents();
-      _this5.closeAll();
+      _this5.openAll();
 
       core.elements.map(function (element) {
         core.removeIDs(element);
