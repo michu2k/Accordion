@@ -138,6 +138,7 @@ accordion.detachEvents();
 | detachEvents() | Detach events | - |
 | open() | Open the accordion element with the given idx <br> E.g. `acc.open(1)` | `idx` - element index |
 | close() | Close the accordion element with the given idx <br> E.g. `acc.close(1)`| `idx` - element index |
+| toggle() | Toggle the accordion element with the given idx <br> E.g. `acc.toggle(1)`| `idx` - element index |
 | openAll() | Open all accordion elements | - |
 | closeAll() | Close all accordion elements | - |
 | destroy() | Destroy accordion instance: <br> Close elements, remove events, IDs & ARIA | - |
