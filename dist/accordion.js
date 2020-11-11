@@ -1,333 +1,536 @@
 /*!
- * Accordion v2.8.0
+ * Accordion v3.0.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2019 Michał Strumpf
+ * Copyright (c) Michał Strumpf
  * Published under MIT License
  */
 
-(function(window) {
+(function (window) {
   'use strict';
 
   var uniqueId = 0;
 
   /**
    * Core
-   * @param {string} selector = container in which the script will be initialized
+   * @param {string|HTMLElement} selectorOrElement = container in which the script will be initialized
    * @param {object} userOptions = options defined by user
    */
-  var Accordion = function Accordion(selector, userOptions) {
+  var Accordion = function Accordion(selectorOrElement, userOptions) {
+    var _this5 = this;
     var _this = this;
+    var eventsAttached = false;
 
-    var ac = {
+    // Break the array with the selectors
+    if (Array.isArray(selectorOrElement)) {
+      if (selectorOrElement.length) {
+        return selectorOrElement.map(function (single) {
+          return new Accordion(single, userOptions);
+        });
+      }
+
+      return false;
+    }
+
+    var core = {
       /**
        * Init accordion
        */
       init: function init() {
-        // Defaults
+        var _this2 = this;
         var defaults = {
           duration: 600, // animation duration in ms {number}
-          itemNumber: 0, // item number which will be shown {number}
-          aria: true, // add ARIA elements to the HTML structure {boolean}
-          closeOthers: true, // show only one element at the same time {boolean}
-          showItem: false, // always show element that has itemNumber number {boolean}
+          ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
+          collapse: true, // allow collapse expanded panel {boolean}
+          showMultiple: false, // show multiple elements at the same time {boolean}
+          openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
-          questionClass: 'ac-q', // question class {string}
-          answerClass: 'ac-a', // answer class {string}
-          targetClass: 'ac-target', // target class {string}
-          onToggle: function onToggle() {} // calls when toggling an item {function}
+          triggerClass: 'ac-trigger', // trigger class {string}
+          panelClass: 'ac-panel', // panel class {string}
+          activeClass: 'is-active', // active element class {string}
+          beforeOpen: function beforeOpen() {}, // calls before the item is opened {function}
+          onOpen: function onOpen() {}, // calls when the item is opened {function}
+          beforeClose: function beforeClose() {}, // calls before the item is closed {function}
+          onClose: function onClose() {}, // calls when the item is closed {function}
         };
 
-        // Break the array with the selectors
-        if (Array.isArray(selector)) {
-          if (selector.length) {
-            selector.map(function(single) {
-              return new Accordion(single, userOptions);
-            });
-          }
-
-          return false;
-        }
-
-        this.options = extendDefaults(defaults, userOptions);
-        this.container = document.querySelector(selector);
-        this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
+        // Extend default options
+        this.options = Object.assign(defaults, userOptions);
         var _this$options = this.options,
-          aria = _this$options.aria,
-          showItem = _this$options.showItem,
-          itemNumber = _this$options.itemNumber;
+          elementClass = _this$options.elementClass,
+          openOnInit = _this$options.openOnInit;
+        var isString = typeof selectorOrElement === 'string';
 
-        // Set ARIA
-        if (aria) {
-          this.container.setAttribute('role', 'tablist');
-        }
+        this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
+        this.elements = Array.from(this.container.querySelectorAll('.'.concat(elementClass)));
 
-        // For each element
-        for (var i = 0; i < this.elements.length; i++) {
-          var element = this.elements[i];
+        this.firstElement = this.elements[0];
+        this.lastElement = this.elements[this.elements.length - 1];
+        this.currFocusedIdx = 0;
 
-          // When JS is enabled, add the class to the elements
+        this.elements.map(function (element, idx) {
+          // When JS is enabled, add the class to the element
           element.classList.add('js-enabled');
 
-          this.hideElement(element);
-          this.setTransition(element);
-          this.generateID(element);
+          _this2.generateIDs(element);
+          _this2.setARIA(element);
+          _this2.setTransition(element);
 
-          // Set ARIA
-          if (aria) {
-            this.setARIA(element);
-          }
-        }
-
-        // Show accordion element when script is loaded
-        if (showItem) {
-          var el = this.elements[0]; // Default value
-          if (typeof itemNumber === 'number' && itemNumber < this.elements.length) {
-            el = this.elements[itemNumber];
-          }
-
-          this.toggleElement(el, false);
-        }
+          uniqueId++;
+          return openOnInit.includes(idx) ? _this2.showElement(element, false) : _this2.closeElement(element, false);
+        });
 
         _this.attachEvents();
       },
 
       /**
        * Set transition
-       * @param {object} element = current element
+       * @param {object} element = accordion item
+       * @param {boolean} clear = clear transition duration
        */
       setTransition: function setTransition(element) {
+        var clear = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         var _this$options2 = this.options,
           duration = _this$options2.duration,
-          answerClass = _this$options2.answerClass;
-        var el = element.querySelector('.' + answerClass);
-        var transition = isWebkit('transition');
+          panelClass = _this$options2.panelClass;
+        var el = element.querySelector('.'.concat(panelClass));
+        var transition = isWebkit('transitionDuration');
 
-        el.style[transition] = duration + 'ms';
+        el.style[transition] = clear ? null : ''.concat(duration, 'ms');
       },
 
       /**
-       * Generate unique ID for each element
-       * @param {object} element = list item
+       * Generate unique IDs for each element
+       * @param {object} element = accordion item
        */
-      generateID: function generateID(element) {
+      generateIDs: function generateIDs(element) {
+        var _this$options3 = this.options,
+          triggerClass = _this$options3.triggerClass,
+          panelClass = _this$options3.panelClass;
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
         element.setAttribute('id', 'ac-'.concat(uniqueId));
-        uniqueId++;
+        trigger.setAttribute('id', 'ac-trigger-'.concat(uniqueId));
+        panel.setAttribute('id', 'ac-panel-'.concat(uniqueId));
+      },
+
+      /**
+       * Remove IDs
+       * @param {object} element = accordion item
+       */
+      removeIDs: function removeIDs(element) {
+        var _this$options4 = this.options,
+          triggerClass = _this$options4.triggerClass,
+          panelClass = _this$options4.panelClass;
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        element.removeAttribute('id');
+        trigger.removeAttribute('id');
+        panel.removeAttribute('id');
       },
 
       /**
        * Create ARIA
-       * @param {object} element = list item
+       * @param {object} element = accordion item
        */
       setARIA: function setARIA(element) {
-        var _this$options3 = this.options,
-          questionClass = _this$options3.questionClass,
-          answerClass = _this$options3.answerClass;
-        var question = element.querySelector('.' + questionClass);
-        var answer = element.querySelector('.' + answerClass);
+        var _this$options5 = this.options,
+          ariaEnabled = _this$options5.ariaEnabled,
+          triggerClass = _this$options5.triggerClass,
+          panelClass = _this$options5.panelClass;
+        if (!ariaEnabled) return;
 
-        question.setAttribute('role', 'tab');
-        question.setAttribute('aria-expanded', 'false');
-        answer.setAttribute('role', 'tabpanel');
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        trigger.setAttribute('role', 'button');
+        trigger.setAttribute('aria-controls', 'ac-panel-'.concat(uniqueId));
+        trigger.setAttribute('aria-disabled', false);
+        trigger.setAttribute('aria-expanded', false);
+
+        panel.setAttribute('role', 'region');
+        panel.setAttribute('aria-labelledby', 'ac-trigger-'.concat(uniqueId));
       },
 
       /**
        * Update ARIA
-       * @param {object} element = list item
-       * @param {boolean} value = value of the attribute
+       * @param {object} element = accordion item
+       * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA: function updateARIA(element, value) {
-        var questionClass = this.options.questionClass;
-        var question = element.querySelector('.' + questionClass);
-        question.setAttribute('aria-expanded', value);
+      updateARIA: function updateARIA(element, _ref) {
+        var ariaExpanded = _ref.ariaExpanded,
+          ariaDisabled = _ref.ariaDisabled;
+        var _this$options6 = this.options,
+          ariaEnabled = _this$options6.ariaEnabled,
+          triggerClass = _this$options6.triggerClass;
+        if (!ariaEnabled) return;
+
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        trigger.setAttribute('aria-expanded', ariaExpanded);
+        trigger.setAttribute('aria-disabled', ariaDisabled);
       },
 
       /**
-       * Show specific accordion element
+       * Remove ARIA
+       * @param {object} element = accordion item
+       */
+      removeARIA: function removeARIA(element) {
+        var _this$options7 = this.options,
+          ariaEnabled = _this$options7.ariaEnabled,
+          triggerClass = _this$options7.triggerClass,
+          panelClass = _this$options7.panelClass;
+        if (!ariaEnabled) return;
+
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        trigger.removeAttribute('role');
+        trigger.removeAttribute('aria-controls');
+        trigger.removeAttribute('aria-disabled');
+        trigger.removeAttribute('aria-expanded');
+
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-labelledby');
+      },
+
+      /**
+       * Focus element
+       * @param {object} e = event
+       * @param {object} element = accordion item
+       */
+      focus: function focus(e, element) {
+        e.preventDefault();
+        var triggerClass = this.options.triggerClass;
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        trigger.focus();
+      },
+
+      /**
+       * Focus first element
        * @param {object} e = event
        */
-      callSpecificElement: function callSpecificElement(e) {
-        var target = e.target;
-        var _this$options4 = this.options,
-          questionClass = _this$options4.questionClass,
-          targetClass = _this$options4.targetClass,
-          closeOthers = _this$options4.closeOthers;
+      focusFirstElement: function focusFirstElement(e) {
+        this.focus(e, this.firstElement);
+        this.currFocusedIdx = 0;
+      },
 
-        for (var i = 0; i < this.elements.length; i++) {
-          if (this.elements[i].contains(target)) {
-            // Check if target has one of the classes
-            if (target.className.match(questionClass) || target.className.match(targetClass)) {
-              e.preventDefault();
+      /**
+       * Focus last element
+       * @param {object} e = event
+       */
+      focusLastElement: function focusLastElement(e) {
+        this.focus(e, this.lastElement);
+        this.currFocusedIdx = this.elements.length - 1;
+      },
 
-              if (closeOthers) {
-                this.closeAllElements(i);
-              }
+      /**
+       * Focus next element
+       * @param {object} e = event
+       */
+      focusNextElement: function focusNextElement(e) {
+        var nextElIdx = this.currFocusedIdx + 1;
+        if (nextElIdx > this.elements.length - 1) return this.focusFirstElement(e);
 
-              this.toggleElement(this.elements[i]);
-            }
+        this.focus(e, this.elements[nextElIdx]);
+        this.currFocusedIdx = nextElIdx;
+      },
 
-            break;
-          }
+      /**
+       * Focus previous element
+       * @param {object} e = event
+       */
+      focusPrevElement: function focusPrevElement(e) {
+        var prevElIdx = this.currFocusedIdx - 1;
+        if (prevElIdx < 0) return this.focusLastElement(e);
+
+        this.focus(e, this.elements[prevElIdx]);
+        this.currFocusedIdx = prevElIdx;
+      },
+
+      /**
+       * Show element
+       * @param {object} element = accordion item
+       * @param {boolean} calcHeight = calculate the height of the panel
+       */
+      showElement: function showElement(element) {
+        var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        var _this$options8 = this.options,
+          panelClass = _this$options8.panelClass,
+          activeClass = _this$options8.activeClass,
+          collapse = _this$options8.collapse,
+          beforeOpen = _this$options8.beforeOpen;
+        var panel = element.querySelector('.'.concat(panelClass));
+        var height = panel.scrollHeight;
+
+        element.classList.add(activeClass);
+        if (calcHeight) beforeOpen(element);
+
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            panel.style.height = calcHeight ? ''.concat(height, 'px') : 'auto';
+          });
+        });
+
+        this.updateARIA(element, { ariaExpanded: true, ariaDisabled: collapse ? false : true });
+      },
+
+      /**
+       * Close element
+       * @param {object} element = accordion item
+       * @param {boolean} calcHeight = calculate the height of the panel
+       */
+      closeElement: function closeElement(element) {
+        var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        var _this$options9 = this.options,
+          panelClass = _this$options9.panelClass,
+          activeClass = _this$options9.activeClass,
+          beforeClose = _this$options9.beforeClose;
+        var panel = element.querySelector('.'.concat(panelClass));
+        var height = panel.scrollHeight;
+
+        element.classList.remove(activeClass);
+
+        if (calcHeight) {
+          beforeClose(element);
+
+          // Animation [X]px => 0
+          requestAnimationFrame(function () {
+            panel.style.height = ''.concat(height, 'px');
+
+            requestAnimationFrame(function () {
+              panel.style.height = 0;
+            });
+          });
+
+          this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
+        } else {
+          // Hide element without animation 'auto' => 0
+          panel.style.height = 0;
         }
       },
 
       /**
-       * Hide element
-       * @param {object} element = list item
-       */
-      hideElement: function hideElement(element) {
-        var answerClass = this.options.answerClass;
-        var answer = element.querySelector('.' + answerClass);
-        answer.style.height = 0;
-      },
-
-      /**
-       * Toggle current element
-       * @param {object} element = current element
-       * @param {boolean} animation = turn on animation
+       * Toggle element
+       * @param {object} element = accordion item
        */
       toggleElement: function toggleElement(element) {
-        var animation = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        var _this$options5 = this.options,
-          answerClass = _this$options5.answerClass,
-          aria = _this$options5.aria,
-          onToggle = _this$options5.onToggle;
-        var answer = element.querySelector('.' + answerClass);
-        var height = answer.scrollHeight;
-        var ariaValue;
+        var _this$options10 = this.options,
+          activeClass = _this$options10.activeClass,
+          collapse = _this$options10.collapse;
+        var isActive = element.classList.contains(activeClass);
 
-        // Toggle class
-        element.classList.toggle('is-active');
-
-        // Open element without animation
-        if (!animation) {
-          answer.style.height = 'auto';
-        }
-
-        // Set height
-        if (parseInt(answer.style.height) > 0) {
-          ariaValue = false;
-
-          requestAnimationFrame(function() {
-            answer.style.height = 0;
-          });
-        } else {
-          ariaValue = true;
-
-          requestAnimationFrame(function() {
-            answer.style.height = height + 'px';
-          });
-        }
-
-        // Update ARIA
-        if (aria) {
-          this.updateARIA(element, ariaValue);
-        }
-
-        // Call onToggle function
-        if (animation) {
-          onToggle(element, this.elements);
-        }
+        if (isActive && !collapse) return;
+        return isActive ? this.closeElement(element) : this.showElement(element);
       },
 
       /**
        * Close all elements without the current element
-       * @param {number} current = current element
        */
-      closeAllElements: function closeAllElements(current) {
-        var aria = this.options.aria;
-        var length = this.elements.length;
+      closeElements: function closeElements() {
+        var _this3 = this;
+        var _this$options11 = this.options,
+          activeClass = _this$options11.activeClass,
+          showMultiple = _this$options11.showMultiple;
+        if (showMultiple) return;
 
-        for (var i = 0; i < length; i++) {
-          if (i != current) {
-            var element = this.elements[i];
+        this.elements.map(function (element, idx) {
+          var isActive = element.classList.contains(activeClass);
 
-            // Remove active class
-            if (element.classList.contains('is-active')) {
-              element.classList.remove('is-active');
-            }
-
-            // Update ARIA
-            if (aria) {
-              this.updateARIA(element, false);
-            }
-
-            this.hideElement(element);
+          if (isActive && idx != _this3.currFocusedIdx) {
+            _this3.closeElement(element);
           }
-        }
+        });
       },
 
       /**
-       * Resize handler
-       */
-      resizeHandler: function resizeHandler() {
-        var height, answer;
-        var _this$options6 = this.options,
-          elementClass = _this$options6.elementClass,
-          answerClass = _this$options6.answerClass;
-        var activeElement = this.container.querySelectorAll('.' + elementClass + '.is-active');
-
-        // Change element height, when window is resized and when element is active
-        for (var i = 0; i < activeElement.length; i++) {
-          answer = activeElement[i].querySelector('.' + answerClass);
-
-          // Set to auto and get new height
-          requestAnimationFrame(function() {
-            answer.style.height = 'auto';
-            height = answer.offsetHeight;
-
-            requestAnimationFrame(function() {
-              answer.style.height = height + 'px';
-            });
-          });
-        }
-      },
-
-      /**
-       * Click handler
+       * Handle click
        * @param {object} e = event
        */
-      clickHandler: function clickHandler(e) {
-        this.callSpecificElement(e);
+      handleClick: function handleClick(e) {
+        var _this4 = this;
+        var target = e.currentTarget;
+
+        this.elements.map(function (element, idx) {
+          if (element.contains(target) && e.target.nodeName !== 'A') {
+            _this4.currFocusedIdx = idx;
+
+            _this4.closeElements();
+            _this4.focus(e, element);
+            _this4.toggleElement(element);
+          }
+        });
       },
 
       /**
-       * Keydown handler
+       * Handle keydown
        * @param {object} e = event
        */
-      keydownHandler: function keydownHandler(e) {
-        var ENTER = 13;
-        if (e.keyCode === ENTER) {
-          this.callSpecificElement(e);
+      handleKeydown: function handleKeydown(e) {
+        var KEYS = {
+          ARROW_UP: 38,
+          ARROW_DOWN: 40,
+          HOME: 36,
+          END: 35,
+        };
+
+        switch (e.keyCode) {
+          case KEYS.ARROW_UP:
+            return this.focusPrevElement(e);
+
+          case KEYS.ARROW_DOWN:
+            return this.focusNextElement(e);
+
+          case KEYS.HOME:
+            return this.focusFirstElement(e);
+
+          case KEYS.END:
+            return this.focusLastElement(e);
+
+          default:
+            return null;
         }
-      }
+      },
+
+      /**
+       * Handle transitionend
+       * @param {object} e = event
+       */
+      handleTransitionEnd: function handleTransitionEnd(e) {
+        if (e.propertyName !== 'height') return;
+        var _this$options12 = this.options,
+          onOpen = _this$options12.onOpen,
+          onClose = _this$options12.onClose;
+        var panel = e.currentTarget;
+        var height = parseInt(panel.style.height);
+        var element = this.elements.find(function (element) {
+          return element.contains(panel);
+        });
+
+        if (height > 0) {
+          panel.style.height = 'auto';
+          onOpen(element);
+        } else {
+          onClose(element);
+        }
+      },
     };
 
     /**
      * Attach events
      */
-    this.attachEvents = function() {
-      var _this = ac;
+    this.attachEvents = function () {
+      if (eventsAttached) return;
+      var _core$options = core.options,
+        triggerClass = _core$options.triggerClass,
+        panelClass = _core$options.panelClass;
 
-      _this.clickHandler = _this.clickHandler.bind(_this);
-      _this.keydownHandler = _this.keydownHandler.bind(_this);
-      _this.resizeHandler = _this.resizeHandler.bind(_this);
+      core.handleClick = core.handleClick.bind(core);
+      core.handleKeydown = core.handleKeydown.bind(core);
+      core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      _this.container.addEventListener('click', _this.clickHandler);
-      _this.container.addEventListener('keydown', _this.keydownHandler);
-      window.addEventListener('resize', _this.resizeHandler);
+      core.elements.map(function (element) {
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        trigger.addEventListener('click', core.handleClick);
+        trigger.addEventListener('keydown', core.handleKeydown);
+        panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
+        panel.addEventListener('transitionend', core.handleTransitionEnd);
+      });
+
+      eventsAttached = true;
     };
 
     /**
      * Detach events
      */
-    this.detachEvents = function() {
-      var _this = ac;
+    this.detachEvents = function () {
+      if (!eventsAttached) return;
+      var _core$options2 = core.options,
+        triggerClass = _core$options2.triggerClass,
+        panelClass = _core$options2.panelClass;
 
-      _this.container.removeEventListener('click', _this.clickHandler);
-      _this.container.removeEventListener('keydown', _this.keydownHandler);
-      window.removeEventListener('resize', _this.resizeHandler);
+      core.elements.map(function (element) {
+        var trigger = element.querySelector('.'.concat(triggerClass));
+        var panel = element.querySelector('.'.concat(panelClass));
+
+        trigger.removeEventListener('click', core.handleClick);
+        trigger.removeEventListener('keydown', core.handleKeydown);
+        panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
+        panel.removeEventListener('transitionend', core.handleTransitionEnd);
+      });
+
+      eventsAttached = false;
+    };
+
+    /**
+     * Toggle accordion element
+     * @param {number} elIdx = element index
+     */
+    this.toggle = function (elIdx) {
+      var el = core.elements.find(function (_, idx) {
+        return idx === elIdx;
+      });
+      if (el) core.toggleElement(el);
+    };
+
+    /**
+     * Open accordion element
+     * @param {number} elIdx = element index
+     */
+    this.open = function (elIdx) {
+      var el = core.elements.find(function (_, idx) {
+        return idx === elIdx;
+      });
+      if (el) core.showElement(el);
+    };
+
+    /**
+     * Open all accordion elements
+     */
+    this.openAll = function () {
+      core.elements.map(function (element) {
+        return core.showElement(element, false);
+      });
+    };
+
+    /**
+     * Close accordion element
+     * @param {number} elIdx = element index
+     */
+    this.close = function (elIdx) {
+      var el = core.elements.find(function (_, idx) {
+        return idx === elIdx;
+      });
+      if (el) core.closeElement(el);
+    };
+
+    /**
+     * Close all accordion elements
+     */
+    this.closeAll = function () {
+      core.elements.map(function (element) {
+        return core.closeElement(element, false);
+      });
+    };
+
+    /**
+     * Destroy accordion instance
+     */
+    this.destroy = function () {
+      _this5.detachEvents();
+      _this5.openAll();
+
+      core.elements.map(function (element) {
+        core.removeIDs(element);
+        core.removeARIA(element);
+        core.setTransition(element, true);
+      });
+
+      eventsAttached = true;
     };
 
     /**
@@ -355,34 +558,7 @@
       return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
-    /**
-     * Extend defaults
-     * @param {object} defaults = defaults options defined in script
-     * @param {object} properties = options defined by user
-     * @return {object} defaults = modified options
-     */
-    var extendDefaults = function extendDefaults(defaults, properties) {
-      for (var property in properties) {
-        defaults[property] = properties[property];
-      }
-
-      return defaults;
-    };
-
-    /**
-     * RequestAnimationFrame support
-     */
-    window.requestAnimationFrame = (function() {
-      return (
-        window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        function(callback) {
-          window.setTimeout(callback, 1000 / 60);
-        }
-      );
-    })();
-
-    ac.init();
+    core.init();
   };
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

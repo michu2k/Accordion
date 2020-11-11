@@ -1,9 +1,9 @@
 /*!
- * Accordion v2.8.0
+ * Accordion v3.0.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
- * Copyright 2017-2019 Michał Strumpf
+ * Copyright (c) Michał Strumpf
  * Published under MIT License
  */
 
@@ -15,275 +15,367 @@
 
   /**
    * Core
-   * @param {string} selector = container in which the script will be initialized
+   * @param {string|HTMLElement} selectorOrElement = container in which the script will be initialized
    * @param {object} userOptions = options defined by user
    */
-  const Accordion = function(selector, userOptions) {
+  const Accordion = function(selectorOrElement, userOptions) {
     const _this = this;
-        
-    const ac = {
+    let eventsAttached = false;
+
+    // Break the array with the selectors
+    if (Array.isArray(selectorOrElement)) {
+      if (selectorOrElement.length) {
+        return selectorOrElement.map((single) => new Accordion(single, userOptions));
+      }
+
+      return false;
+    }
+
+    const core = {
       /**
        * Init accordion
        */
       init() {
-        // Defaults 
         const defaults = {
           duration: 600, // animation duration in ms {number}
-          itemNumber: 0, // item number which will be shown {number}
-          aria: true, // add ARIA elements to the HTML structure {boolean}
-          closeOthers: true, // show only one element at the same time {boolean}
-          showItem: false, // always show element that has itemNumber number {boolean}
+          ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
+          collapse: true, // allow collapse expanded panel {boolean}
+          showMultiple: false, // show multiple elements at the same time {boolean}
+          openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
-          questionClass: 'ac-q', // question class {string}
-          answerClass: 'ac-a', // answer class {string}
-          targetClass: 'ac-target', // target class {string}
-          onToggle: () => {} // calls when toggling an item {function}
+          triggerClass: 'ac-trigger', // trigger class {string}
+          panelClass: 'ac-panel', // panel class {string}
+          activeClass: 'is-active', // active element class {string}
+          beforeOpen: () => {}, // calls before the item is opened {function}
+          onOpen: () => {}, // calls when the item is opened {function}
+          beforeClose: () => {}, // calls before the item is closed {function}
+          onClose: () => {} // calls when the item is closed {function}
         };
 
-        // Break the array with the selectors
-        if (Array.isArray(selector)) {
-          if (selector.length) {
-            selector.map(single => new Accordion(single, userOptions));
-          }
+        // Extend default options
+        this.options = Object.assign(defaults, userOptions);
 
-          return false;
-        }
+        const { elementClass, openOnInit } = this.options;
+        const isString = (typeof selectorOrElement === 'string');
 
-        this.options = extendDefaults(defaults, userOptions);
-        this.container = document.querySelector(selector);
-        this.elements = this.container.querySelectorAll('.' + this.options.elementClass);
-        const { aria, showItem, itemNumber } = this.options;
+        this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
+        this.elements = Array.from(this.container.querySelectorAll(`.${elementClass}`));
 
-        // Set ARIA
-        if (aria) {
-          this.container.setAttribute('role', 'tablist');
-        }
+        this.firstElement = this.elements[0];
+        this.lastElement = this.elements[this.elements.length - 1];
+        this.currFocusedIdx = 0;
 
-        // For each element
-        for (let i = 0; i < this.elements.length; i++) {
-          const element = this.elements[i];
-
-          // When JS is enabled, add the class to the elements
+        this.elements.map((element, idx) => {
+          // When JS is enabled, add the class to the element
           element.classList.add('js-enabled');
 
-          this.hideElement(element);
+          this.generateIDs(element);
+          this.setARIA(element);
           this.setTransition(element);
-          this.generateID(element);
 
-          // Set ARIA
-          if (aria) {
-            this.setARIA(element);
-          }
-        }
-
-        // Show accordion element when script is loaded
-        if (showItem) {
-          let el = this.elements[0]; // Default value
-          if (typeof itemNumber === 'number' && itemNumber < this.elements.length) {
-            el = this.elements[itemNumber];
-          }
-
-          this.toggleElement(el, false);
-        }
+          uniqueId++;
+          return openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
+        });
 
         _this.attachEvents();
       },
 
       /**
-       * Set transition 
-       * @param {object} element = current element
+       * Set transition
+       * @param {object} element = accordion item
+       * @param {boolean} clear = clear transition duration
        */
-      setTransition(element) {
-        const { duration, answerClass } = this.options;
-        const el = element.querySelector('.' + answerClass);
-        const transition = isWebkit('transition');
+      setTransition(element, clear = false) {
+        const { duration, panelClass } = this.options;
+        const el = element.querySelector(`.${panelClass}`);
+        const transition = isWebkit('transitionDuration');
 
-        el.style[transition] = duration + 'ms';
+        el.style[transition] = clear ? null : `${duration}ms`;
       },
 
       /**
-       * Generate unique ID for each element
-       * @param {object} element = list item
+       * Generate unique IDs for each element
+       * @param {object} element = accordion item
        */
-      generateID(element) {
+      generateIDs(element) {
+        const { triggerClass, panelClass } = this.options;
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
         element.setAttribute('id', `ac-${uniqueId}`);
-        uniqueId++;
+        trigger.setAttribute('id', `ac-trigger-${uniqueId}`);
+        panel.setAttribute('id', `ac-panel-${uniqueId}`);
+      },
+
+      /**
+       * Remove IDs
+       * @param {object} element = accordion item
+       */
+      removeIDs(element) {
+        const { triggerClass, panelClass } = this.options;
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        element.removeAttribute('id');
+        trigger.removeAttribute('id');
+        panel.removeAttribute('id');
       },
 
       /**
        * Create ARIA
-       * @param {object} element = list item
+       * @param {object} element = accordion item
        */
       setARIA(element) {
-        const { questionClass, answerClass } = this.options;
-        const question = element.querySelector('.' + questionClass);
-        const answer = element.querySelector('.' + answerClass);
+        const { ariaEnabled, triggerClass, panelClass } = this.options;
+        if (!ariaEnabled) return;
 
-        question.setAttribute('role', 'tab');
-        question.setAttribute('aria-expanded', 'false');
-        answer.setAttribute('role', 'tabpanel'); 
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        trigger.setAttribute('role', 'button');
+        trigger.setAttribute('aria-controls', `ac-panel-${uniqueId}`);
+        trigger.setAttribute('aria-disabled', false);
+        trigger.setAttribute('aria-expanded', false);
+
+        panel.setAttribute('role', 'region');
+        panel.setAttribute('aria-labelledby', `ac-trigger-${uniqueId}`);
       },
 
       /**
        * Update ARIA
-       * @param {object} element = list item
-       * @param {boolean} value = value of the attribute
+       * @param {object} element = accordion item
+       * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA(element, value) {
-        const { questionClass } = this.options;
-        const question = element.querySelector('.' + questionClass);
-        question.setAttribute('aria-expanded', value);       
+      updateARIA(element, { ariaExpanded, ariaDisabled }) {
+        const { ariaEnabled, triggerClass } = this.options;
+        if (!ariaEnabled) return;
+
+        const trigger = element.querySelector(`.${triggerClass}`);
+        trigger.setAttribute('aria-expanded', ariaExpanded);
+        trigger.setAttribute('aria-disabled', ariaDisabled);
       },
 
       /**
-       * Show specific accordion element
+       * Remove ARIA
+       * @param {object} element = accordion item
+       */
+      removeARIA(element) {
+        const { ariaEnabled, triggerClass, panelClass } = this.options;
+        if (!ariaEnabled) return;
+
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        trigger.removeAttribute('role');
+        trigger.removeAttribute('aria-controls');
+        trigger.removeAttribute('aria-disabled');
+        trigger.removeAttribute('aria-expanded');
+
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-labelledby');
+      },
+
+      /**
+       * Focus element
+       * @param {object} e = event
+       * @param {object} element = accordion item
+       */
+      focus(e, element) {
+        e.preventDefault();
+
+        const { triggerClass } = this.options;
+        const trigger = element.querySelector(`.${triggerClass}`);
+        trigger.focus();
+      },
+
+      /**
+       * Focus first element
        * @param {object} e = event
        */
-      callSpecificElement(e) {
-        const target = e.target;
-        const { questionClass, targetClass, closeOthers } = this.options;
+      focusFirstElement(e) {
+        this.focus(e, this.firstElement);
+        this.currFocusedIdx = 0;
+      },
 
-        for (let i = 0; i < this.elements.length; i++) {
-          if (this.elements[i].contains(target)) {
+      /**
+       * Focus last element
+       * @param {object} e = event
+       */
+      focusLastElement(e) {
+        this.focus(e, this.lastElement);
+        this.currFocusedIdx = this.elements.length - 1;
+      },
 
-            // Check if target has one of the classes
-            if (target.className.match(questionClass) || target.className.match(targetClass)) {
-              e.preventDefault();
+      /**
+       * Focus next element
+       * @param {object} e = event
+       */
+      focusNextElement(e) {
+        const nextElIdx = this.currFocusedIdx + 1;
+        if (nextElIdx > this.elements.length - 1) return this.focusFirstElement(e);
 
-              if (closeOthers) {
-                this.closeAllElements(i);
-              }
+        this.focus(e, this.elements[nextElIdx]);
+        this.currFocusedIdx = nextElIdx;
+      },
 
-              this.toggleElement(this.elements[i]);
-            } 
+      /**
+       * Focus previous element
+       * @param {object} e = event
+       */
+      focusPrevElement(e) {
+        const prevElIdx = this.currFocusedIdx - 1;
+        if (prevElIdx < 0) return this.focusLastElement(e);
 
-            break;
-          } 
+        this.focus(e, this.elements[prevElIdx]);
+        this.currFocusedIdx = prevElIdx;
+      },
+
+      /**
+       * Show element
+       * @param {object} element = accordion item
+       * @param {boolean} calcHeight = calculate the height of the panel
+       */
+      showElement(element, calcHeight = true) {
+        const { panelClass, activeClass, collapse, beforeOpen } = this.options;
+        const panel = element.querySelector(`.${panelClass}`);
+        const height = panel.scrollHeight;
+
+        element.classList.add(activeClass);
+        if (calcHeight) beforeOpen(element);
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            panel.style.height = calcHeight ? `${height}px` : 'auto';
+          });
+        });
+
+        this.updateARIA(element, { ariaExpanded: true, ariaDisabled: collapse ? false : true });
+      },
+
+      /**
+       * Close element
+       * @param {object} element = accordion item
+       * @param {boolean} calcHeight = calculate the height of the panel
+       */
+      closeElement(element, calcHeight = true) {
+        const { panelClass, activeClass, beforeClose } = this.options;
+        const panel = element.querySelector(`.${panelClass}`);
+        const height = panel.scrollHeight;
+
+        element.classList.remove(activeClass);
+
+        if (calcHeight) {
+          beforeClose(element);
+
+          // Animation [X]px => 0
+          requestAnimationFrame(() => {
+            panel.style.height = `${height}px`;
+
+            requestAnimationFrame(() => {
+              panel.style.height = 0;
+            });
+          });
+
+          this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
+        } else {
+          // Hide element without animation 'auto' => 0
+          panel.style.height = 0;
         }
       },
 
       /**
-       * Hide element
-       * @param {object} element = list item
+       * Toggle element
+       * @param {object} element = accordion item
        */
-      hideElement(element) {
-        const { answerClass } = this.options;
-        const answer = element.querySelector('.' + answerClass);
-        answer.style.height = 0; 
-      },
+      toggleElement(element) {
+        const { activeClass, collapse } = this.options;
+        const isActive = element.classList.contains(activeClass);
 
-      /** 
-       * Toggle current element
-       * @param {object} element = current element
-       * @param {boolean} animation = turn on animation
-       */
-      toggleElement(element, animation = true) {
-        const { answerClass, aria, onToggle } = this.options;
-        const answer = element.querySelector('.' + answerClass);
-        const height = answer.scrollHeight;
-        let ariaValue;
-
-        // Toggle class
-        element.classList.toggle('is-active');
-
-        // Open element without animation
-        if (!animation) {
-          answer.style.height = 'auto';
-        }
-
-        // Set height
-        if (parseInt(answer.style.height) > 0) {
-          ariaValue = false;
-
-          requestAnimationFrame(() => {
-            answer.style.height = 0;
-          });
-        } else {
-          ariaValue = true;
-
-          requestAnimationFrame(() => {
-            answer.style.height = height + 'px';
-          });
-        }
-
-        // Update ARIA
-        if (aria) {
-          this.updateARIA(element, ariaValue);
-        }
-
-        // Call onToggle function
-        if (animation) {
-          onToggle(element, this.elements);
-        }
+        if (isActive && !collapse) return;
+        return isActive ? this.closeElement(element) : this.showElement(element);
       },
 
       /**
        * Close all elements without the current element
-       * @param {number} current = current element
        */
-      closeAllElements(current) {
-        const { aria } = this.options;
-        const length = this.elements.length;
+      closeElements() {
+        const { activeClass, showMultiple } = this.options;
+        if (showMultiple) return;
 
-        for (let i = 0; i < length; i++) {
-          if (i != current) {
-            const element = this.elements[i];
+        this.elements.map((element, idx) => {
+          const isActive = element.classList.contains(activeClass);
 
-            // Remove active class
-            if (element.classList.contains('is-active')) {
-              element.classList.remove('is-active');
-            }
-
-            // Update ARIA
-            if (aria) {
-              this.updateARIA(element, false);
-            }
-
-            this.hideElement(element);
+          if (isActive && idx != this.currFocusedIdx) {
+            this.closeElement(element);
           }
-        }   
+        });
       },
 
       /**
-       * Resize handler
-       */
-      resizeHandler() {
-        let height, answer;
-        const { elementClass, answerClass } = this.options;
-        const activeElement = this.container.querySelectorAll('.' + elementClass + '.is-active');
-
-        // Change element height, when window is resized and when element is active
-        for (let i = 0; i < activeElement.length; i++) {
-          answer = activeElement[i].querySelector('.' + answerClass);
-
-          // Set to auto and get new height
-          requestAnimationFrame(() => {
-            answer.style.height = 'auto';
-            height = answer.offsetHeight;
-
-            requestAnimationFrame(() => {
-              answer.style.height = height + 'px';
-            });
-          });
-        }   
-      },
-
-      /**
-       * Click handler
+       * Handle click
        * @param {object} e = event
        */
-      clickHandler(e) {
-        this.callSpecificElement(e);
+      handleClick(e) {
+        const target = e.currentTarget;
+
+        this.elements.map((element, idx) => {
+          if (element.contains(target) && e.target.nodeName !== 'A') {
+            this.currFocusedIdx = idx;
+
+            this.closeElements();
+            this.focus(e, element);
+            this.toggleElement(element);
+          }
+        });
       },
 
       /**
-       * Keydown handler
+       * Handle keydown
        * @param {object} e = event
        */
-      keydownHandler(e) {
-        const ENTER = 13;
-        if (e.keyCode === ENTER) {
-          this.callSpecificElement(e);
+      handleKeydown(e) {
+        const KEYS = {
+          ARROW_UP: 38,
+          ARROW_DOWN: 40,
+          HOME: 36,
+          END: 35
+        };
+
+        switch (e.keyCode) {
+          case KEYS.ARROW_UP:
+            return this.focusPrevElement(e);
+
+          case KEYS.ARROW_DOWN:
+            return this.focusNextElement(e);
+
+          case KEYS.HOME:
+            return this.focusFirstElement(e);
+
+          case KEYS.END:
+            return this.focusLastElement(e);
+
+          default:
+            return null;
+        }
+      },
+
+      /**
+       * Handle transitionend
+       * @param {object} e = event
+       */
+      handleTransitionEnd(e) {
+        if (e.propertyName !== 'height') return;
+
+        const { onOpen, onClose } = this.options;
+        const panel = e.currentTarget;
+        const height = parseInt(panel.style.height);
+        const element = this.elements.find((element) => element.contains(panel));
+
+        if (height > 0) {
+          panel.style.height = 'auto';
+          onOpen(element);
+        } else {
+          onClose(element);
         }
       }
     };
@@ -292,26 +384,101 @@
      * Attach events
      */
     this.attachEvents = () => {
-      const _this = ac;
+      if (eventsAttached) return;
+      const { triggerClass, panelClass } = core.options;
 
-      _this.clickHandler = _this.clickHandler.bind(_this);
-      _this.keydownHandler = _this.keydownHandler.bind(_this);
-      _this.resizeHandler = _this.resizeHandler.bind(_this);
+      core.handleClick = core.handleClick.bind(core);
+      core.handleKeydown = core.handleKeydown.bind(core);
+      core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      _this.container.addEventListener('click', _this.clickHandler);
-      _this.container.addEventListener('keydown', _this.keydownHandler);
-      window.addEventListener('resize', _this.resizeHandler);
+      core.elements.map((element) => {
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        trigger.addEventListener('click', core.handleClick);
+        trigger.addEventListener('keydown', core.handleKeydown);
+        panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
+        panel.addEventListener('transitionend', core.handleTransitionEnd);
+      });
+
+      eventsAttached = true;
     };
 
     /**
      * Detach events
      */
     this.detachEvents = () => {
-      const _this = ac;
+      if (!eventsAttached) return;
+      const { triggerClass, panelClass } = core.options;
 
-      _this.container.removeEventListener('click', _this.clickHandler);
-      _this.container.removeEventListener('keydown', _this.keydownHandler);
-      window.removeEventListener('resize', _this.resizeHandler);
+      core.elements.map((element) => {
+        const trigger = element.querySelector(`.${triggerClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
+
+        trigger.removeEventListener('click', core.handleClick);
+        trigger.removeEventListener('keydown', core.handleKeydown);
+        panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
+        panel.removeEventListener('transitionend', core.handleTransitionEnd);
+      });
+
+      eventsAttached = false;
+    };
+
+    /**
+     * Toggle accordion element
+     * @param {number} elIdx = element index
+     */
+    this.toggle = (elIdx) => {
+      const el = core.elements.find((_, idx) => idx === elIdx);
+      if (el) core.toggleElement(el);
+    };
+
+    /**
+     * Open accordion element
+     * @param {number} elIdx = element index
+     */
+    this.open = (elIdx) => {
+      const el = core.elements.find((_, idx) => idx === elIdx);
+      if (el) core.showElement(el);
+    };
+
+    /**
+     * Open all accordion elements
+     */
+    this.openAll = () => {
+      core.elements.map((element) => core.showElement(element, false));
+    };
+
+    /**
+     * Close accordion element
+     * @param {number} elIdx = element index
+     */
+    this.close = (elIdx) => {
+      const el = core.elements.find((_, idx) => idx === elIdx);
+      if (el) core.closeElement(el);
+    };
+
+    /**
+     * Close all accordion elements
+     */
+    this.closeAll = () => {
+      core.elements.map((element) => core.closeElement(element, false));
+    };
+
+    /**
+     * Destroy accordion instance
+     */
+    this.destroy = () => {
+      this.detachEvents();
+      this.openAll();
+
+      core.elements.map((element) => {
+        core.removeIDs(element);
+        core.removeARIA(element);
+        core.setTransition(element, true);
+      });
+
+      eventsAttached = true;
     };
 
     /**
@@ -319,7 +486,7 @@
      * @param {string} property = property name
      * @return {string} property = property with optional webkit prefix
      */
-    const isWebkit = property => {
+    const isWebkit = (property) => {
       if (typeof document.documentElement.style[property] === 'string') {
         return property;
       }
@@ -328,42 +495,17 @@
       property = `webkit${property}`;
 
       return property;
-    }
+    };
 
     /**
      * Capitalize the first letter in the string
      * @param {string} string = string
      * @return {string} string = changed string
      */
-    const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
+    const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-    /** 
-     * Extend defaults
-     * @param {object} defaults = defaults options defined in script
-     * @param {object} properties = options defined by user
-     * @return {object} defaults = modified options
-     */
-    const extendDefaults = (defaults, properties) => {
-      for (let property in properties) {
-        defaults[property] = properties[property];
-      }
-
-      return defaults;
-    }
-
-    /**
-     * RequestAnimationFrame support
-     */
-    window.requestAnimationFrame = (() => {
-      return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        function(callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-    })();
-
-    ac.init();
-  }
+    core.init();
+  };
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = Accordion;
