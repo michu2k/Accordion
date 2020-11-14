@@ -59,7 +59,8 @@
         const isString = (typeof selectorOrElement === 'string');
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
-        this.elements = Array.from(this.container.querySelectorAll(`.${elementClass}`));
+        this.elements = Array.from(this.container.childNodes)
+          .filter((el) => el.classList && el.classList.contains(elementClass));
 
         this.firstElement = this.elements[0];
         this.lastElement = this.elements[this.elements.length - 1];
