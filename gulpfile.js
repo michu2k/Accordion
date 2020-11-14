@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const babel = require('gulp-babel');
 const cleanCSS = require('gulp-clean-css');
-const uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify-es').default;
 const browserSync = require('browser-sync').create();
 const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
@@ -35,13 +35,13 @@ function reload(done) {
 // Sass
 function compileSass() {
   return gulp.src(config.srcCSS)
-    .pipe(sass({outputStyle: 'expanded'})
+    .pipe(sass({ outputStyle: 'expanded' })
       .on('error', sass.logError))
-    .pipe(autoprefixer({cascade: false}))
+    .pipe(autoprefixer({ cascade: false }))
     .pipe(gulp.dest(config.distCSS))
     .pipe(browserSync.stream())
     .pipe(cleanCSS())
-    .pipe(rename({suffix: '.min'}))
+    .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(config.distCSS))
     .pipe(browserSync.stream());
 }
@@ -63,7 +63,7 @@ function compileJs() {
     }))
     .pipe(gulp.dest(config.distJS))
     .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
+    .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(config.distJS))
     .pipe(browserSync.stream());
 }
@@ -86,7 +86,7 @@ function watchHtml() {
 // Fix all errors
 function lintFix() {
   return gulp.src(['**/*.js', '!node_modules/**'])
-    .pipe(eslint({fix: true}))
+    .pipe(eslint({ fix: true }))
     .pipe(gulp.dest(function(file) {
       return file.base;
     }));

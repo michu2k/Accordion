@@ -23,9 +23,9 @@
     "url": "https://github.com/michu2k/Accordion/issues"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.1",
+    "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
-    "browser-sync": "^2.26.12",
+    "browser-sync": "^2.26.13",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-babel": "^8.0.0",
@@ -34,7 +34,7 @@
     "gulp-prettier": "^3.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^4.1.0",
-    "gulp-uglify": "^3.0.2"
+    "gulp-uglify-es": "^2.0.0"
   },
   "browserslist": [
     ">0.15%",
