@@ -1,6 +1,6 @@
 {
   "name": "accordion-js",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Lightweight and accessible accordion module created in pure Javascript",
   "main": "dist/accordion.min.js",
   "repository": {
