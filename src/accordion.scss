@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*!
- * Accordion v3.1.0
+ * Accordion v3.1.1
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -83,7 +83,7 @@ $color-black: #111;
       visibility: visible;
     }
 
-    .ac-trigger {
+    & > .ac-header .ac-trigger {
       &::after {
         content: '\2013';
       }
