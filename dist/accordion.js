@@ -1,5 +1,5 @@
 /*!
- * Accordion v3.0.0
+ * Accordion v3.1.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -37,7 +37,7 @@
       /**
        * Init accordion
        */
-      init() {
+      init: function init() {
         var _this2 = this;
         var defaults = {
           duration: 600, // animation duration in ms {number}
@@ -91,7 +91,7 @@
        * @param {object} element = accordion item
        * @param {boolean} clear = clear transition duration
        */
-      setTransition(element) {
+      setTransition: function setTransition(element) {
         var clear = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         var _this$options2 = this.options,
           duration = _this$options2.duration,
@@ -106,7 +106,7 @@
        * Generate unique IDs for each element
        * @param {object} element = accordion item
        */
-      generateIDs(element) {
+      generateIDs: function generateIDs(element) {
         var _this$options3 = this.options,
           triggerClass = _this$options3.triggerClass,
           panelClass = _this$options3.panelClass;
@@ -122,7 +122,7 @@
        * Remove IDs
        * @param {object} element = accordion item
        */
-      removeIDs(element) {
+      removeIDs: function removeIDs(element) {
         var _this$options4 = this.options,
           triggerClass = _this$options4.triggerClass,
           panelClass = _this$options4.panelClass;
@@ -138,7 +138,7 @@
        * Create ARIA
        * @param {object} element = accordion item
        */
-      setARIA(element) {
+      setARIA: function setARIA(element) {
         var _this$options5 = this.options,
           ariaEnabled = _this$options5.ariaEnabled,
           triggerClass = _this$options5.triggerClass,
@@ -162,7 +162,7 @@
        * @param {object} element = accordion item
        * @param {boolean} ariaExpanded = value of the attribute
        */
-      updateARIA(element, _ref) {
+      updateARIA: function updateARIA(element, _ref) {
         var ariaExpanded = _ref.ariaExpanded,
           ariaDisabled = _ref.ariaDisabled;
         var _this$options6 = this.options,
@@ -179,7 +179,7 @@
        * Remove ARIA
        * @param {object} element = accordion item
        */
-      removeARIA(element) {
+      removeARIA: function removeARIA(element) {
         var _this$options7 = this.options,
           ariaEnabled = _this$options7.ariaEnabled,
           triggerClass = _this$options7.triggerClass,
@@ -203,7 +203,7 @@
        * @param {object} e = event
        * @param {object} element = accordion item
        */
-      focus(e, element) {
+      focus: function focus(e, element) {
         e.preventDefault();
         var triggerClass = this.options.triggerClass;
         var trigger = element.querySelector('.'.concat(triggerClass));
@@ -214,7 +214,7 @@
        * Focus first element
        * @param {object} e = event
        */
-      focusFirstElement(e) {
+      focusFirstElement: function focusFirstElement(e) {
         this.focus(e, this.firstElement);
         this.currFocusedIdx = 0;
       },
@@ -223,7 +223,7 @@
        * Focus last element
        * @param {object} e = event
        */
-      focusLastElement(e) {
+      focusLastElement: function focusLastElement(e) {
         this.focus(e, this.lastElement);
         this.currFocusedIdx = this.elements.length - 1;
       },
@@ -232,7 +232,7 @@
        * Focus next element
        * @param {object} e = event
        */
-      focusNextElement(e) {
+      focusNextElement: function focusNextElement(e) {
         var nextElIdx = this.currFocusedIdx + 1;
         if (nextElIdx > this.elements.length - 1) return this.focusFirstElement(e);
 
@@ -244,7 +244,7 @@
        * Focus previous element
        * @param {object} e = event
        */
-      focusPrevElement(e) {
+      focusPrevElement: function focusPrevElement(e) {
         var prevElIdx = this.currFocusedIdx - 1;
         if (prevElIdx < 0) return this.focusLastElement(e);
 
@@ -257,7 +257,7 @@
        * @param {object} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
-      showElement(element) {
+      showElement: function showElement(element) {
         var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
         var _this$options8 = this.options,
           panelClass = _this$options8.panelClass,
@@ -284,7 +284,7 @@
        * @param {object} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
-      closeElement(element) {
+      closeElement: function closeElement(element) {
         var calcHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
         var _this$options9 = this.options,
           panelClass = _this$options9.panelClass,
@@ -318,7 +318,7 @@
        * Toggle element
        * @param {object} element = accordion item
        */
-      toggleElement(element) {
+      toggleElement: function toggleElement(element) {
         var _this$options10 = this.options,
           activeClass = _this$options10.activeClass,
           collapse = _this$options10.collapse;
@@ -331,7 +331,7 @@
       /**
        * Close all elements without the current element
        */
-      closeElements() {
+      closeElements: function closeElements() {
         var _this3 = this;
         var _this$options11 = this.options,
           activeClass = _this$options11.activeClass,
@@ -351,7 +351,7 @@
        * Handle click
        * @param {object} e = event
        */
-      handleClick(e) {
+      handleClick: function handleClick(e) {
         var _this4 = this;
         var target = e.currentTarget;
 
@@ -370,7 +370,7 @@
        * Handle keydown
        * @param {object} e = event
        */
-      handleKeydown(e) {
+      handleKeydown: function handleKeydown(e) {
         var KEYS = {
           ARROW_UP: 38,
           ARROW_DOWN: 40,
@@ -400,7 +400,7 @@
        * Handle transitionend
        * @param {object} e = event
        */
-      handleTransitionEnd(e) {
+      handleTransitionEnd: function handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
         var _this$options12 = this.options,
           onOpen = _this$options12.onOpen,

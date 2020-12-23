@@ -1,5 +1,5 @@
 /*!
- * Accordion v3.0.0
+ * Accordion v3.1.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
