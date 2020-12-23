@@ -2,7 +2,7 @@
 Lightweight and accessible accordion module with an extensible API. With the module you can create accordion on your website, useful especially for creating FAQ lists.
 
 ## Version
-3.0.0
+3.1.0
 
 ## Installation
 
@@ -21,8 +21,8 @@ import 'accordion-js/dist/accordion.min.css';
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.0.0/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.0.0/dist/accordion.min.js
+https://unpkg.com/accordion-js@3.1.0/dist/accordion.min.css
+https://unpkg.com/accordion-js@3.1.0/dist/accordion.min.js
 ```
 
 ```html
@@ -141,7 +141,7 @@ accordion.detachEvents();
 | toggle() | Toggle the accordion element with the given idx <br> E.g. `acc.toggle(1)`| `idx` - element index |
 | openAll() | Open all accordion elements | - |
 | closeAll() | Close all accordion elements | - |
-| destroy() | Destroy accordion instance: <br> Close elements, remove events, IDs & ARIA | - |
+| destroy() | Destroy accordion instance: <br> Open elements, remove events, IDs & ARIA | - |
 
 ## v3 Release Info
 There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), I recommend updating the package to the latest version with new structure and options.

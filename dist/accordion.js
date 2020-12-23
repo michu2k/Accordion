@@ -1,5 +1,5 @@
 /*!
- * Accordion v3.0.0
+ * Accordion v3.1.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -63,7 +63,9 @@
         var isString = typeof selectorOrElement === 'string';
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
-        this.elements = Array.from(this.container.querySelectorAll('.'.concat(elementClass)));
+        this.elements = Array.from(this.container.childNodes).filter(function (el) {
+          return el.classList && el.classList.contains(elementClass);
+        });
 
         this.firstElement = this.elements[0];
         this.lastElement = this.elements[this.elements.length - 1];
