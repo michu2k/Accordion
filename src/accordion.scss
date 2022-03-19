@@ -83,7 +83,7 @@ $color-black: #111;
       visibility: visible;
     }
 
-    .ac-trigger {
+    & > .ac-header .ac-trigger {
       &::after {
         content: '\2013';
       }
