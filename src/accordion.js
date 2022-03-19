@@ -1,5 +1,5 @@
 /*!
- * Accordion v3.1.1
+ * Accordion v3.2.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -55,30 +55,39 @@
         // Extend default options
         this.options = Object.assign(defaults, userOptions);
 
-        const { elementClass, openOnInit } = this.options;
         const isString = (typeof selectorOrElement === 'string');
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
+        this.createDefinitions();
+
+        _this.attachEvents();
+      },
+
+      /**
+       * Create element definitions
+       */
+      createDefinitions() {
+        const { elementClass, openOnInit } = this.options;
+
         this.elements = Array.from(this.container.childNodes)
           .filter((el) => el.classList && el.classList.contains(elementClass));
 
         this.firstElement = this.elements[0];
         this.lastElement = this.elements[this.elements.length - 1];
-        this.currFocusedIdx = 0;
 
-        this.elements.map((element, idx) => {
-          // When JS is enabled, add the class to the element
-          element.classList.add('js-enabled');
+        this.elements
+          .filter((element) => !element.classList.contains(`js-enabled`))
+          .map((element, idx) => {
+            // When JS is enabled, add the class to the element
+            element.classList.add('js-enabled');
 
-          this.generateIDs(element);
-          this.setARIA(element);
-          this.setTransition(element);
+            this.generateIDs(element);
+            this.setARIA(element);
+            this.setTransition(element);
 
-          uniqueId++;
-          return openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
-        });
-
-        _this.attachEvents();
+            uniqueId++;
+            return openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
+          });
       },
 
       /**
@@ -480,6 +489,16 @@
       });
 
       eventsAttached = true;
+    };
+
+    /**
+     * Update accordion elements
+     */
+    this.update = () => {
+      core.createDefinitions();
+
+      this.detachEvents();
+      this.attachEvents();
     };
 
     /**

@@ -1,5 +1,5 @@
 /*!
- * Accordion v3.1.1
+ * Accordion v3.2.0
  * Simple accordion created in pure Javascript.
  * https://github.com/michu2k/Accordion
  *
@@ -38,7 +38,6 @@
        * Init accordion
        */
       init: function init() {
-        var _this2 = this;
         var defaults = {
           duration: 600, // animation duration in ms {number}
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
@@ -57,33 +56,46 @@
 
         // Extend default options
         this.options = Object.assign(defaults, userOptions);
-        var _this$options = this.options,
-          elementClass = _this$options.elementClass,
-          openOnInit = _this$options.openOnInit;
+
         var isString = typeof selectorOrElement === 'string';
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
+        this.createDefinitions();
+
+        _this.attachEvents();
+      },
+
+      /**
+       * Create element definitions
+       */
+      createDefinitions: function createDefinitions() {
+        var _this2 = this;
+        var _this$options = this.options,
+          elementClass = _this$options.elementClass,
+          openOnInit = _this$options.openOnInit;
+
         this.elements = Array.from(this.container.childNodes).filter(function (el) {
           return el.classList && el.classList.contains(elementClass);
         });
 
         this.firstElement = this.elements[0];
         this.lastElement = this.elements[this.elements.length - 1];
-        this.currFocusedIdx = 0;
 
-        this.elements.map(function (element, idx) {
-          // When JS is enabled, add the class to the element
-          element.classList.add('js-enabled');
+        this.elements
+          .filter(function (element) {
+            return !element.classList.contains('js-enabled');
+          })
+          .map(function (element, idx) {
+            // When JS is enabled, add the class to the element
+            element.classList.add('js-enabled');
 
-          _this2.generateIDs(element);
-          _this2.setARIA(element);
-          _this2.setTransition(element);
+            _this2.generateIDs(element);
+            _this2.setARIA(element);
+            _this2.setTransition(element);
 
-          uniqueId++;
-          return openOnInit.includes(idx) ? _this2.showElement(element, false) : _this2.closeElement(element, false);
-        });
-
-        _this.attachEvents();
+            uniqueId++;
+            return openOnInit.includes(idx) ? _this2.showElement(element, false) : _this2.closeElement(element, false);
+          });
       },
 
       /**
@@ -205,6 +217,7 @@
        */
       focus: function focus(e, element) {
         e.preventDefault();
+
         var triggerClass = this.options.triggerClass;
         var trigger = element.querySelector('.'.concat(triggerClass));
         trigger.focus();
@@ -402,6 +415,7 @@
        */
       handleTransitionEnd: function handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
+
         var _this$options12 = this.options,
           onOpen = _this$options12.onOpen,
           onClose = _this$options12.onClose;
@@ -533,6 +547,16 @@
       });
 
       eventsAttached = true;
+    };
+
+    /**
+     * Update accordion elements
+     */
+    this.update = function () {
+      core.createDefinitions();
+
+      _this5.detachEvents();
+      _this5.attachEvents();
     };
 
     /**
