@@ -97,10 +97,10 @@
        */
       setTransition(element, clear = false) {
         const { duration, panelClass } = this.options;
-        const el = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
         const transition = isWebkit('transitionDuration');
 
-        el.style[transition] = clear ? null : `${duration}ms`;
+        panel.style[transition] = clear ? null : `${duration}ms`;
       },
 
       /**
