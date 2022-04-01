@@ -77,7 +77,7 @@
 
         this.elements
           .filter((element) => !element.classList.contains(`js-enabled`))
-          .map((element, idx) => {
+          .forEach((element, idx) => {
             // When JS is enabled, add the class to the element
             element.classList.add('js-enabled');
 
@@ -86,7 +86,7 @@
             this.setTransition(element);
 
             uniqueId++;
-            return openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
+            openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
           });
       },
 
@@ -312,7 +312,7 @@
         const { activeClass, showMultiple } = this.options;
         if (showMultiple) return;
 
-        this.elements.map((element, idx) => {
+        this.elements.forEach((element, idx) => {
           const isActive = element.classList.contains(activeClass);
 
           if (isActive && idx != this.currFocusedIdx) {
@@ -328,7 +328,7 @@
       handleClick(e) {
         const target = e.currentTarget;
 
-        this.elements.map((element, idx) => {
+        this.elements.forEach((element, idx) => {
           if (element.contains(target) && e.target.nodeName !== 'A') {
             this.currFocusedIdx = idx;
 
@@ -401,7 +401,7 @@
       core.handleKeydown = core.handleKeydown.bind(core);
       core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      core.elements.map((element) => {
+      core.elements.forEach((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
@@ -421,7 +421,7 @@
       if (!eventsAttached) return;
       const { triggerClass, panelClass } = core.options;
 
-      core.elements.map((element) => {
+      core.elements.forEach((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
@@ -456,7 +456,7 @@
      * Open all accordion elements
      */
     this.openAll = () => {
-      core.elements.map((element) => core.showElement(element, false));
+      core.elements.forEach((element) => core.showElement(element, false));
     };
 
     /**
@@ -472,7 +472,7 @@
      * Close all accordion elements
      */
     this.closeAll = () => {
-      core.elements.map((element) => core.closeElement(element, false));
+      core.elements.forEach((element) => core.closeElement(element, false));
     };
 
     /**
@@ -482,7 +482,7 @@
       this.detachEvents();
       this.openAll();
 
-      core.elements.map((element) => {
+      core.elements.forEach((element) => {
         core.removeIDs(element);
         core.removeARIA(element);
         core.setTransition(element, true);
