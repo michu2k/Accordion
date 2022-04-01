@@ -315,7 +315,7 @@
         this.elements.forEach((element, idx) => {
           const isActive = element.classList.contains(activeClass);
 
-          if (isActive && idx != this.currFocusedIdx) {
+          if (isActive && idx !== this.currFocusedIdx) {
             this.closeElement(element);
           }
         });
