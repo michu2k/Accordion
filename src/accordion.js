@@ -92,7 +92,7 @@
 
       /**
        * Set transition
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} clear = clear transition duration
        */
       setTransition(element, clear = false) {
@@ -105,7 +105,7 @@
 
       /**
        * Generate unique IDs for each element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       generateIDs(element) {
         const { triggerClass, panelClass } = this.options;
@@ -119,7 +119,7 @@
 
       /**
        * Remove IDs
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       removeIDs(element) {
         const { triggerClass, panelClass } = this.options;
@@ -133,7 +133,7 @@
 
       /**
        * Create ARIA
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       setARIA(element) {
         const { ariaEnabled, triggerClass, panelClass } = this.options;
@@ -153,8 +153,10 @@
 
       /**
        * Update ARIA
-       * @param {object} element = accordion item
-       * @param {boolean} ariaExpanded = value of the attribute
+       * @param {HTMLElement} element = accordion item
+       * @param {object} options
+       * @param {boolean} options.ariaExpanded = value of the attribute
+       * @param {boolean} options.ariaDisabled = value of the attribute
        */
       updateARIA(element, { ariaExpanded, ariaDisabled }) {
         const { ariaEnabled, triggerClass } = this.options;
@@ -167,7 +169,7 @@
 
       /**
        * Remove ARIA
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       removeARIA(element) {
         const { ariaEnabled, triggerClass, panelClass } = this.options;
@@ -187,8 +189,8 @@
 
       /**
        * Focus element
-       * @param {object} e = event
-       * @param {object} element = accordion item
+       * @param {Event} e = event
+       * @param {HTMLElement} element = accordion item
        */
       focus(e, element) {
         e.preventDefault();
@@ -200,7 +202,7 @@
 
       /**
        * Focus first element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusFirstElement(e) {
         this.focus(e, this.firstElement);
@@ -209,7 +211,7 @@
 
       /**
        * Focus last element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusLastElement(e) {
         this.focus(e, this.lastElement);
@@ -218,7 +220,7 @@
 
       /**
        * Focus next element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusNextElement(e) {
         const nextElIdx = this.currFocusedIdx + 1;
@@ -230,7 +232,7 @@
 
       /**
        * Focus previous element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusPrevElement(e) {
         const prevElIdx = this.currFocusedIdx - 1;
@@ -242,7 +244,7 @@
 
       /**
        * Show element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       showElement(element, calcHeight = true) {
@@ -264,7 +266,7 @@
 
       /**
        * Close element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       closeElement(element, calcHeight = true) {
@@ -295,7 +297,7 @@
 
       /**
        * Toggle element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       toggleElement(element) {
         const { activeClass, collapse } = this.options;
@@ -323,7 +325,7 @@
 
       /**
        * Handle click
-       * @param {object} e = event
+       * @param {PointerEvent} e = event
        */
       handleClick(e) {
         const target = e.currentTarget;
@@ -341,7 +343,7 @@
 
       /**
        * Handle keydown
-       * @param {object} e = event
+       * @param {KeyboardEvent} e = event
        */
       handleKeydown(e) {
         const KEYS = {
@@ -371,7 +373,7 @@
 
       /**
        * Handle transitionend
-       * @param {object} e = event
+       * @param {TransitionEvent} e = event
        */
       handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
