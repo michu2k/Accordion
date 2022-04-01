@@ -439,7 +439,7 @@
      * @param {number} elIdx = element index
      */
     this.toggle = (elIdx) => {
-      const el = core.elements.find((_, idx) => idx === elIdx);
+      const el = core.elements[elIdx];
       if (el) core.toggleElement(el);
     };
 
@@ -448,7 +448,7 @@
      * @param {number} elIdx = element index
      */
     this.open = (elIdx) => {
-      const el = core.elements.find((_, idx) => idx === elIdx);
+      const el = core.elements[elIdx];
       if (el) core.showElement(el);
     };
 
@@ -464,7 +464,7 @@
      * @param {number} elIdx = element index
      */
     this.close = (elIdx) => {
-      const el = core.elements.find((_, idx) => idx === elIdx);
+      const el = core.elements[elIdx];
       if (el) core.closeElement(el);
     };
 
