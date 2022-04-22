@@ -77,7 +77,7 @@
 
         this.elements
           .filter((element) => !element.classList.contains(`js-enabled`))
-          .map((element, idx) => {
+          .forEach((element, idx) => {
             // When JS is enabled, add the class to the element
             element.classList.add('js-enabled');
 
@@ -86,26 +86,26 @@
             this.setTransition(element);
 
             uniqueId++;
-            return openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
+            openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
           });
       },
 
       /**
        * Set transition
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} clear = clear transition duration
        */
       setTransition(element, clear = false) {
         const { duration, panelClass } = this.options;
-        const el = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(`.${panelClass}`);
         const transition = isWebkit('transitionDuration');
 
-        el.style[transition] = clear ? null : `${duration}ms`;
+        panel.style[transition] = clear ? null : `${duration}ms`;
       },
 
       /**
        * Generate unique IDs for each element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       generateIDs(element) {
         const { triggerClass, panelClass } = this.options;
@@ -119,7 +119,7 @@
 
       /**
        * Remove IDs
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       removeIDs(element) {
         const { triggerClass, panelClass } = this.options;
@@ -133,7 +133,7 @@
 
       /**
        * Create ARIA
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       setARIA(element) {
         const { ariaEnabled, triggerClass, panelClass } = this.options;
@@ -153,8 +153,10 @@
 
       /**
        * Update ARIA
-       * @param {object} element = accordion item
-       * @param {boolean} ariaExpanded = value of the attribute
+       * @param {HTMLElement} element = accordion item
+       * @param {object} options
+       * @param {boolean} options.ariaExpanded = value of the attribute
+       * @param {boolean} options.ariaDisabled = value of the attribute
        */
       updateARIA(element, { ariaExpanded, ariaDisabled }) {
         const { ariaEnabled, triggerClass } = this.options;
@@ -167,7 +169,7 @@
 
       /**
        * Remove ARIA
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       removeARIA(element) {
         const { ariaEnabled, triggerClass, panelClass } = this.options;
@@ -187,8 +189,8 @@
 
       /**
        * Focus element
-       * @param {object} e = event
-       * @param {object} element = accordion item
+       * @param {Event} e = event
+       * @param {HTMLElement} element = accordion item
        */
       focus(e, element) {
         e.preventDefault();
@@ -200,7 +202,7 @@
 
       /**
        * Focus first element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusFirstElement(e) {
         this.focus(e, this.firstElement);
@@ -209,7 +211,7 @@
 
       /**
        * Focus last element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusLastElement(e) {
         this.focus(e, this.lastElement);
@@ -218,7 +220,7 @@
 
       /**
        * Focus next element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusNextElement(e) {
         const nextElIdx = this.currFocusedIdx + 1;
@@ -230,7 +232,7 @@
 
       /**
        * Focus previous element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusPrevElement(e) {
         const prevElIdx = this.currFocusedIdx - 1;
@@ -242,7 +244,7 @@
 
       /**
        * Show element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       showElement(element, calcHeight = true) {
@@ -264,7 +266,7 @@
 
       /**
        * Close element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       closeElement(element, calcHeight = true) {
@@ -295,7 +297,7 @@
 
       /**
        * Toggle element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       toggleElement(element) {
         const { activeClass, collapse } = this.options;
@@ -312,10 +314,10 @@
         const { activeClass, showMultiple } = this.options;
         if (showMultiple) return;
 
-        this.elements.map((element, idx) => {
+        this.elements.forEach((element, idx) => {
           const isActive = element.classList.contains(activeClass);
 
-          if (isActive && idx != this.currFocusedIdx) {
+          if (isActive && idx !== this.currFocusedIdx) {
             this.closeElement(element);
           }
         });
@@ -323,12 +325,12 @@
 
       /**
        * Handle click
-       * @param {object} e = event
+       * @param {PointerEvent} e = event
        */
       handleClick(e) {
         const target = e.currentTarget;
 
-        this.elements.map((element, idx) => {
+        this.elements.forEach((element, idx) => {
           if (element.contains(target) && e.target.nodeName !== 'A') {
             this.currFocusedIdx = idx;
 
@@ -341,7 +343,7 @@
 
       /**
        * Handle keydown
-       * @param {object} e = event
+       * @param {KeyboardEvent} e = event
        */
       handleKeydown(e) {
         const KEYS = {
@@ -371,7 +373,7 @@
 
       /**
        * Handle transitionend
-       * @param {object} e = event
+       * @param {TransitionEvent} e = event
        */
       handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
@@ -401,7 +403,7 @@
       core.handleKeydown = core.handleKeydown.bind(core);
       core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      core.elements.map((element) => {
+      core.elements.forEach((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
@@ -421,7 +423,7 @@
       if (!eventsAttached) return;
       const { triggerClass, panelClass } = core.options;
 
-      core.elements.map((element) => {
+      core.elements.forEach((element) => {
         const trigger = element.querySelector(`.${triggerClass}`);
         const panel = element.querySelector(`.${panelClass}`);
 
@@ -439,7 +441,7 @@
      * @param {number} elIdx = element index
      */
     this.toggle = (elIdx) => {
-      const el = core.elements.find((_, idx) => idx === elIdx);
+      const el = core.elements[elIdx];
       if (el) core.toggleElement(el);
     };
 
@@ -448,7 +450,7 @@
      * @param {number} elIdx = element index
      */
     this.open = (elIdx) => {
-      const el = core.elements.find((_, idx) => idx === elIdx);
+      const el = core.elements[elIdx];
       if (el) core.showElement(el);
     };
 
@@ -456,7 +458,7 @@
      * Open all accordion elements
      */
     this.openAll = () => {
-      core.elements.map((element) => core.showElement(element, false));
+      core.elements.forEach((element) => core.showElement(element, false));
     };
 
     /**
@@ -464,7 +466,7 @@
      * @param {number} elIdx = element index
      */
     this.close = (elIdx) => {
-      const el = core.elements.find((_, idx) => idx === elIdx);
+      const el = core.elements[elIdx];
       if (el) core.closeElement(el);
     };
 
@@ -472,7 +474,7 @@
      * Close all accordion elements
      */
     this.closeAll = () => {
-      core.elements.map((element) => core.closeElement(element, false));
+      core.elements.forEach((element) => core.closeElement(element, false));
     };
 
     /**
@@ -482,7 +484,7 @@
       this.detachEvents();
       this.openAll();
 
-      core.elements.map((element) => {
+      core.elements.forEach((element) => {
         core.removeIDs(element);
         core.removeARIA(element);
         core.setTransition(element, true);
