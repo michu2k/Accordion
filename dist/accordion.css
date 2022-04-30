@@ -1,12 +1,13 @@
 @charset "UTF-8";
-/*!
- * Accordion v3.2.0
- * Simple accordion created in pure Javascript.
+/**
+ * Accordion v3.2.1
+ * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
  * Copyright (c) Michał Strumpf
  * Published under MIT License
  */
+
 .ac {
   margin-top: 10px;
   border: 1px solid #eee;
@@ -62,7 +63,6 @@
 .ac.is-active .ac-panel {
   visibility: visible;
 }
-
 .ac.is-active > .ac-header .ac-trigger::after {
-  content: '\2013';
+  content: "–";
 }
