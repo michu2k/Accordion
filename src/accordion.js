@@ -32,6 +32,7 @@
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
+          allowElementsOutsideChildNodes: false, // enabling this option will find all items inside the container {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}
@@ -58,9 +59,11 @@
        * Create element definitions
        */
       createDefinitions() {
-        const { elementClass, openOnInit } = this.options;
+        const { elementClass, openOnInit, allowElementsOutsideChildNodes } = this.options;
 
-        this.elements = Array.from(this.container.childNodes)
+        const allElements = allowElementsOutsideChildNodes ? this.container.querySelectorAll(`.${elementClass}`) : this.container.childNodes;
+
+        this.elements = Array.from(allElements)
           .filter((el) => el.classList && el.classList.contains(elementClass));
 
         this.firstElement = this.elements[0];

@@ -43,6 +43,7 @@
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
+          allowElementsOutsideChildNodes: false, // enabling this option will find all items inside the container {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}
@@ -72,9 +73,14 @@
         var _this2 = this;
         var _this$options = this.options,
           elementClass = _this$options.elementClass,
-          openOnInit = _this$options.openOnInit;
+          openOnInit = _this$options.openOnInit,
+          allowElementsOutsideChildNodes = _this$options.allowElementsOutsideChildNodes;
 
-        this.elements = Array.from(this.container.childNodes).filter(function (el) {
+        var allElements = allowElementsOutsideChildNodes
+          ? this.container.querySelectorAll('.'.concat(elementClass))
+          : this.container.childNodes;
+
+        this.elements = Array.from(allElements).filter(function (el) {
           return el.classList && el.classList.contains(elementClass);
         });
 
