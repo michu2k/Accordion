@@ -1,6 +1,6 @@
-/*!
- * Accordion v3.2.0
- * Simple accordion created in pure Javascript.
+/**
+ * Accordion v3.3.0
+ * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
  * Copyright (c) Michał Strumpf
@@ -43,6 +43,7 @@
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
+          onlyChildNodes: true, // disabling this option will find all items in the container {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}
@@ -72,9 +73,14 @@
         var _this2 = this;
         var _this$options = this.options,
           elementClass = _this$options.elementClass,
-          openOnInit = _this$options.openOnInit;
+          openOnInit = _this$options.openOnInit,
+          onlyChildNodes = _this$options.onlyChildNodes;
 
-        this.elements = Array.from(this.container.childNodes).filter(function (el) {
+        var allElements = onlyChildNodes
+          ? this.container.childNodes
+          : this.container.querySelectorAll('.'.concat(elementClass));
+
+        this.elements = Array.from(allElements).filter(function (el) {
           return el.classList && el.classList.contains(elementClass);
         });
 
@@ -85,7 +91,7 @@
           .filter(function (element) {
             return !element.classList.contains('js-enabled');
           })
-          .map(function (element, idx) {
+          .forEach(function (element) {
             // When JS is enabled, add the class to the element
             element.classList.add('js-enabled');
 
@@ -93,14 +99,16 @@
             _this2.setARIA(element);
             _this2.setTransition(element);
 
+            var index = _this2.elements.indexOf(element);
+
             uniqueId++;
-            return openOnInit.includes(idx) ? _this2.showElement(element, false) : _this2.closeElement(element, false);
+            openOnInit.includes(index) ? _this2.showElement(element, false) : _this2.closeElement(element, false);
           });
       },
 
       /**
        * Set transition
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} clear = clear transition duration
        */
       setTransition: function setTransition(element) {
@@ -108,15 +116,15 @@
         var _this$options2 = this.options,
           duration = _this$options2.duration,
           panelClass = _this$options2.panelClass;
-        var el = element.querySelector('.'.concat(panelClass));
+        var panel = element.querySelector('.'.concat(panelClass));
         var transition = isWebkit('transitionDuration');
 
-        el.style[transition] = clear ? null : ''.concat(duration, 'ms');
+        panel.style[transition] = clear ? null : ''.concat(duration, 'ms');
       },
 
       /**
        * Generate unique IDs for each element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       generateIDs: function generateIDs(element) {
         var _this$options3 = this.options,
@@ -132,7 +140,7 @@
 
       /**
        * Remove IDs
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       removeIDs: function removeIDs(element) {
         var _this$options4 = this.options,
@@ -148,7 +156,7 @@
 
       /**
        * Create ARIA
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       setARIA: function setARIA(element) {
         var _this$options5 = this.options,
@@ -171,8 +179,10 @@
 
       /**
        * Update ARIA
-       * @param {object} element = accordion item
-       * @param {boolean} ariaExpanded = value of the attribute
+       * @param {HTMLElement} element = accordion item
+       * @param {object} options
+       * @param {boolean} options.ariaExpanded = value of the attribute
+       * @param {boolean} options.ariaDisabled = value of the attribute
        */
       updateARIA: function updateARIA(element, _ref) {
         var ariaExpanded = _ref.ariaExpanded,
@@ -189,7 +199,7 @@
 
       /**
        * Remove ARIA
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       removeARIA: function removeARIA(element) {
         var _this$options7 = this.options,
@@ -212,8 +222,8 @@
 
       /**
        * Focus element
-       * @param {object} e = event
-       * @param {object} element = accordion item
+       * @param {Event} e = event
+       * @param {HTMLElement} element = accordion item
        */
       focus: function focus(e, element) {
         e.preventDefault();
@@ -225,7 +235,7 @@
 
       /**
        * Focus first element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusFirstElement: function focusFirstElement(e) {
         this.focus(e, this.firstElement);
@@ -234,7 +244,7 @@
 
       /**
        * Focus last element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusLastElement: function focusLastElement(e) {
         this.focus(e, this.lastElement);
@@ -243,7 +253,7 @@
 
       /**
        * Focus next element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusNextElement: function focusNextElement(e) {
         var nextElIdx = this.currFocusedIdx + 1;
@@ -255,7 +265,7 @@
 
       /**
        * Focus previous element
-       * @param {object} e = event
+       * @param {Event} e = event
        */
       focusPrevElement: function focusPrevElement(e) {
         var prevElIdx = this.currFocusedIdx - 1;
@@ -267,7 +277,7 @@
 
       /**
        * Show element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       showElement: function showElement(element) {
@@ -294,7 +304,7 @@
 
       /**
        * Close element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       closeElement: function closeElement(element) {
@@ -329,7 +339,7 @@
 
       /**
        * Toggle element
-       * @param {object} element = accordion item
+       * @param {HTMLElement} element = accordion item
        */
       toggleElement: function toggleElement(element) {
         var _this$options10 = this.options,
@@ -351,10 +361,10 @@
           showMultiple = _this$options11.showMultiple;
         if (showMultiple) return;
 
-        this.elements.map(function (element, idx) {
+        this.elements.forEach(function (element, idx) {
           var isActive = element.classList.contains(activeClass);
 
-          if (isActive && idx != _this3.currFocusedIdx) {
+          if (isActive && idx !== _this3.currFocusedIdx) {
             _this3.closeElement(element);
           }
         });
@@ -362,13 +372,13 @@
 
       /**
        * Handle click
-       * @param {object} e = event
+       * @param {PointerEvent} e = event
        */
       handleClick: function handleClick(e) {
         var _this4 = this;
         var target = e.currentTarget;
 
-        this.elements.map(function (element, idx) {
+        this.elements.forEach(function (element, idx) {
           if (element.contains(target) && e.target.nodeName !== 'A') {
             _this4.currFocusedIdx = idx;
 
@@ -381,7 +391,7 @@
 
       /**
        * Handle keydown
-       * @param {object} e = event
+       * @param {KeyboardEvent} e = event
        */
       handleKeydown: function handleKeydown(e) {
         var KEYS = {
@@ -411,7 +421,7 @@
 
       /**
        * Handle transitionend
-       * @param {object} e = event
+       * @param {TransitionEvent} e = event
        */
       handleTransitionEnd: function handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
@@ -447,7 +457,7 @@
       core.handleKeydown = core.handleKeydown.bind(core);
       core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
-      core.elements.map(function (element) {
+      core.elements.forEach(function (element) {
         var trigger = element.querySelector('.'.concat(triggerClass));
         var panel = element.querySelector('.'.concat(panelClass));
 
@@ -469,7 +479,7 @@
         triggerClass = _core$options2.triggerClass,
         panelClass = _core$options2.panelClass;
 
-      core.elements.map(function (element) {
+      core.elements.forEach(function (element) {
         var trigger = element.querySelector('.'.concat(triggerClass));
         var panel = element.querySelector('.'.concat(panelClass));
 
@@ -487,9 +497,7 @@
      * @param {number} elIdx = element index
      */
     this.toggle = function (elIdx) {
-      var el = core.elements.find(function (_, idx) {
-        return idx === elIdx;
-      });
+      var el = core.elements[elIdx];
       if (el) core.toggleElement(el);
     };
 
@@ -498,9 +506,7 @@
      * @param {number} elIdx = element index
      */
     this.open = function (elIdx) {
-      var el = core.elements.find(function (_, idx) {
-        return idx === elIdx;
-      });
+      var el = core.elements[elIdx];
       if (el) core.showElement(el);
     };
 
@@ -508,7 +514,7 @@
      * Open all accordion elements
      */
     this.openAll = function () {
-      core.elements.map(function (element) {
+      core.elements.forEach(function (element) {
         return core.showElement(element, false);
       });
     };
@@ -518,9 +524,7 @@
      * @param {number} elIdx = element index
      */
     this.close = function (elIdx) {
-      var el = core.elements.find(function (_, idx) {
-        return idx === elIdx;
-      });
+      var el = core.elements[elIdx];
       if (el) core.closeElement(el);
     };
 
@@ -528,7 +532,7 @@
      * Close all accordion elements
      */
     this.closeAll = function () {
-      core.elements.map(function (element) {
+      core.elements.forEach(function (element) {
         return core.closeElement(element, false);
       });
     };
@@ -540,7 +544,7 @@
       _this5.detachEvents();
       _this5.openAll();
 
-      core.elements.map(function (element) {
+      core.elements.forEach(function (element) {
         core.removeIDs(element);
         core.removeARIA(element);
         core.setTransition(element, true);

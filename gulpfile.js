@@ -8,6 +8,7 @@ const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 const prettier = require('gulp-prettier');
 const eslint = require('gulp-eslint');
+const headerComment = require('gulp-header-comment');
 
 // Config
 const config = {
@@ -38,10 +39,12 @@ function compileSass() {
     .pipe(sass({ outputStyle: 'expanded' })
       .on('error', sass.logError))
     .pipe(autoprefixer({ cascade: false }))
+    .pipe(headerComment({ file: './header.txt' }))
     .pipe(gulp.dest(config.distCSS))
     .pipe(browserSync.stream())
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }))
+    .pipe(headerComment({ file: './header.txt' }))
     .pipe(gulp.dest(config.distCSS))
     .pipe(browserSync.stream());
 }
@@ -61,9 +64,11 @@ function compileJs() {
       printWidth: 120,
       singleQuote: true
     }))
+    .pipe(headerComment({ file: './header.txt' }))
     .pipe(gulp.dest(config.distJS))
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
+    .pipe(headerComment({ file: './header.txt' }))
     .pipe(gulp.dest(config.distJS))
     .pipe(browserSync.stream());
 }

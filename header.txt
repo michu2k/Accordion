@@ -1,0 +1,6 @@
+Accordion v3.3.0
+<%= pkg.description %>
+https://github.com/michu2k/Accordion
+
+Copyright (c) <%= pkg.author %>
+Published under <%= pkg.license %> License

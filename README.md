@@ -2,7 +2,7 @@
 Lightweight and accessible accordion module with an extensible API. With the module you can create accordion on your website, useful especially for creating FAQ lists.
 
 ## Version
-3.2.0
+3.3.0
 
 ## Installation
 
@@ -21,8 +21,8 @@ import 'accordion-js/dist/accordion.min.css';
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.2.0/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.2.0/dist/accordion.min.js
+https://unpkg.com/accordion-js@3.3.0/dist/accordion.min.css
+https://unpkg.com/accordion-js@3.3.0/dist/accordion.min.js
 ```
 
 ```html
@@ -120,6 +120,7 @@ accordion.detachEvents();
 | ariaEnabled | boolean | true | Add ARIA elements to the HTML structure |
 | collapse | boolean | true | Allow collapse expanded panel |
 | showMultiple | boolean | false | Show multiple elements at the same time |
+| onlyChildNodes | boolean | true | Disabling this option will find all items in the container. Warning: Setting to `false` will break the functionality of nested accordions |
 | openOnInit | array | [] | Show accordion elements during initialization |
 | elementClass | string | 'ac' | Element class |
 | triggerClass | string | 'ac-trigger' | Trigger class |
