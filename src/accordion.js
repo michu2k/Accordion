@@ -1,12 +1,3 @@
-/*!
- * Accordion v3.2.0
- * Simple accordion created in pure Javascript.
- * https://github.com/michu2k/Accordion
- *
- * Copyright (c) Michał Strumpf
- * Published under MIT License
- */
-
 (function(window) {
 
   'use strict';
@@ -77,7 +68,7 @@
 
         this.elements
           .filter((element) => !element.classList.contains(`js-enabled`))
-          .forEach((element, idx) => {
+          .forEach((element) => {
             // When JS is enabled, add the class to the element
             element.classList.add('js-enabled');
 
@@ -85,8 +76,10 @@
             this.setARIA(element);
             this.setTransition(element);
 
+            const index = this.elements.indexOf(element);
+
             uniqueId++;
-            openOnInit.includes(idx) ? this.showElement(element, false) : this.closeElement(element, false);
+            openOnInit.includes(index) ? this.showElement(element, false) : this.closeElement(element, false);
           });
       },
 

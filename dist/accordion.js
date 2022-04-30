@@ -85,7 +85,7 @@
           .filter(function (element) {
             return !element.classList.contains('js-enabled');
           })
-          .forEach(function (element, idx) {
+          .forEach(function (element) {
             // When JS is enabled, add the class to the element
             element.classList.add('js-enabled');
 
