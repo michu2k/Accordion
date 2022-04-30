@@ -32,7 +32,7 @@
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
-          allowElementsOutsideChildNodes: false, // enabling this option will find all items inside the container {boolean}
+          allowElementsOutsideChildNodes: false, // enabling this option will find all items in the container {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}

@@ -120,6 +120,7 @@ accordion.detachEvents();
 | ariaEnabled | boolean | true | Add ARIA elements to the HTML structure |
 | collapse | boolean | true | Allow collapse expanded panel |
 | showMultiple | boolean | false | Show multiple elements at the same time |
+| allowElementsOutsideChildNodes | boolean | false | Enabling this option will find all items in the container. Warning: Setting to `true` will break the functionality of nested accordions |
 | openOnInit | array | [] | Show accordion elements during initialization |
 | elementClass | string | 'ac' | Element class |
 | triggerClass | string | 'ac-trigger' | Trigger class |
