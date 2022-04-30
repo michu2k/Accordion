@@ -1,5 +1,5 @@
 /**
- * Accordion v3.2.1
+ * Accordion v3.3.0
  * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
@@ -43,7 +43,7 @@
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
-          allowElementsOutsideChildNodes: false, // enabling this option will find all items inside the container {boolean}
+          onlyChildNodes: true, // disabling this option will find all items in the container {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
           elementClass: 'ac', // element class {string}
           triggerClass: 'ac-trigger', // trigger class {string}
@@ -74,11 +74,11 @@
         var _this$options = this.options,
           elementClass = _this$options.elementClass,
           openOnInit = _this$options.openOnInit,
-          allowElementsOutsideChildNodes = _this$options.allowElementsOutsideChildNodes;
+          onlyChildNodes = _this$options.onlyChildNodes;
 
-        var allElements = allowElementsOutsideChildNodes
-          ? this.container.querySelectorAll('.'.concat(elementClass))
-          : this.container.childNodes;
+        var allElements = onlyChildNodes
+          ? this.container.childNodes
+          : this.container.querySelectorAll('.'.concat(elementClass));
 
         this.elements = Array.from(allElements).filter(function (el) {
           return el.classList && el.classList.contains(elementClass);
