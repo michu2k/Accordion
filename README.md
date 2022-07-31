@@ -2,7 +2,7 @@
 Lightweight and accessible accordion module with an extensible API. With the module you can create accordion on your website, useful especially for creating FAQ lists.
 
 ## Version
-3.3.0
+3.3.1
 
 ## Installation
 
@@ -21,8 +21,8 @@ import 'accordion-js/dist/accordion.min.css';
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.3.0/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.3.0/dist/accordion.min.js
+https://unpkg.com/accordion-js@3.3.1/dist/accordion.min.css
+https://unpkg.com/accordion-js@3.3.1/dist/accordion.min.js
 ```
 
 ```html
@@ -138,10 +138,10 @@ accordion.detachEvents();
 | attachEvents() | Attach events | - |
 | detachEvents() | Detach events | - |
 | open() | Open the accordion element with the given idx <br> E.g. `acc.open(1)` | `idx` - element index |
-| close() | Close the accordion element with the given idx <br> E.g. `acc.close(1)`| `idx` - element index |
-| toggle() | Toggle the accordion element with the given idx <br> E.g. `acc.toggle(1)`| `idx` - element index |
-| openAll() | Open all accordion elements | - |
-| closeAll() | Close all accordion elements | - |
+| close() | Close the accordion element with the given idx <br> E.g. `acc.close(1)` | `idx` - element index |
+| toggle() | Toggle the accordion element with the given idx <br> E.g. `acc.toggle(1)` | `idx` - element index |
+| openAll() | Open all accordion elements (without animation) | - |
+| closeAll() | Close all accordion elements (without animation) | - |
 | update() | If there are new items added by lazy load, you can run this method to update the Accordion | - |
 | destroy() | Destroy accordion instance: <br> Open elements, remove events, IDs & ARIA | - |
 

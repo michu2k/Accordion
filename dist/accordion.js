@@ -1,5 +1,5 @@
 /**
- * Accordion v3.3.0
+ * Accordion v3.3.1
  * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
@@ -329,12 +329,12 @@
               panel.style.height = 0;
             });
           });
-
-          this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
         } else {
           // Hide element without animation 'auto' => 0
           panel.style.height = 0;
         }
+
+        this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
       },
 
       /**
@@ -511,11 +511,20 @@
     };
 
     /**
-     * Open all accordion elements
+     * Open all hidden accordion elements
      */
     this.openAll = function () {
+      var _core$options3 = core.options,
+        activeClass = _core$options3.activeClass,
+        onOpen = _core$options3.onOpen;
+
       core.elements.forEach(function (element) {
-        return core.showElement(element, false);
+        var isActive = element.classList.contains(activeClass);
+
+        if (!isActive) {
+          core.showElement(element, false);
+          onOpen(element);
+        }
       });
     };
 
@@ -529,11 +538,20 @@
     };
 
     /**
-     * Close all accordion elements
+     * Close all active accordion elements
      */
     this.closeAll = function () {
+      var _core$options4 = core.options,
+        activeClass = _core$options4.activeClass,
+        onClose = _core$options4.onClose;
+
       core.elements.forEach(function (element) {
-        return core.closeElement(element, false);
+        var isActive = element.classList.contains(activeClass);
+
+        if (isActive) {
+          core.closeElement(element, false);
+          onClose(element);
+        }
       });
     };
 
