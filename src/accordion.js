@@ -283,12 +283,12 @@
               panel.style.height = 0;
             });
           });
-
-          this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
         } else {
           // Hide element without animation 'auto' => 0
           panel.style.height = 0;
         }
+
+        this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
       },
 
       /**
