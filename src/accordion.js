@@ -451,10 +451,19 @@
     };
 
     /**
-     * Open all accordion elements
+     * Open all hidden accordion elements
      */
     this.openAll = () => {
-      core.elements.forEach((element) => core.showElement(element, false));
+      const { activeClass, onOpen } = core.options;
+
+      core.elements.forEach((element) => {
+        const isActive = element.classList.contains(activeClass);
+
+        if (!isActive) {
+          core.showElement(element, false);
+          onOpen(element);
+        }
+      });
     };
 
     /**
@@ -467,10 +476,19 @@
     };
 
     /**
-     * Close all accordion elements
+     * Close all active accordion elements
      */
     this.closeAll = () => {
-      core.elements.forEach((element) => core.closeElement(element, false));
+      const { activeClass, onClose } = core.options;
+
+      core.elements.forEach((element) => {
+        const isActive = element.classList.contains(activeClass);
+
+        if (isActive) {
+          core.closeElement(element, false);
+          onClose(element);
+        }
+      });
     };
 
     /**
