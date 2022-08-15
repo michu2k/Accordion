@@ -1,4 +1,4 @@
-Accordion v3.3.1
+Accordion v3.3.2
 <%= pkg.description %>
 https://github.com/michu2k/Accordion
 
