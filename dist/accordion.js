@@ -1,5 +1,5 @@
 /**
- * Accordion v3.3.1
+ * Accordion v3.3.2
  * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
@@ -287,11 +287,12 @@
           activeClass = _this$options8.activeClass,
           collapse = _this$options8.collapse,
           beforeOpen = _this$options8.beforeOpen;
+        if (calcHeight) beforeOpen(element);
+
         var panel = element.querySelector('.'.concat(panelClass));
         var height = panel.scrollHeight;
 
         element.classList.add(activeClass);
-        if (calcHeight) beforeOpen(element);
 
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {

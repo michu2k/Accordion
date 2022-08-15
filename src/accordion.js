@@ -245,11 +245,12 @@
        */
       showElement(element, calcHeight = true) {
         const { panelClass, activeClass, collapse, beforeOpen } = this.options;
+        if (calcHeight) beforeOpen(element);
+
         const panel = element.querySelector(`.${panelClass}`);
         const height = panel.scrollHeight;
 
         element.classList.add(activeClass);
-        if (calcHeight) beforeOpen(element);
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
