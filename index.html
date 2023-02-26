@@ -11,9 +11,9 @@
 <div class="accordion-container">
   <div class="ac">
     <h2 class="ac-header">
-      <button class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button class="ac-trigger" id="trigger-1">Lorem ipsum dolor sit amet.</button>
     </h2>
-    <div class="ac-panel">
+    <div class="ac-panel" id="panel-1">
       <p class="ac-text">Nulla et sodales nisl. Nam auctor quis odio eu congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </div>
   </div>
@@ -40,7 +40,7 @@
 <script src="dist/accordion.min.js"></script>
 
 <script>
-  new Accordion('.accordion-container');
+  var accordion = new Accordion('.accordion-container');
 </script>
 
 </body>
