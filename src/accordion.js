@@ -256,7 +256,7 @@
           requestAnimationFrame(() => {
             panel.style.height = calcHeight ? `${height}px` : 'auto';
 
-            if (!parseFloat(panel.style[isWebkit('transitionDuration')])) {
+            if (!parseFloat(getComputedStyle(panel)[isWebkit('transitionDuration')])) {
               onOpen(element);
             }
           });
@@ -287,7 +287,7 @@
             requestAnimationFrame(() => {
               panel.style.height = 0;
 
-              if (!parseFloat(panel.style[isWebkit('transitionDuration')])) {
+              if (!parseFloat(getComputedStyle(panel)[isWebkit('transitionDuration')])) {
                 onClose(element);
               }
             });
