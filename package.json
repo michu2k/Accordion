@@ -3,6 +3,7 @@
   "version": "3.3.2",
   "description": "Lightweight and accessible accordion module created in pure Javascript",
   "main": "dist/accordion.min.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michu2k/Accordion.git"
