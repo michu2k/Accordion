@@ -40,7 +40,15 @@
 <script src="dist/accordion.min.js"></script>
 
 <script>
-  new Accordion('.accordion-container');
+  var accordion = new Accordion('.accordion-container', {
+    // duration: 0,
+    onOpen(el) {
+      console.log('onOpen', el);
+    },
+    onClose(el) {
+      console.log('onClose', el);
+    },
+  });
 </script>
 
 </body>

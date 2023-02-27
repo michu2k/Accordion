@@ -7,6 +7,7 @@
  * Published under MIT License
  */
 
+'use strict';
 (function (window) {
   'use strict';
 
@@ -286,7 +287,8 @@
           panelClass = _this$options8.panelClass,
           activeClass = _this$options8.activeClass,
           collapse = _this$options8.collapse,
-          beforeOpen = _this$options8.beforeOpen;
+          beforeOpen = _this$options8.beforeOpen,
+          onOpen = _this$options8.onOpen;
         if (calcHeight) beforeOpen(element);
 
         var panel = element.querySelector('.'.concat(panelClass));
@@ -297,6 +299,10 @@
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
             panel.style.height = calcHeight ? ''.concat(height, 'px') : 'auto';
+
+            if (!parseFloat(panel.style[isWebkit('transitionDuration')])) {
+              onOpen(element);
+            }
           });
         });
 
@@ -313,8 +319,9 @@
         var _this$options9 = this.options,
           panelClass = _this$options9.panelClass,
           activeClass = _this$options9.activeClass,
-          beforeClose = _this$options9.beforeClose;
-        var panel = element.querySelector('.'.concat(panelClass));
+          beforeClose = _this$options9.beforeClose,
+          onClose = _this$options9.onClose;
+        var panel = element.querySelector('.'.concat(CSS.escape(panelClass)));
         var height = panel.scrollHeight;
 
         element.classList.remove(activeClass);
@@ -328,6 +335,10 @@
 
             requestAnimationFrame(function () {
               panel.style.height = 0;
+
+              if (!parseFloat(panel.style[isWebkit('transitionDuration')])) {
+                onClose(element);
+              }
             });
           });
         } else {
