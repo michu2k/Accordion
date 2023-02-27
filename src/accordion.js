@@ -272,7 +272,7 @@
        */
       closeElement(element, calcHeight = true) {
         const { panelClass, activeClass, beforeClose, onClose } = this.options;
-        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
+        const panel = element.querySelector(`.${panelClass}`);
         const height = panel.scrollHeight;
 
         element.classList.remove(activeClass);
