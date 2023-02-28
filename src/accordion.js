@@ -375,7 +375,7 @@
       handleTransitionEnd(e) {
         if (e.propertyName !== 'height') return;
 
-        const { onOpen, onClose } = this.options;
+        const { activeClass, onOpen, onClose } = this.options;
         const panel = e.currentTarget;
         const height = parseInt(panel.style.height);
         const element = this.elements.find((element) => element.contains(panel));
@@ -383,7 +383,7 @@
         if (height > 0) {
           panel.style.height = 'auto';
           onOpen(element);
-        } else {
+        } else if (!element.classList.contains(activeClass)) {
           onClose(element);
         }
       }
