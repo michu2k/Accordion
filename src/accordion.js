@@ -373,6 +373,8 @@
        * @param {TransitionEvent} e = event
        */
       handleTransitionEnd(e) {
+        e.stopPropagation();
+
         if (e.propertyName !== 'height') return;
 
         const { onOpen, onClose } = this.options;
