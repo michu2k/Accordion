@@ -364,11 +364,8 @@
       handleFocus(e) {
         const target = e.currentTarget;
 
-        this.elements.forEach((element, idx) => {
-          if (element.contains(target)) {
-            this.currFocusedIdx = idx;
-          }
-        });
+        const currElement = this.elements.find((element) => element.contains(target));
+        this.currFocusedIdx = this.elements.indexOf(currElement);
       },
 
       /**
