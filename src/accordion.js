@@ -321,7 +321,7 @@
       },
 
       /**
-       * Handle click
+       * Handle trigger click
        * @param {PointerEvent} e = event
        */
       handleClick(e) {
@@ -339,7 +339,7 @@
       },
 
       /**
-       * Handle keydown
+       * Handle trigger keydown
        * @param {KeyboardEvent} e = event
        */
       handleKeydown(e) {
@@ -358,7 +358,21 @@
       },
 
       /**
-       * Handle transitionend
+       * Handle trigger focus
+       * @param {KeyboardEvent} e = event
+       */
+      handleFocus(e) {
+        const target = e.currentTarget;
+
+        this.elements.forEach((element, idx) => {
+          if (element.contains(target)) {
+            this.currFocusedIdx = idx;
+          }
+        });
+      },
+
+      /**
+       * Handle panel transitionend
        * @param {TransitionEvent} e = event
        */
       handleTransitionEnd(e) {
@@ -389,6 +403,7 @@
 
       core.handleClick = core.handleClick.bind(core);
       core.handleKeydown = core.handleKeydown.bind(core);
+      core.handleFocus = core.handleFocus.bind(core);
       core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
       core.elements.forEach((element) => {
@@ -397,6 +412,7 @@
 
         trigger.addEventListener('click', core.handleClick);
         trigger.addEventListener('keydown', core.handleKeydown);
+        trigger.addEventListener('focus', core.handleFocus);
         panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
         panel.addEventListener('transitionend', core.handleTransitionEnd);
       });
@@ -417,6 +433,7 @@
 
         trigger.removeEventListener('click', core.handleClick);
         trigger.removeEventListener('keydown', core.handleKeydown);
+        trigger.removeEventListener('focus', core.handleFocus);
         panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
         panel.removeEventListener('transitionend', core.handleTransitionEnd);
       });
