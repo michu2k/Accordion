@@ -343,26 +343,15 @@
        * @param {KeyboardEvent} e = event
        */
       handleKeydown(e) {
-        const KEYS = {
-          ARROW_UP: 38,
-          ARROW_DOWN: 40,
-          HOME: 36,
-          END: 35
-        };
-
-        switch (e.keyCode) {
-          case KEYS.ARROW_UP:
+        switch (e.key) {
+          case 'ArrowUp':
             return this.focusPrevElement(e);
-
-          case KEYS.ARROW_DOWN:
+          case 'ArrowDown':
             return this.focusNextElement(e);
-
-          case KEYS.HOME:
+          case 'Home':
             return this.focusFirstElement(e);
-
-          case KEYS.END:
+          case 'End':
             return this.focusLastElement(e);
-
           default:
             return null;
         }
@@ -546,6 +535,7 @@
     /**
      * Build class name
      * @param {string} className = element class name
+     * @return {string} className = element class name with CSS.escape
      */
     const cn = (className) => `.${CSS.escape(className)}`;
 
