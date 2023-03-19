@@ -3,3 +3,4 @@ src/
 .eslintignore
 gulpfile.js
 index.html
+header.txt
