@@ -1,4 +1,7 @@
 {
+  "extends": [
+    "eslint:recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -14,9 +17,6 @@
     "object-curly-spacing": ["error", "always"],
     "arrow-parens": ["error", "always"],
     "no-console": "off",
-    "no-unused-vars": "off"
-  },
-  "extends": [
-    "eslint:recommended"
-  ]
+    "no-unused-vars": "warn"
+  }
 }

@@ -6,7 +6,7 @@ $color-grey: #8a8a8a;
 $color-black: #111;
 
 .ac {
-  margin-top: 10px;
+  margin-top: 8px;
   border: 1px solid $color-light-grey;
   background-color: $color-white;
   box-sizing: border-box;
@@ -23,7 +23,7 @@ $color-black: #111;
     color: $color-black;
     text-align: left;
     width: 100%;
-    padding: 10px 30px 10px 10px;
+    padding: 8px 32px 8px 8px;
     display: block;
     cursor: pointer;
     background-color: transparent;
@@ -57,7 +57,7 @@ $color-black: #111;
     .ac-text {
       font: 15px/24px 'Arial', sans-serif;
       color: $color-black;
-      padding: 10px;
+      padding: 8px;
       margin: 0;
     }
   }

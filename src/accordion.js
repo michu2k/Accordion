@@ -61,7 +61,7 @@
       createDefinitions() {
         const { elementClass, openOnInit, onlyChildNodes } = this.options;
 
-        const allElements = onlyChildNodes ? this.container.childNodes : this.container.querySelectorAll(`.${elementClass}`);
+        const allElements = onlyChildNodes ? this.container.childNodes : this.container.querySelectorAll(cn(elementClass));
 
         this.elements = Array.from(allElements)
           .filter((el) => el.classList && el.classList.contains(elementClass));
@@ -93,7 +93,7 @@
        */
       setTransition(element, clear = false) {
         const { duration, panelClass } = this.options;
-        const panel = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(cn(panelClass));
         const transition = isWebkit('transitionDuration');
 
         panel.style[transition] = clear ? null : `${duration}ms`;
@@ -105,12 +105,12 @@
        */
       generateIDs(element) {
         const { triggerClass, panelClass } = this.options;
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
+        const panel = element.querySelector(cn(panelClass));
 
-        element.setAttribute('id', `ac-${uniqueId}`);
-        trigger.setAttribute('id', `ac-trigger-${uniqueId}`);
-        panel.setAttribute('id', `ac-panel-${uniqueId}`);
+        element.setAttribute('id', element.id || `ac-${uniqueId}`);
+        trigger.setAttribute('id', trigger.id || `ac-trigger-${uniqueId}`);
+        panel.setAttribute('id', panel.id || `ac-panel-${uniqueId}`);
       },
 
       /**
@@ -119,12 +119,12 @@
        */
       removeIDs(element) {
         const { triggerClass, panelClass } = this.options;
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
+        const panel = element.querySelector(cn(panelClass));
 
-        element.removeAttribute('id');
-        trigger.removeAttribute('id');
-        panel.removeAttribute('id');
+        if (element.id.startsWith('ac-')) element.removeAttribute('id');
+        if (trigger.id.startsWith('ac-')) trigger.removeAttribute('id');
+        if (panel.id.startsWith('ac-')) panel.removeAttribute('id');
       },
 
       /**
@@ -135,16 +135,16 @@
         const { ariaEnabled, triggerClass, panelClass } = this.options;
         if (!ariaEnabled) return;
 
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
+        const panel = element.querySelector(cn(panelClass));
 
         trigger.setAttribute('role', 'button');
-        trigger.setAttribute('aria-controls', `ac-panel-${uniqueId}`);
+        trigger.setAttribute('aria-controls', panel.id);
         trigger.setAttribute('aria-disabled', false);
         trigger.setAttribute('aria-expanded', false);
 
         panel.setAttribute('role', 'region');
-        panel.setAttribute('aria-labelledby', `ac-trigger-${uniqueId}`);
+        panel.setAttribute('aria-labelledby', trigger.id);
       },
 
       /**
@@ -158,7 +158,7 @@
         const { ariaEnabled, triggerClass } = this.options;
         if (!ariaEnabled) return;
 
-        const trigger = element.querySelector(`.${triggerClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
         trigger.setAttribute('aria-expanded', ariaExpanded);
         trigger.setAttribute('aria-disabled', ariaDisabled);
       },
@@ -171,8 +171,8 @@
         const { ariaEnabled, triggerClass, panelClass } = this.options;
         if (!ariaEnabled) return;
 
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
+        const panel = element.querySelector(cn(panelClass));
 
         trigger.removeAttribute('role');
         trigger.removeAttribute('aria-controls');
@@ -192,7 +192,7 @@
         e.preventDefault();
 
         const { triggerClass } = this.options;
-        const trigger = element.querySelector(`.${triggerClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
         trigger.focus();
       },
 
@@ -247,7 +247,7 @@
         const { panelClass, activeClass, collapse, beforeOpen } = this.options;
         if (calcHeight) beforeOpen(element);
 
-        const panel = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(cn(panelClass));
         const height = panel.scrollHeight;
 
         element.classList.add(activeClass);
@@ -268,7 +268,7 @@
        */
       closeElement(element, calcHeight = true) {
         const { panelClass, activeClass, beforeClose } = this.options;
-        const panel = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(cn(panelClass));
         const height = panel.scrollHeight;
 
         element.classList.remove(activeClass);
@@ -321,7 +321,7 @@
       },
 
       /**
-       * Handle click
+       * Handle trigger click
        * @param {PointerEvent} e = event
        */
       handleClick(e) {
@@ -339,40 +339,42 @@
       },
 
       /**
-       * Handle keydown
+       * Handle trigger keydown
        * @param {KeyboardEvent} e = event
        */
       handleKeydown(e) {
-        const KEYS = {
-          ARROW_UP: 38,
-          ARROW_DOWN: 40,
-          HOME: 36,
-          END: 35
-        };
-
-        switch (e.keyCode) {
-          case KEYS.ARROW_UP:
+        switch (e.key) {
+          case 'ArrowUp':
             return this.focusPrevElement(e);
-
-          case KEYS.ARROW_DOWN:
+          case 'ArrowDown':
             return this.focusNextElement(e);
-
-          case KEYS.HOME:
+          case 'Home':
             return this.focusFirstElement(e);
-
-          case KEYS.END:
+          case 'End':
             return this.focusLastElement(e);
-
           default:
             return null;
         }
       },
 
       /**
-       * Handle transitionend
+       * Handle trigger focus
+       * @param {KeyboardEvent} e = event
+       */
+      handleFocus(e) {
+        const target = e.currentTarget;
+
+        const currElement = this.elements.find((element) => element.contains(target));
+        this.currFocusedIdx = this.elements.indexOf(currElement);
+      },
+
+      /**
+       * Handle panel transitionend
        * @param {TransitionEvent} e = event
        */
       handleTransitionEnd(e) {
+        e.stopPropagation();
+
         if (e.propertyName !== 'height') return;
 
         const { onOpen, onClose } = this.options;
@@ -398,14 +400,16 @@
 
       core.handleClick = core.handleClick.bind(core);
       core.handleKeydown = core.handleKeydown.bind(core);
+      core.handleFocus = core.handleFocus.bind(core);
       core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
       core.elements.forEach((element) => {
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
+        const panel = element.querySelector(cn(panelClass));
 
         trigger.addEventListener('click', core.handleClick);
         trigger.addEventListener('keydown', core.handleKeydown);
+        trigger.addEventListener('focus', core.handleFocus);
         panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
         panel.addEventListener('transitionend', core.handleTransitionEnd);
       });
@@ -421,11 +425,12 @@
       const { triggerClass, panelClass } = core.options;
 
       core.elements.forEach((element) => {
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(cn(triggerClass));
+        const panel = element.querySelector(cn(panelClass));
 
         trigger.removeEventListener('click', core.handleClick);
         trigger.removeEventListener('keydown', core.handleKeydown);
+        trigger.removeEventListener('focus', core.handleFocus);
         panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
         panel.removeEventListener('transitionend', core.handleTransitionEnd);
       });
@@ -540,6 +545,13 @@
      * @return {string} string = changed string
      */
     const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
+
+    /**
+     * Build class name
+     * @param {string} className = element class name
+     * @return {string} className = element class name with CSS.escape
+     */
+    const cn = (className) => `.${CSS.escape(className)}`;
 
     core.init();
   };

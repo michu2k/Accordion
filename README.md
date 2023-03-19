@@ -2,7 +2,7 @@
 Lightweight and accessible accordion module with an extensible API. With the module you can create accordion on your website, useful especially for creating FAQ lists.
 
 ## Version
-3.3.2
+3.3.3
 
 ## Installation
 
@@ -21,8 +21,8 @@ import 'accordion-js/dist/accordion.min.css';
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.js
+https://unpkg.com/accordion-js@3.3.3/dist/accordion.min.css
+https://unpkg.com/accordion-js@3.3.3/dist/accordion.min.js
 ```
 
 ```html

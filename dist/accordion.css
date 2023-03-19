@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /**
- * Accordion v3.3.2
+ * Accordion v3.3.3
  * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
@@ -9,7 +9,7 @@
  */
 
 .ac {
-  margin-top: 10px;
+  margin-top: 8px;
   border: 1px solid #eee;
   background-color: #fff;
   box-sizing: border-box;
@@ -23,7 +23,7 @@
   color: #111;
   text-align: left;
   width: 100%;
-  padding: 10px 30px 10px 10px;
+  padding: 8px 32px 8px 8px;
   display: block;
   cursor: pointer;
   background-color: transparent;
@@ -54,7 +54,7 @@
 .ac .ac-panel .ac-text {
   font: 15px/24px "Arial", sans-serif;
   color: #111;
-  padding: 10px;
+  padding: 8px;
   margin: 0;
 }
 .ac.js-enabled .ac-panel {
