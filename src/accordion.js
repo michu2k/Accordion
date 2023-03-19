@@ -61,7 +61,7 @@
       createDefinitions() {
         const { elementClass, openOnInit, onlyChildNodes } = this.options;
 
-        const allElements = onlyChildNodes ? this.container.childNodes : this.container.querySelectorAll(`.${elementClass}`);
+        const allElements = onlyChildNodes ? this.container.childNodes : this.container.querySelectorAll(`.${CSS.escape(elementClass)}`);
 
         this.elements = Array.from(allElements)
           .filter((el) => el.classList && el.classList.contains(elementClass));
@@ -93,7 +93,7 @@
        */
       setTransition(element, clear = false) {
         const { duration, panelClass } = this.options;
-        const panel = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
         const transition = isWebkit('transitionDuration');
 
         panel.style[transition] = clear ? null : `${duration}ms`;
@@ -105,8 +105,8 @@
        */
       generateIDs(element) {
         const { triggerClass, panelClass } = this.options;
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
 
         element.setAttribute('id', `ac-${uniqueId}`);
         trigger.setAttribute('id', `ac-trigger-${uniqueId}`);
@@ -119,8 +119,8 @@
        */
       removeIDs(element) {
         const { triggerClass, panelClass } = this.options;
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
 
         element.removeAttribute('id');
         trigger.removeAttribute('id');
@@ -135,8 +135,8 @@
         const { ariaEnabled, triggerClass, panelClass } = this.options;
         if (!ariaEnabled) return;
 
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
 
         trigger.setAttribute('role', 'button');
         trigger.setAttribute('aria-controls', `ac-panel-${uniqueId}`);
@@ -158,7 +158,7 @@
         const { ariaEnabled, triggerClass } = this.options;
         if (!ariaEnabled) return;
 
-        const trigger = element.querySelector(`.${triggerClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
         trigger.setAttribute('aria-expanded', ariaExpanded);
         trigger.setAttribute('aria-disabled', ariaDisabled);
       },
@@ -171,8 +171,8 @@
         const { ariaEnabled, triggerClass, panelClass } = this.options;
         if (!ariaEnabled) return;
 
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
 
         trigger.removeAttribute('role');
         trigger.removeAttribute('aria-controls');
@@ -192,7 +192,7 @@
         e.preventDefault();
 
         const { triggerClass } = this.options;
-        const trigger = element.querySelector(`.${triggerClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
         trigger.focus();
       },
 
@@ -247,7 +247,7 @@
         const { panelClass, activeClass, collapse, beforeOpen } = this.options;
         if (calcHeight) beforeOpen(element);
 
-        const panel = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
         const height = panel.scrollHeight;
 
         element.classList.add(activeClass);
@@ -268,7 +268,7 @@
        */
       closeElement(element, calcHeight = true) {
         const { panelClass, activeClass, beforeClose } = this.options;
-        const panel = element.querySelector(`.${panelClass}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
         const height = panel.scrollHeight;
 
         element.classList.remove(activeClass);
@@ -403,8 +403,8 @@
       core.handleTransitionEnd = core.handleTransitionEnd.bind(core);
 
       core.elements.forEach((element) => {
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
 
         trigger.addEventListener('click', core.handleClick);
         trigger.addEventListener('keydown', core.handleKeydown);
@@ -423,8 +423,8 @@
       const { triggerClass, panelClass } = core.options;
 
       core.elements.forEach((element) => {
-        const trigger = element.querySelector(`.${triggerClass}`);
-        const panel = element.querySelector(`.${panelClass}`);
+        const trigger = element.querySelector(`.${CSS.escape(triggerClass)}`);
+        const panel = element.querySelector(`.${CSS.escape(panelClass)}`);
 
         trigger.removeEventListener('click', core.handleClick);
         trigger.removeEventListener('keydown', core.handleKeydown);
