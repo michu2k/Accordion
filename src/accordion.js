@@ -108,9 +108,9 @@
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        element.setAttribute('id', `ac-${uniqueId}`);
-        trigger.setAttribute('id', `ac-trigger-${uniqueId}`);
-        panel.setAttribute('id', `ac-panel-${uniqueId}`);
+        element.setAttribute('id', element.id || `ac-${uniqueId}`);
+        trigger.setAttribute('id', trigger.id || `ac-trigger-${uniqueId}`);
+        panel.setAttribute('id', panel.id || `ac-panel-${uniqueId}`);
       },
 
       /**
@@ -122,9 +122,9 @@
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        element.removeAttribute('id');
-        trigger.removeAttribute('id');
-        panel.removeAttribute('id');
+        if (element.id.startsWith('ac-')) element.removeAttribute('id');
+        if (trigger.id.startsWith('ac-')) trigger.removeAttribute('id');
+        if (panel.id.startsWith('ac-')) panel.removeAttribute('id');
       },
 
       /**
@@ -139,12 +139,12 @@
         const panel = element.querySelector(cn(panelClass));
 
         trigger.setAttribute('role', 'button');
-        trigger.setAttribute('aria-controls', `ac-panel-${uniqueId}`);
+        trigger.setAttribute('aria-controls', panel.id);
         trigger.setAttribute('aria-disabled', false);
         trigger.setAttribute('aria-expanded', false);
 
         panel.setAttribute('role', 'region');
-        panel.setAttribute('aria-labelledby', `ac-trigger-${uniqueId}`);
+        panel.setAttribute('aria-labelledby', trigger.id);
       },
 
       /**
