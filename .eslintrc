@@ -1,4 +1,7 @@
 {
+  "extends": [
+    "eslint:recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -15,8 +18,5 @@
     "arrow-parens": ["error", "always"],
     "no-console": "off",
     "no-unused-vars": "warn"
-  },
-  "extends": [
-    "eslint:recommended"
-  ]
+  }
 }
