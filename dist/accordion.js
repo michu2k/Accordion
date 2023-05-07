@@ -2,11 +2,12 @@
  * Accordion v3.3.4
  * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
- *
+ * 
  * Copyright (c) Michał Strumpf
  * Published under MIT License
  */
 
+'use strict';
 (function (window) {
   'use strict';
 
@@ -49,8 +50,14 @@
           triggerClass: 'ac-trigger', // trigger class {string}
           panelClass: 'ac-panel', // panel class {string}
           activeClass: 'is-active', // active element class {string}
+          openCondition: function openCondition(element) {
+            return true;
+          }, // callback function to check if the element can be opened {function}
           beforeOpen: function beforeOpen() {}, // calls before the item is opened {function}
           onOpen: function onOpen() {}, // calls when the item is opened {function}
+          closeCondition: function closeCondition(element) {
+            return true;
+          }, // callback function to check if the element can be closed {function}
           beforeClose: function beforeClose() {}, // calls before the item is closed {function}
           onClose: function onClose() {}, // calls when the item is closed {function}
         };
@@ -345,10 +352,13 @@
       toggleElement: function toggleElement(element) {
         var _this$options10 = this.options,
           activeClass = _this$options10.activeClass,
-          collapse = _this$options10.collapse;
+          collapse = _this$options10.collapse,
+          openCondition = _this$options10.openCondition,
+          closeCondition = _this$options10.closeCondition;
         var isActive = element.classList.contains(activeClass);
+        var fullfillsCondition = isActive ? closeCondition(element) : openCondition(element);
 
-        if (isActive && !collapse) return;
+        if ((isActive && !collapse) || !fullfillsCondition) return;
         return isActive ? this.closeElement(element) : this.showElement(element);
       },
 

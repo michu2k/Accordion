@@ -38,8 +38,10 @@
           triggerClass: 'ac-trigger', // trigger class {string}
           panelClass: 'ac-panel', // panel class {string}
           activeClass: 'is-active', // active element class {string}
+          openCondition: (element) => true, // callback function to check if the element can be opened {function}
           beforeOpen: () => {}, // calls before the item is opened {function}
           onOpen: () => {}, // calls when the item is opened {function}
+          closeCondition: (element) => true, // callback function to check if the element can be closed {function}
           beforeClose: () => {}, // calls before the item is closed {function}
           onClose: () => {} // calls when the item is closed {function}
         };
@@ -297,10 +299,11 @@
        * @param {HTMLElement} element = accordion item
        */
       toggleElement(element) {
-        const { activeClass, collapse } = this.options;
+        const { activeClass, collapse, openCondition, closeCondition } = this.options;
         const isActive = element.classList.contains(activeClass);
+        const fullfillsCondition = isActive ? closeCondition(element) : openCondition(element);
 
-        if (isActive && !collapse) return;
+        if ((isActive && !collapse) || !fullfillsCondition) return;
         return isActive ? this.closeElement(element) : this.showElement(element);
       },
 
