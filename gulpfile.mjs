@@ -13,6 +13,15 @@ import gulpSass from 'gulp-sass';
 
 const sass = gulpSass(dartSass);
 
+const header = `
+Accordion v3.3.4
+<%= pkg.description %>
+https://github.com/michu2k/Accordion
+
+Copyright (c) <%= pkg.author %>
+Published under <%= pkg.license %> License
+`;
+
 // Config
 const config = {
   srcCSS: 'src/**/*.scss',
@@ -42,12 +51,12 @@ function compileSass() {
     .pipe(sass({ outputStyle: 'expanded' })
       .on('error', sass.logError))
     .pipe(autoprefixer({ cascade: false }))
-    .pipe(headerComment({ file: './header.txt' }))
+    .pipe(headerComment(header))
     .pipe(dest(config.distCSS))
     .pipe(browserSync.stream())
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }))
-    .pipe(headerComment({ file: './header.txt' }))
+    .pipe(headerComment(header))
     .pipe(dest(config.distCSS))
     .pipe(browserSync.stream());
 }
@@ -67,13 +76,13 @@ function compileJs() {
       printWidth: 120,
       singleQuote: true
     }))
-    .pipe(headerComment({ file: './header.txt' }))
+    .pipe(headerComment(header))
     .pipe(dest(config.distJS))
     .pipe(terser({
       ecma: 2020
     }))
     .pipe(rename({ suffix: '.min' }))
-    .pipe(headerComment({ file: './header.txt' }))
+    .pipe(headerComment(header))
     .pipe(dest(config.distJS))
     .pipe(browserSync.stream());
 }
