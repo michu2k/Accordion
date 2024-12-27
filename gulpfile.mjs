@@ -1,7 +1,7 @@
 import { src, dest, watch, series, task, parallel } from 'gulp';
 import babel from 'gulp-babel';
 import cleanCSS from 'gulp-clean-css';
-import uglify from 'gulp-uglify-es';
+import terser from 'gulp-terser';
 import rename from 'gulp-rename';
 import autoprefixer from 'gulp-autoprefixer';
 import prettier from 'gulp-prettier';
@@ -69,7 +69,9 @@ function compileJs() {
     }))
     .pipe(headerComment({ file: './header.txt' }))
     .pipe(dest(config.distJS))
-    .pipe(uglify())
+    .pipe(terser({
+      ecma: 2020
+    }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(headerComment({ file: './header.txt' }))
     .pipe(dest(config.distJS))
