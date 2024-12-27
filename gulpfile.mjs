@@ -1,14 +1,17 @@
-const gulp = require('gulp');
-const sass = require('gulp-sass')(require('sass'));
-const babel = require('gulp-babel');
-const cleanCSS = require('gulp-clean-css');
-const uglify = require('gulp-uglify-es').default;
-const browserSync = require('browser-sync').create();
-const rename = require('gulp-rename');
-const autoprefixer = require('gulp-autoprefixer');
-const prettier = require('gulp-prettier');
-const eslint = require('gulp-eslint');
-const headerComment = require('gulp-header-comment');
+import { src, dest, watch, series, task, parallel } from 'gulp';
+import babel from 'gulp-babel';
+import cleanCSS from 'gulp-clean-css';
+import uglify from 'gulp-uglify-es';
+import rename from 'gulp-rename';
+import autoprefixer from 'gulp-autoprefixer';
+import prettier from 'gulp-prettier';
+import eslint from 'gulp-eslint';
+import headerComment from 'gulp-header-comment';
+import browserSync from 'browser-sync';
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass';
+
+const sass = gulpSass(dartSass);
 
 // Config
 const config = {
@@ -35,23 +38,23 @@ function reload(done) {
 
 // Sass
 function compileSass() {
-  return gulp.src(config.srcCSS)
+  return src(config.srcCSS)
     .pipe(sass({ outputStyle: 'expanded' })
       .on('error', sass.logError))
     .pipe(autoprefixer({ cascade: false }))
     .pipe(headerComment({ file: './header.txt' }))
-    .pipe(gulp.dest(config.distCSS))
+    .pipe(dest(config.distCSS))
     .pipe(browserSync.stream())
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }))
     .pipe(headerComment({ file: './header.txt' }))
-    .pipe(gulp.dest(config.distCSS))
+    .pipe(dest(config.distCSS))
     .pipe(browserSync.stream());
 }
 
 // Javascript
 function compileJs() {
-  return gulp.src(config.srcJS)
+  return src(config.srcJS)
     .pipe(babel({
       presets: ['@babel/preset-env'],
       retainLines: true
@@ -65,40 +68,40 @@ function compileJs() {
       singleQuote: true
     }))
     .pipe(headerComment({ file: './header.txt' }))
-    .pipe(gulp.dest(config.distJS))
+    .pipe(dest(config.distJS))
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
     .pipe(headerComment({ file: './header.txt' }))
-    .pipe(gulp.dest(config.distJS))
+    .pipe(dest(config.distJS))
     .pipe(browserSync.stream());
 }
 
 // Watch Sass files
 function watchSass() {
-  gulp.watch(config.srcCSS, gulp.series(compileSass, reload));
+  watch(config.srcCSS, series(compileSass, reload));
 }
 
 // Watch Javascript files
 function watchJs() {
-  gulp.watch(config.srcJS, gulp.series(compileJs, reload));
+  watch(config.srcJS, series(compileJs, reload));
 }
 
 // Watch HTML files
 function watchHtml() {
-  gulp.watch('*.html', gulp.series(reload));
+  watch('*.html', series(reload));
 }
 
 // Fix all errors
 function lintFix() {
-  return gulp.src(['**/*.js', '!node_modules/**'])
+  return src(['**/*.js', '!node_modules/**'])
     .pipe(eslint({ fix: true }))
-    .pipe(gulp.dest(function(file) {
+    .pipe(dest(function(file) {
       return file.base;
     }));
 }
 
 // Main task
-gulp.task('default', gulp.parallel(server, watchSass, watchJs, watchHtml));
+task('default', parallel(server, watchSass, watchJs, watchHtml));
 
 // Run ESLint
-gulp.task('lint', gulp.parallel(lintFix));
+task('lint', parallel(lintFix));
