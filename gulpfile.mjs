@@ -1,15 +1,13 @@
-import { src, dest, watch, series, task, parallel } from 'gulp';
-import babel from 'gulp-babel';
-import cleanCSS from 'gulp-clean-css';
-import terser from 'gulp-terser';
-import rename from 'gulp-rename';
-import autoprefixer from 'gulp-autoprefixer';
-import prettier from 'gulp-prettier';
-import eslint from 'gulp-eslint';
-import headerComment from 'gulp-header-comment';
-import browserSync from 'browser-sync';
-import dartSass from 'sass';
-import gulpSass from 'gulp-sass';
+import {src, dest, watch, series, task, parallel} from "gulp";
+import babel from "gulp-babel";
+import cleanCSS from "gulp-clean-css";
+import terser from "gulp-terser";
+import rename from "gulp-rename";
+import autoprefixer from "gulp-autoprefixer";
+import headerComment from "gulp-header-comment";
+import browserSync from "browser-sync";
+import dartSass from "sass";
+import gulpSass from "gulp-sass";
 
 const sass = gulpSass(dartSass);
 
@@ -24,17 +22,17 @@ Published under <%= pkg.license %> License
 
 // Config
 const config = {
-  srcCSS: 'src/**/*.scss',
-  distCSS: 'dist',
-  srcJS: 'src/**/*.js',
-  distJS: 'dist'
+  srcCSS: "src/**/*.scss",
+  distCSS: "dist",
+  srcJS: "src/**/*.js",
+  distJS: "dist"
 };
 
 // Server
 function server() {
   browserSync.init({
     server: {
-      baseDir: './'
+      baseDir: "./"
     }
   });
 }
@@ -48,14 +46,17 @@ function reload(done) {
 // Sass
 function compileSass() {
   return src(config.srcCSS)
-    .pipe(sass({ outputStyle: 'expanded' })
-      .on('error', sass.logError))
-    .pipe(autoprefixer({ cascade: false }))
+    .pipe(
+      sass({
+        outputStyle: "expanded"
+      }).on("error", sass.logError)
+    )
+    .pipe(autoprefixer({cascade: false}))
     .pipe(headerComment(header))
     .pipe(dest(config.distCSS))
     .pipe(browserSync.stream())
     .pipe(cleanCSS())
-    .pipe(rename({ suffix: '.min' }))
+    .pipe(rename({suffix: ".min"}))
     .pipe(headerComment(header))
     .pipe(dest(config.distCSS))
     .pipe(browserSync.stream());
@@ -64,24 +65,22 @@ function compileSass() {
 // Javascript
 function compileJs() {
   return src(config.srcJS)
-    .pipe(babel({
-      presets: ['@babel/preset-env'],
-      retainLines: true
-    }))
-    .on('error', function(error) {
+    .pipe(
+      babel({
+        presets: ["@babel/preset-env"],
+        retainLines: true
+      })
+    )
+    .on("error", function (error) {
       console.log(error.toString());
-      this.emit('end');
+      this.emit("end");
     })
-    .pipe(prettier({
-      printWidth: 120,
-      singleQuote: true
-    }))
-    .pipe(headerComment(header))
-    .pipe(dest(config.distJS))
-    .pipe(terser({
-      ecma: 2020
-    }))
-    .pipe(rename({ suffix: '.min' }))
+    .pipe(
+      terser({
+        ecma: 2020
+      })
+    )
+    .pipe(rename({suffix: ".min"}))
     .pipe(headerComment(header))
     .pipe(dest(config.distJS))
     .pipe(browserSync.stream());
@@ -99,20 +98,8 @@ function watchJs() {
 
 // Watch HTML files
 function watchHtml() {
-  watch('*.html', series(reload));
-}
-
-// Fix all errors
-function lintFix() {
-  return src(['**/*.js', '!node_modules/**'])
-    .pipe(eslint({ fix: true }))
-    .pipe(dest(function(file) {
-      return file.base;
-    }));
+  watch("*.html", series(reload));
 }
 
 // Main task
-task('default', parallel(server, watchSass, watchJs, watchHtml));
-
-// Run ESLint
-task('lint', parallel(lintFix));
+task("default", parallel(server, watchSass, watchJs, watchHtml));
