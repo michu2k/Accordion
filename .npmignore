@@ -1,4 +1,4 @@
-src/
+src
 .prettierignore
 prettier.config.mjs
 eslint.config.mjs
