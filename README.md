@@ -159,3 +159,7 @@ accordion.detachEvents();
 ## v3 Release Info
 
 There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), I recommend updating the package to the latest version with new structure and options.
+
+## License
+
+This project is under the MIT license.
