@@ -40,19 +40,17 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-header-comment": "^0.10.0",
     "gulp-rename": "^2.0.0",
-    "gulp-sass": "^6.0.0",
     "gulp-terser": "^2.1.0",
-    "prettier": "^3.4.2",
-    "sass": "^1.83.0"
+    "prettier": "^3.4.2"
   },
   "browserslist": [
     ">0.15%",
     "not dead",
-    "Chrome >= 52",
+    "Chrome >= 80",
     "Edge >= 80",
-    "Firefox >= 52",
-    "Opera >= 45",
-    "Safari >= 11",
+    "Firefox >= 74",
+    "Opera >= 68",
+    "Safari >= 13",
     "not op_mini all",
     "not IE 11"
   ]
