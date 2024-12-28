@@ -94,9 +94,8 @@
       setTransition(element, clear = false) {
         const {duration, panelClass} = this.options;
         const panel = element.querySelector(cn(panelClass));
-        const transition = isWebkit("transitionDuration");
 
-        panel.style[transition] = clear ? null : `${duration}ms`;
+        panel.style.transitionDuration = clear ? null : `${duration}ms`;
       },
 
       /**
@@ -526,29 +525,6 @@
       this.detachEvents();
       this.attachEvents();
     };
-
-    /**
-     * Get supported property and add webkit prefix if needed
-     * @param {string} property = property name
-     * @return {string} property = property with optional webkit prefix
-     */
-    const isWebkit = (property) => {
-      if (typeof document.documentElement.style[property] === "string") {
-        return property;
-      }
-
-      property = capitalizeFirstLetter(property);
-      property = `webkit${property}`;
-
-      return property;
-    };
-
-    /**
-     * Capitalize the first letter in the string
-     * @param {string} string = string
-     * @return {string} string = changed string
-     */
-    const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
     /**
      * Build class name
