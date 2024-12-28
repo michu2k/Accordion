@@ -27,7 +27,7 @@
        */
       init() {
         const defaults = {
-          duration: 600, // animation duration in ms {number}
+          duration: 500, // animation duration in ms {number}
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
