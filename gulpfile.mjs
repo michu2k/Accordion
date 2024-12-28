@@ -6,10 +6,6 @@ import rename from "gulp-rename";
 import autoprefixer from "gulp-autoprefixer";
 import headerComment from "gulp-header-comment";
 import browserSync from "browser-sync";
-import dartSass from "sass";
-import gulpSass from "gulp-sass";
-
-const sass = gulpSass(dartSass);
 
 const header = `
 Accordion v3.3.4
@@ -22,7 +18,7 @@ Published under <%= pkg.license %> License
 
 // Config
 const config = {
-  srcCSS: "src/**/*.scss",
+  srcCSS: "src/**/*.css",
   distCSS: "dist",
   srcJS: "src/**/*.js",
   distJS: "dist"
@@ -43,20 +39,12 @@ function reload(done) {
   done();
 }
 
-// Sass
-function compileSass() {
+// CSS
+function compileCSS() {
   return src(config.srcCSS)
-    .pipe(
-      sass({
-        outputStyle: "expanded"
-      }).on("error", sass.logError)
-    )
-    .pipe(autoprefixer({cascade: false}))
-    .pipe(headerComment(header))
-    .pipe(dest(config.distCSS))
-    .pipe(browserSync.stream())
-    .pipe(cleanCSS())
     .pipe(rename({suffix: ".min"}))
+    .pipe(autoprefixer({cascade: false}))
+    .pipe(cleanCSS())
     .pipe(headerComment(header))
     .pipe(dest(config.distCSS))
     .pipe(browserSync.stream());
@@ -86,9 +74,9 @@ function compileJs() {
     .pipe(browserSync.stream());
 }
 
-// Watch Sass files
-function watchSass() {
-  watch(config.srcCSS, series(compileSass, reload));
+// Watch CSS files
+function watchCSS() {
+  watch(config.srcCSS, series(compileCSS, reload));
 }
 
 // Watch Javascript files
@@ -102,4 +90,4 @@ function watchHtml() {
 }
 
 // Main task
-task("default", parallel(server, watchSass, watchJs, watchHtml));
+task("default", parallel(server, watchCSS, watchJs, watchHtml));
