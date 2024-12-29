@@ -1,6 +1,5 @@
-(function(window) {
-
-  'use strict';
+(function (window) {
+  "use strict";
 
   let uniqueId = 0;
 
@@ -9,7 +8,7 @@
    * @param {string|HTMLElement} selectorOrElement = container in which the script will be initialized
    * @param {object} userOptions = options defined by user
    */
-  const Accordion = function(selectorOrElement, userOptions) {
+  const Accordion = function (selectorOrElement, userOptions) {
     const _this = this;
     let eventsAttached = false;
 
@@ -28,16 +27,16 @@
        */
       init() {
         const defaults = {
-          duration: 600, // animation duration in ms {number}
+          duration: 500, // animation duration in ms {number}
           ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
           collapse: true, // allow collapse expanded panel {boolean}
           showMultiple: false, // show multiple elements at the same time {boolean}
           onlyChildNodes: true, // disabling this option will find all items in the container {boolean}
           openOnInit: [], // show accordion elements during initialization {array}
-          elementClass: 'ac', // element class {string}
-          triggerClass: 'ac-trigger', // trigger class {string}
-          panelClass: 'ac-panel', // panel class {string}
-          activeClass: 'is-active', // active element class {string}
+          elementClass: "ac", // element class {string}
+          triggerClass: "ac-trigger", // trigger class {string}
+          panelClass: "ac-panel", // panel class {string}
+          activeClass: "is-active", // active element class {string}
           beforeOpen: () => {}, // calls before the item is opened {function}
           onOpen: () => {}, // calls when the item is opened {function}
           beforeClose: () => {}, // calls before the item is closed {function}
@@ -47,7 +46,7 @@
         // Extend default options
         this.options = Object.assign(defaults, userOptions);
 
-        const isString = (typeof selectorOrElement === 'string');
+        const isString = typeof selectorOrElement === "string";
 
         this.container = isString ? document.querySelector(selectorOrElement) : selectorOrElement;
         this.createDefinitions();
@@ -59,12 +58,13 @@
        * Create element definitions
        */
       createDefinitions() {
-        const { elementClass, openOnInit, onlyChildNodes } = this.options;
+        const {elementClass, openOnInit, onlyChildNodes} = this.options;
 
-        const allElements = onlyChildNodes ? this.container.childNodes : this.container.querySelectorAll(cn(elementClass));
+        const allElements = onlyChildNodes
+          ? this.container.childNodes
+          : this.container.querySelectorAll(cn(elementClass));
 
-        this.elements = Array.from(allElements)
-          .filter((el) => el.classList && el.classList.contains(elementClass));
+        this.elements = Array.from(allElements).filter((el) => el.classList && el.classList.contains(elementClass));
 
         this.firstElement = this.elements[0];
         this.lastElement = this.elements[this.elements.length - 1];
@@ -73,7 +73,7 @@
           .filter((element) => !element.classList.contains(`js-enabled`))
           .forEach((element) => {
             // When JS is enabled, add the class to the element
-            element.classList.add('js-enabled');
+            element.classList.add("js-enabled");
 
             this.generateIDs(element);
             this.setARIA(element);
@@ -92,11 +92,10 @@
        * @param {boolean} clear = clear transition duration
        */
       setTransition(element, clear = false) {
-        const { duration, panelClass } = this.options;
+        const {duration, panelClass} = this.options;
         const panel = element.querySelector(cn(panelClass));
-        const transition = isWebkit('transitionDuration');
 
-        panel.style[transition] = clear ? null : `${duration}ms`;
+        panel.style.transitionDuration = clear ? null : `${duration}ms`;
       },
 
       /**
@@ -104,13 +103,13 @@
        * @param {HTMLElement} element = accordion item
        */
       generateIDs(element) {
-        const { triggerClass, panelClass } = this.options;
+        const {triggerClass, panelClass} = this.options;
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        element.setAttribute('id', element.id || `ac-${uniqueId}`);
-        trigger.setAttribute('id', trigger.id || `ac-trigger-${uniqueId}`);
-        panel.setAttribute('id', panel.id || `ac-panel-${uniqueId}`);
+        element.setAttribute("id", element.id || `ac-${uniqueId}`);
+        trigger.setAttribute("id", trigger.id || `ac-trigger-${uniqueId}`);
+        panel.setAttribute("id", panel.id || `ac-panel-${uniqueId}`);
       },
 
       /**
@@ -118,13 +117,13 @@
        * @param {HTMLElement} element = accordion item
        */
       removeIDs(element) {
-        const { triggerClass, panelClass } = this.options;
+        const {triggerClass, panelClass} = this.options;
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        if (element.id.startsWith('ac-')) element.removeAttribute('id');
-        if (trigger.id.startsWith('ac-')) trigger.removeAttribute('id');
-        if (panel.id.startsWith('ac-')) panel.removeAttribute('id');
+        if (element.id.startsWith("ac-")) element.removeAttribute("id");
+        if (trigger.id.startsWith("ac-")) trigger.removeAttribute("id");
+        if (panel.id.startsWith("ac-")) panel.removeAttribute("id");
       },
 
       /**
@@ -132,19 +131,19 @@
        * @param {HTMLElement} element = accordion item
        */
       setARIA(element) {
-        const { ariaEnabled, triggerClass, panelClass } = this.options;
+        const {ariaEnabled, triggerClass, panelClass} = this.options;
         if (!ariaEnabled) return;
 
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        trigger.setAttribute('role', 'button');
-        trigger.setAttribute('aria-controls', panel.id);
-        trigger.setAttribute('aria-disabled', false);
-        trigger.setAttribute('aria-expanded', false);
+        trigger.setAttribute("role", "button");
+        trigger.setAttribute("aria-controls", panel.id);
+        trigger.setAttribute("aria-disabled", false);
+        trigger.setAttribute("aria-expanded", false);
 
-        panel.setAttribute('role', 'region');
-        panel.setAttribute('aria-labelledby', trigger.id);
+        panel.setAttribute("role", "region");
+        panel.setAttribute("aria-labelledby", trigger.id);
       },
 
       /**
@@ -154,13 +153,13 @@
        * @param {boolean} options.ariaExpanded = value of the attribute
        * @param {boolean} options.ariaDisabled = value of the attribute
        */
-      updateARIA(element, { ariaExpanded, ariaDisabled }) {
-        const { ariaEnabled, triggerClass } = this.options;
+      updateARIA(element, {ariaExpanded, ariaDisabled}) {
+        const {ariaEnabled, triggerClass} = this.options;
         if (!ariaEnabled) return;
 
         const trigger = element.querySelector(cn(triggerClass));
-        trigger.setAttribute('aria-expanded', ariaExpanded);
-        trigger.setAttribute('aria-disabled', ariaDisabled);
+        trigger.setAttribute("aria-expanded", ariaExpanded);
+        trigger.setAttribute("aria-disabled", ariaDisabled);
       },
 
       /**
@@ -168,19 +167,19 @@
        * @param {HTMLElement} element = accordion item
        */
       removeARIA(element) {
-        const { ariaEnabled, triggerClass, panelClass } = this.options;
+        const {ariaEnabled, triggerClass, panelClass} = this.options;
         if (!ariaEnabled) return;
 
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        trigger.removeAttribute('role');
-        trigger.removeAttribute('aria-controls');
-        trigger.removeAttribute('aria-disabled');
-        trigger.removeAttribute('aria-expanded');
+        trigger.removeAttribute("role");
+        trigger.removeAttribute("aria-controls");
+        trigger.removeAttribute("aria-disabled");
+        trigger.removeAttribute("aria-expanded");
 
-        panel.removeAttribute('role');
-        panel.removeAttribute('aria-labelledby');
+        panel.removeAttribute("role");
+        panel.removeAttribute("aria-labelledby");
       },
 
       /**
@@ -191,7 +190,7 @@
       focus(e, element) {
         e.preventDefault();
 
-        const { triggerClass } = this.options;
+        const {triggerClass} = this.options;
         const trigger = element.querySelector(cn(triggerClass));
         trigger.focus();
       },
@@ -244,7 +243,7 @@
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       showElement(element, calcHeight = true) {
-        const { panelClass, activeClass, collapse, beforeOpen } = this.options;
+        const {panelClass, activeClass, collapse, beforeOpen} = this.options;
         if (calcHeight) beforeOpen(element);
 
         const panel = element.querySelector(cn(panelClass));
@@ -254,11 +253,14 @@
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            panel.style.height = calcHeight ? `${height}px` : 'auto';
+            panel.style.height = calcHeight ? `${height}px` : "auto";
           });
         });
 
-        this.updateARIA(element, { ariaExpanded: true, ariaDisabled: collapse ? false : true });
+        this.updateARIA(element, {
+          ariaExpanded: true,
+          ariaDisabled: collapse ? false : true
+        });
       },
 
       /**
@@ -267,7 +269,7 @@
        * @param {boolean} calcHeight = calculate the height of the panel
        */
       closeElement(element, calcHeight = true) {
-        const { panelClass, activeClass, beforeClose } = this.options;
+        const {panelClass, activeClass, beforeClose} = this.options;
         const panel = element.querySelector(cn(panelClass));
         const height = panel.scrollHeight;
 
@@ -289,7 +291,10 @@
           panel.style.height = 0;
         }
 
-        this.updateARIA(element, { ariaExpanded: false, ariaDisabled: false });
+        this.updateARIA(element, {
+          ariaExpanded: false,
+          ariaDisabled: false
+        });
       },
 
       /**
@@ -297,7 +302,7 @@
        * @param {HTMLElement} element = accordion item
        */
       toggleElement(element) {
-        const { activeClass, collapse } = this.options;
+        const {activeClass, collapse} = this.options;
         const isActive = element.classList.contains(activeClass);
 
         if (isActive && !collapse) return;
@@ -308,7 +313,7 @@
        * Close all elements without the current element
        */
       closeElements() {
-        const { activeClass, showMultiple } = this.options;
+        const {activeClass, showMultiple} = this.options;
         if (showMultiple) return;
 
         this.elements.forEach((element, idx) => {
@@ -328,7 +333,7 @@
         const target = e.currentTarget;
 
         this.elements.forEach((element, idx) => {
-          if (element.contains(target) && e.target.nodeName !== 'A') {
+          if (element.contains(target) && e.target.nodeName !== "A") {
             this.currFocusedIdx = idx;
 
             this.closeElements();
@@ -344,13 +349,13 @@
        */
       handleKeydown(e) {
         switch (e.key) {
-          case 'ArrowUp':
+          case "ArrowUp":
             return this.focusPrevElement(e);
-          case 'ArrowDown':
+          case "ArrowDown":
             return this.focusNextElement(e);
-          case 'Home':
+          case "Home":
             return this.focusFirstElement(e);
-          case 'End':
+          case "End":
             return this.focusLastElement(e);
           default:
             return null;
@@ -375,15 +380,15 @@
       handleTransitionEnd(e) {
         e.stopPropagation();
 
-        if (e.propertyName !== 'height') return;
+        if (e.propertyName !== "height") return;
 
-        const { onOpen, onClose } = this.options;
+        const {onOpen, onClose} = this.options;
         const panel = e.currentTarget;
         const height = parseInt(panel.style.height);
         const element = this.elements.find((element) => element.contains(panel));
 
         if (height > 0) {
-          panel.style.height = 'auto';
+          panel.style.height = "auto";
           onOpen(element);
         } else {
           onClose(element);
@@ -396,7 +401,7 @@
      */
     this.attachEvents = () => {
       if (eventsAttached) return;
-      const { triggerClass, panelClass } = core.options;
+      const {triggerClass, panelClass} = core.options;
 
       core.handleClick = core.handleClick.bind(core);
       core.handleKeydown = core.handleKeydown.bind(core);
@@ -407,11 +412,10 @@
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        trigger.addEventListener('click', core.handleClick);
-        trigger.addEventListener('keydown', core.handleKeydown);
-        trigger.addEventListener('focus', core.handleFocus);
-        panel.addEventListener('webkitTransitionEnd', core.handleTransitionEnd);
-        panel.addEventListener('transitionend', core.handleTransitionEnd);
+        trigger.addEventListener("click", core.handleClick);
+        trigger.addEventListener("keydown", core.handleKeydown);
+        trigger.addEventListener("focus", core.handleFocus);
+        panel.addEventListener("transitionend", core.handleTransitionEnd);
       });
 
       eventsAttached = true;
@@ -422,17 +426,16 @@
      */
     this.detachEvents = () => {
       if (!eventsAttached) return;
-      const { triggerClass, panelClass } = core.options;
+      const {triggerClass, panelClass} = core.options;
 
       core.elements.forEach((element) => {
         const trigger = element.querySelector(cn(triggerClass));
         const panel = element.querySelector(cn(panelClass));
 
-        trigger.removeEventListener('click', core.handleClick);
-        trigger.removeEventListener('keydown', core.handleKeydown);
-        trigger.removeEventListener('focus', core.handleFocus);
-        panel.removeEventListener('webkitTransitionEnd', core.handleTransitionEnd);
-        panel.removeEventListener('transitionend', core.handleTransitionEnd);
+        trigger.removeEventListener("click", core.handleClick);
+        trigger.removeEventListener("keydown", core.handleKeydown);
+        trigger.removeEventListener("focus", core.handleFocus);
+        panel.removeEventListener("transitionend", core.handleTransitionEnd);
       });
 
       eventsAttached = false;
@@ -460,7 +463,7 @@
      * Open all hidden accordion elements
      */
     this.openAll = () => {
-      const { activeClass, onOpen } = core.options;
+      const {activeClass, onOpen} = core.options;
 
       core.elements.forEach((element) => {
         const isActive = element.classList.contains(activeClass);
@@ -485,7 +488,7 @@
      * Close all active accordion elements
      */
     this.closeAll = () => {
-      const { activeClass, onClose } = core.options;
+      const {activeClass, onClose} = core.options;
 
       core.elements.forEach((element) => {
         const isActive = element.classList.contains(activeClass);
@@ -524,29 +527,6 @@
     };
 
     /**
-     * Get supported property and add webkit prefix if needed
-     * @param {string} property = property name
-     * @return {string} property = property with optional webkit prefix
-     */
-    const isWebkit = (property) => {
-      if (typeof document.documentElement.style[property] === 'string') {
-        return property;
-      }
-
-      property = capitalizeFirstLetter(property);
-      property = `webkit${property}`;
-
-      return property;
-    };
-
-    /**
-     * Capitalize the first letter in the string
-     * @param {string} string = string
-     * @return {string} string = changed string
-     */
-    const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
-
-    /**
      * Build class name
      * @param {string} className = element class name
      * @return {string} className = element class name with CSS.escape
@@ -556,10 +536,9 @@
     core.init();
   };
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = Accordion;
   } else {
     window.Accordion = Accordion;
   }
-
 })(window);

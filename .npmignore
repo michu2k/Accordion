@@ -1,6 +1,6 @@
-src/
-.eslintrc
-.eslintignore
-gulpfile.js
+src
+.prettierignore
+prettier.config.mjs
+eslint.config.mjs
+gulpfile.mjs
 index.html
-header.txt
