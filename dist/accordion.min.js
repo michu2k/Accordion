@@ -1,5 +1,5 @@
 /**
- * Accordion v3.3.4
+ * Accordion v3.4.0
  * Lightweight and accessible accordion module created in pure Javascript
  * https://github.com/michu2k/Accordion
  *
