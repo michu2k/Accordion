@@ -9,6 +9,7 @@
    * @param {object} userOptions = options defined by user
    */
   const Accordion = function (selectorOrElement, userOptions) {
+    const JS_ENABLED_CLASS = "js-enabled";
     const _this = this;
     let eventsAttached = false;
 
@@ -70,10 +71,10 @@
         this.lastElement = this.elements[this.elements.length - 1];
 
         this.elements
-          .filter((element) => !element.classList.contains(`js-enabled`))
+          .filter((element) => !element.classList.contains(JS_ENABLED_CLASS))
           .forEach((element) => {
             // When JS is enabled, add the class to the element
-            element.classList.add("js-enabled");
+            element.classList.add(JS_ENABLED_CLASS);
 
             this.generateIDs(element);
             this.setARIA(element);
@@ -259,7 +260,7 @@
 
         this.updateARIA(element, {
           ariaExpanded: true,
-          ariaDisabled: collapse ? false : true
+          ariaDisabled: !collapse
         });
       },
 
@@ -511,6 +512,7 @@
         core.removeIDs(element);
         core.removeARIA(element);
         core.setTransition(element, true);
+        element.classList.remove(JS_ENABLED_CLASS);
       });
 
       eventsAttached = true;
