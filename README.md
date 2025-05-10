@@ -4,7 +4,7 @@ Lightweight and accessible accordion module with an extensible API. With the mod
 
 ## Version
 
-3.4.0
+3.4.1
 
 ## Installation
 
@@ -26,8 +26,8 @@ import "accordion-js/dist/accordion.min.css";
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.4.0/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.4.0/dist/accordion.min.js
+https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css
+https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js
 ```
 
 ```html
