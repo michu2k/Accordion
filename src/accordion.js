@@ -5,7 +5,7 @@
 
   /**
    * Core
-   * @param {string|HTMLElement} selectorOrElement = container in which the script will be initialized
+   * @param {string|HTMLElement|Array<string|HTMLElement>} selectorOrElement = container in which the script will be initialized
    * @param {object} userOptions = options defined by user
    */
   const Accordion = function (selectorOrElement, userOptions) {

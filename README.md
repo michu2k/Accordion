@@ -95,8 +95,8 @@ This is just an example of a layout. You can create your own HTML structure.
 
 new Accordion(container, options)
 
-- `container` - string | HTMLElement (required), selector of accordion container
-- `options` - object (optional), accordion options
+- `container` - *string | HTMLElement | Array<string | HTMLElement> (required)*, A selector string, a DOM element, or an array of selector strings or HTMLElements that specify the accordion container(s).
+- `options` - *object (optional)*, Configuration options for the accordion. See the table below for available options.
 
 ```javascript
 // Default options
