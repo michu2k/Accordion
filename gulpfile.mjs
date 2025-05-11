@@ -8,7 +8,7 @@ import headerComment from "gulp-header-comment";
 import browserSync from "browser-sync";
 
 const header = `
-Accordion v3.4.0
+Accordion v3.4.1
 <%= pkg.description %>
 https://github.com/michu2k/Accordion
 

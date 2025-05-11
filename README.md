@@ -4,7 +4,7 @@ Lightweight and accessible accordion module with an extensible API. With the mod
 
 ## Version
 
-3.4.0
+3.4.1
 
 ## Installation
 
@@ -26,8 +26,8 @@ import "accordion-js/dist/accordion.min.css";
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.4.0/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.4.0/dist/accordion.min.js
+https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css
+https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js
 ```
 
 ```html
@@ -95,8 +95,8 @@ This is just an example of a layout. You can create your own HTML structure.
 
 new Accordion(container, options)
 
-- `container` - string | HTMLElement (required), selector of accordion container
-- `options` - object (optional), accordion options
+- `container` - *string | HTMLElement | Array<string | HTMLElement> (required)*, A selector string, a DOM element, or an array of selector strings or HTMLElements that specify the accordion container(s).
+- `options` - *object (optional)*, Configuration options for the accordion. See the table below for available options.
 
 ```javascript
 // Default options
