@@ -91,3 +91,7 @@ function watchHtml() {
 
 // Main task
 task("default", parallel(server, watchCSS, watchJs, watchHtml));
+
+task("build:css", compileCSS);
+task("build:js", compileJs);
+task("build:legacy", parallel(compileCSS, compileJs));
