@@ -1,165 +1,213 @@
 # Accordion
 
-Lightweight and accessible accordion module with an extensible API. With the module you can create accordion on your website, useful especially for creating FAQ lists.
+Lightweight and accessible accordion module with an extensible API. The library powers disclosure patterns such as FAQ lists, nested accordions, or filter panels while keeping the markup ARIA-compliant and keyboard friendly.
 
-## Version
+Current version: **3.4.1**
 
-3.4.1
+---
+
+## Distribution Targets
+
+- `dist/accordion.min.js` – standalone UMD bundle for direct `<script>` usage.
+- `esm/` – tree-shakeable ES modules for modern bundlers.
+- `cjs/` – CommonJS modules for Node and legacy tooling.
+- `dist-types/` – TypeScript declaration files.
+
+The package also ships `accordion.min.css` with baseline styling.
+
+---
 
 ## Installation
 
-###### npm
+### npm / yarn
 
-Install the package & import files
-
-```
+```bash
 npm install accordion-js
 ```
 
-```javascript
-import Accordion from "accordion-js";
-import "accordion-js/dist/accordion.min.css";
+```ts
+import Accordion from 'accordion-js';
+import 'accordion-js/dist/accordion.min.css';
+
+const accordion = new Accordion('.accordion-container');
 ```
 
-###### CDN
-
-Include files using CDN.
-
-```
-https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js
-```
+### CDN
 
 ```html
-<link rel="stylesheet" href="[CDN CSS URL]" />
-<script src="[CDN JS URL]"></script>
+<link rel="stylesheet" href="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css" />
+<script src="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js"></script>
+<script>
+  const accordion = new Accordion('.accordion-container');
+</script>
 ```
 
-###### Github
+### Direct Download
 
-You can also download files from Github and attach them manually to your project. <br>
-Note: On production use files (JS and CSS) only from **dist/** folder.
+Clone or download this repository and include files from the `dist/` folder. Only production-ready assets live there.
+
+---
 
 ## Usage
 
-###### Include files
+### Markup
 
-See the section above.
-
-###### Create HTML layout
-
-This is just an example of a layout. You can create your own HTML structure.
+Create a container with repeated accordion items. Classes are configurable through options; the defaults are shown below.
 
 ```html
 <div class="accordion-container">
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Item 1</button>
     </h2>
     <div class="ac-panel">
-      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <p class="ac-text">Accordion panel content.</p>
     </div>
   </div>
 
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Item 2</button>
     </h2>
     <div class="ac-panel">
-      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
-  </div>
-
-  <div class="ac">
-    <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
-    </h2>
-    <div class="ac-panel">
-      <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <p class="ac-text">More content.</p>
     </div>
   </div>
 </div>
 ```
 
-###### Initialize the module
+### Initialise
 
-```html
-<script>
-  new Accordion(".accordion-container");
-</script>
-```
+```ts
+import Accordion from 'accordion-js';
 
-## API
-
-###### Examples
-
-new Accordion(container, options)
-
-- `container` - *string | HTMLElement | Array<string | HTMLElement> (required)*, A selector string, a DOM element, or an array of selector strings or HTMLElements that specify the accordion container(s).
-- `options` - *object (optional)*, Configuration options for the accordion. See the table below for available options.
-
-```javascript
 // Default options
-new Accordion(".container-first");
+new Accordion('.accordion-container');
 
-// User options
-new Accordion(".container-second", {
+// With custom options
+new Accordion('.accordion-container', {
   duration: 400,
   showMultiple: true,
-  onOpen: function (currentElement) {
-    console.log(currentElement);
+  onOpen(currentElement) {
+    console.log('opened', currentElement);
   }
 });
-
-// Define several accordions with the same options (pass an array with selectors)
-new Accordion([".container-first", ".container-second"], {});
-
-// or pass an array with HTMLElements
-const accordions = Array.from(document.querySelectorAll(".accordion-container"));
-new Accordion(accordions, {});
-
-// Detach events
-const accordion = new Accordion(".container-first");
-accordion.detachEvents();
 ```
 
-###### Options
+### Advanced Module Usage
 
-| Option         | Type     | Default value | Description                                                                                                                               |
-| -------------- | -------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| duration       | number   | 500           | Animation duration in ms                                                                                                                  |
-| ariaEnabled    | boolean  | true          | Add ARIA elements to the HTML structure                                                                                                   |
-| collapse       | boolean  | true          | Allow collapse expanded panel                                                                                                             |
-| showMultiple   | boolean  | false         | Show multiple elements at the same time                                                                                                   |
-| onlyChildNodes | boolean  | true          | Disabling this option will find all items in the container. Warning: Setting to `false` will break the functionality of nested accordions |
-| openOnInit     | array    | []            | Show accordion elements during initialization                                                                                             |
-| elementClass   | string   | "ac"          | Element class                                                                                                                             |
-| triggerClass   | string   | "ac-trigger"  | Trigger class                                                                                                                             |
-| panelClass     | string   | "ac-panel"    | Panel class                                                                                                                               |
-| activeClass    | string   | "is-active"   | Active element class                                                                                                                      |
-| beforeOpen     | function | -             | Calls before the item is opened. <br> `beforeOpen: (currElement) => {}`                                                                   |
-| onOpen         | function | -             | Calls when the item is opened. <br> `onOpen: (currElement) => {}`                                                                         |
-| beforeClose    | function | -             | Calls before the item is closed. <br> `beforeClose: (currElement) => {}`                                                                  |
-| onClose        | function | -             | Calls when the item is closed. <br> `onClose: (currElement) => {}`                                                                        |
+The TypeScript build exposes additional helpers for fine-grained control:
 
-###### Methods
+```ts
+import createAccordion, { Accordion as AccordionController } from 'accordion-js';
 
-| Option         | Description                                                                                | Arguments             |
+const containers = document.querySelectorAll<HTMLElement>('.js-accordion');
+
+// Returns an array of instances, filtering out elements that were not found.
+const instances = createAccordion(containers, { collapse: false }) || [];
+
+// Instantiate a single accordion imperatively.
+const maybeAccordion = AccordionController.instantiate('#faq');
+if (maybeAccordion) {
+  maybeAccordion.open(0);
+}
+```
+
+`Accordion.instantiate` and the default `createAccordion` export now return `false` when a target cannot be resolved. This makes it easy to mount accordions conditionally without guarding every call.
+
+---
+
+## API Reference
+
+### Constructor
+
+`new Accordion(container, options?)`
+
+- **container** – `string | HTMLElement | Array<string | HTMLElement>` (required). Single selector, element, or an array of selectors/elements.
+- **options** – `Partial<AccordionOptions>` (optional). See table below.
+
+### Options
+
+| Option         | Type     | Default | Description                                                                                                                               |
+| -------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| duration       | number   | 500     | Animation duration in ms                                                                                                                  |
+| ariaEnabled    | boolean  | true    | Inject ARIA attributes (`aria-expanded`, `aria-controls`, `role="region"`)                                                                |
+| collapse       | boolean  | true    | Allow an expanded item to collapse                                                                                                       |
+| showMultiple   | boolean  | false   | Keep multiple items expanded at once                                                                                                     |
+| onlyChildNodes | boolean  | true    | When `false`, query nested items as well (disables nested accordion support)                                                             |
+| openOnInit     | number[] | []      | Array of indices to expand on initialisation                                                                                             |
+| elementClass   | string   | `"ac"`  | Container class for each item                                                                                                            |
+| triggerClass   | string   | `"ac-trigger"` | Button class                                                                                                                        |
+| panelClass     | string   | `"ac-panel"`   | Panel class                                                                                                                         |
+| activeClass    | string   | `"is-active"` | Applied to active items                                                                                                               |
+| beforeOpen     | function | –       | Hook invoked before a panel opens: `(element) => void`                                                                                   |
+| onOpen         | function | –       | Hook invoked after a panel opens: `(element) => void`                                                                                    |
+| beforeClose    | function | –       | Hook invoked before a panel closes: `(element) => void`                                                                                  |
+| onClose        | function | –       | Hook invoked after a panel closes: `(element) => void`                                                                                   |
+
+### Methods
+
+| Method         | Description                                                                                | Arguments             |
 | -------------- | ------------------------------------------------------------------------------------------ | --------------------- |
-| attachEvents() | Attach events                                                                              | -                     |
-| detachEvents() | Detach events                                                                              | -                     |
-| open()         | Open the accordion element with the given idx <br> E.g. `acc.open(1)`                      | `idx` - element index |
-| close()        | Close the accordion element with the given idx <br> E.g. `acc.close(1)`                    | `idx` - element index |
-| toggle()       | Toggle the accordion element with the given idx <br> E.g. `acc.toggle(1)`                  | `idx` - element index |
-| openAll()      | Open all accordion elements (without animation)                                            | -                     |
-| closeAll()     | Close all accordion elements (without animation)                                           | -                     |
-| update()       | If there are new items added by lazy load, you can run this method to update the Accordion | -                     |
-| destroy()      | Destroy accordion instance: <br> Open elements, remove events, IDs & ARIA                  | -                     |
+| `attachEvents()` | Re-attach internal listeners after manual `detachEvents()`                                 | –                     |
+| `detachEvents()` | Remove all internal listeners                                                             | –                     |
+| `open(idx)`      | Expand the item at position `idx`                                                         | `idx: number`         |
+| `close(idx)`     | Collapse the item at position `idx`                                                       | `idx: number`         |
+| `toggle(idx)`    | Toggle the item at position `idx`                                                         | `idx: number`         |
+| `openAll()`      | Expand all items without animation                                                        | –                     |
+| `closeAll()`     | Collapse all items without animation                                                      | –                     |
+| `update()`       | Re-scan DOM structure (useful after lazy-loading items)                                   | –                     |
+| `destroy()`      | Detach events, remove generated IDs/ARIA attributes, and reset all panels                 | –                     |
 
-## v3 Release Info
+---
 
-There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), I recommend updating the package to the latest version with new structure and options.
+## Building from Source
+
+1. Install dependencies (npm or yarn all work):
+
+    ```bash
+    npm install
+    ```
+
+2. Build the distributables:
+
+   ```bash
+   npm run build
+   ```
+
+   - `build:esm` compiles TypeScript sources in `src-ts/` to `esm/` and emits declaration files to `dist-types/`.
+   - `build:cjs` produces CommonJS output under `cjs/` for Node/CommonJS consumers.
+
+3. Produce the optional UMD bundle when you want to refresh it:
+
+   ```bash
+   npm run build:bundle
+   ```
+
+4. (Optional) regenerate the legacy bundle used by the original project:
+
+   ```bash
+   npm run build:legacy
+   ```
+
+5. Optional: run the legacy demo environment:
+
+   ```bash
+   npm run start:dev
+   ```
+
+---
+
+## Contributing
+
+- Keep changes TypeScript-first (edit files in `src/`).
+- Run `pnpm run build` before submitting pull requests to ensure UMD and declaration artifacts stay in sync.
+- Use `pnpm run lint:check` / `pnpm run format:check` to match coding standards.
+
+Issues and pull requests are welcome!
+
+---
 
 ## License
 
-This project is under the MIT license.
+Released under the [MIT License](LICENSE).
