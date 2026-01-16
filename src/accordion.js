@@ -334,7 +334,7 @@
         const target = e.currentTarget;
 
         this.elements.forEach((element, idx) => {
-          if (element.contains(target) && e.target.nodeName !== "A") {
+          if (element.contains(target) && (e.target.nodeName !== "A" || e.target.nodeName === "A" && !e.target.hasAttribute('href'))) {
             this.currFocusedIdx = idx;
 
             this.closeElements();
