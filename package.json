@@ -1,8 +1,10 @@
 {
   "name": "accordion-js",
   "version": "3.4.1",
-  "description": "Lightweight and accessible accordion module created in pure Javascript",
-  "main": "dist/accordion.min.js",
+  "license": "MIT",
+  "author": "Michał Strumpf",
+  "type": "module",
+  "description": "Lightweight and accessible accordion module for JavaScript",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michu2k/Accordion.git"
@@ -16,12 +18,21 @@
     "aria",
     "javascript-library"
   ],
-  "author": "Michał Strumpf",
   "homepage": "https://github.com/michu2k/Accordion#readme",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/michu2k/Accordion/issues"
   },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start:dev": "gulp",
     "lint:check": "eslint \"**/*.{mjs,js}\"",
