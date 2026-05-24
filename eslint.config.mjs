@@ -1,11 +1,12 @@
-/** @type {import("eslint").Linter.Config} */
+import eslintTs from "typescript-eslint";
+
+/** @type {import("eslint").Linter.Config[]} */
 export default [
+  ...eslintTs.configs.recommended,
   {
     name: "Common config",
     rules: {
-      "no-unused-vars": "error",
-      "indent": ["error", 2, {SwitchCase: 1}],
-      "arrow-parens": ["error", "always"]
+      indent: ["error", 2, { SwitchCase: 1 }]
     }
   },
   {
