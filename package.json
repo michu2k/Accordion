@@ -34,15 +34,18 @@
     "dist"
   ],
   "scripts": {
-    "start:dev": "gulp",
-    "lint:check": "eslint \"**/*.{mjs,js}\"",
-    "lint:fix": "eslint \"**/*.{mjs,js}\" --fix",
-    "format:check": "prettier \"**/*.{mjs,js}\" --check --cache",
-    "format:fix": "prettier \"**/*.{mjs,js}\" --write --cache"
+    "start:dev": "tsdown --watch ./src",
+    "build": "tsdown",
+    "lint:check": "eslint \"**/*.{js,ts,mjs,mts}\"",
+    "lint:fix": "eslint \"**/*.{js,ts,mjs,mts}\" --fix",
+    "format:check": "prettier \"**/*.{js,ts,mjs,mts}\" --check --cache",
+    "format:fix": "prettier \"**/*.{js,ts,mjs,mts}\" --write --cache"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
+    "@tsdown/css": "^0.22.0",
+    "@types/node": "^25.6.2",
     "browser-sync": "^3.0.3",
     "eslint": "^9.17.0",
     "gulp": "^5.0.0",
@@ -52,7 +55,10 @@
     "gulp-header-comment": "^0.10.0",
     "gulp-rename": "^2.0.0",
     "gulp-terser": "^2.1.0",
-    "prettier": "^3.4.2"
+    "prettier": "^3.8.3",
+    "tsdown": "^0.22.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4"
   },
   "browserslist": [
     ">0.15%",
