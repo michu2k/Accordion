@@ -34,7 +34,7 @@
     "dist"
   ],
   "scripts": {
-    "start:dev": "tsdown --watch ./src",
+    "start:dev": "tsdown --watch ./src/**/*",
     "build": "tsdown",
     "lint:check": "eslint \"**/*.{js,ts,mjs,mts}\"",
     "lint:fix": "eslint \"**/*.{js,ts,mjs,mts}\" --fix",
