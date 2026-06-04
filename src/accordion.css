@@ -37,7 +37,7 @@
   content: "+";
   text-align: center;
   width: 15px;
-  transform: translate(0, -50%);
+  transform: translateY(-50%);
   position: absolute;
   right: 10px;
   top: 50%;
