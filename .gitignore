@@ -1,2 +1,17 @@
-node_modules
+# build output
+/dist/*
+!/dist/accordion.min.css
+!/dist/accordion.min.js
+
+# test coverage output
+coverage/
+
+# dependencies
+node_modules/
+
+# IDEs and editors
+.vscode
+.idea/
+
+# macOS-specific files
 .DS_Store
