@@ -6,7 +6,8 @@ export default [
   {
     name: "Common config",
     rules: {
-      indent: ["error", 2, { SwitchCase: 1 }]
+      "indent": ["error", 2, { SwitchCase: 1 }],
+      "@typescript-eslint/triple-slash-reference": "off"
     }
   },
   {
