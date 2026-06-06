@@ -36,21 +36,29 @@
   "scripts": {
     "start:dev": "tsdown --watch ./src/**/*",
     "build": "tsdown",
+    "ts:check": "tsc --noEmit",
     "lint:check": "eslint \"**/*.{js,ts,mjs,mts}\"",
     "lint:fix": "eslint \"**/*.{js,ts,mjs,mts}\" --fix",
     "format:check": "prettier \"**/*.{js,ts,mjs,mts}\" --check --cache",
-    "format:fix": "prettier \"**/*.{js,ts,mjs,mts}\" --write --cache"
+    "format:fix": "prettier \"**/*.{js,ts,mjs,mts}\" --write --cache",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
+    "@testing-library/dom": "^10.4.1",
     "@tsdown/css": "^0.22.0",
     "@types/node": "^25.6.2",
+    "@vitest/coverage-v8": "4.1.8",
     "eslint": "^9.17.0",
+    "jsdom": "^29.1.1",
     "prettier": "^3.8.3",
     "tsdown": "^0.22.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.4"
+    "typescript-eslint": "^8.59.4",
+    "vitest": "^4.1.8"
   },
   "browserslist": [
     ">0.15%",
