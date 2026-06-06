@@ -17,7 +17,8 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "removeComments": true
+    "removeComments": true,
+    "allowImportingTsExtensions": true
   },
   "exclude": ["node_modules", "dist"]
 }
