@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { type AccordionConstructor } from "../src/accordion.ts";
-import { createAccordionLayout } from "./test.utils.ts";
+import { createAccordionContainer } from "./test.utils.ts";
 
 let Accordion: AccordionConstructor;
 
@@ -11,22 +11,22 @@ beforeEach(async () => {
 
 describe("Accordion initialization", () => {
   test("initializes with a string selector", () => {
-    const { selector } = createAccordionLayout();
+    const { selector } = createAccordionContainer();
     const accordion = new Accordion(selector);
 
     expect(accordion).toBeInstanceOf(Accordion);
   });
 
   test("initializes with an HTMLElement", () => {
-    const { container } = createAccordionLayout();
+    const { container } = createAccordionContainer();
     const accordion = new Accordion(container);
 
     expect(accordion).toBeInstanceOf(Accordion);
   });
 
   test("initializes with an array of elements", () => {
-    const { container } = createAccordionLayout();
-    const { selector } = createAccordionLayout("second-accordion");
+    const { container } = createAccordionContainer();
+    const { selector } = createAccordionContainer("second-accordion");
     const accordion = new Accordion([container, selector]);
 
     expect(accordion.length).toBe(2);
