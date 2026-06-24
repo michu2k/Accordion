@@ -4,20 +4,20 @@ type AccordionOptions = {
   collapse: boolean;
   showMultiple: boolean;
   openOnInit: number[];
-  elementClass: string;
+  itemClass: string;
   triggerClass: string;
   panelClass: string;
   activeClass: string;
-  beforeOpen: (element: HTMLElement) => void;
-  onOpen: (element: HTMLElement) => void;
-  beforeClose: (element: HTMLElement) => void;
-  onClose: (element: HTMLElement) => void;
+  beforeOpen: (item: HTMLElement) => void;
+  onOpen: (item: HTMLElement) => void;
+  beforeClose: (item: HTMLElement) => void;
+  onClose: (item: HTMLElement) => void;
 };
 
 export interface AccordionConstructor {
   new (selector: string, options?: Partial<AccordionOptions>): Accordion;
-  new (element: HTMLElement, options?: Partial<AccordionOptions>): Accordion;
-  new (elements: Array<string | HTMLElement>, options?: Partial<AccordionOptions>): Accordion[];
+  new (item: HTMLElement, options?: Partial<AccordionOptions>): Accordion;
+  new (items: Array<string | HTMLElement>, options?: Partial<AccordionOptions>): Accordion[];
   readonly JS_ENABLED_CLASS: string;
 }
 
@@ -28,25 +28,25 @@ class Accordion {
 
   #options: AccordionOptions = {
     duration: 500, // animation duration in ms {number}
-    ariaEnabled: true, // add ARIA elements to the HTML structure {boolean}
+    ariaEnabled: true, // add ARIA items to the HTML structure {boolean}
     collapse: true, // allow collapse expanded panel {boolean}
-    showMultiple: false, // show multiple elements at the same time {boolean}
-    openOnInit: [], // show accordion elements during initialization {array}
-    elementClass: "ac", // element class {string}
+    showMultiple: false, // show multiple items at the same time {boolean}
+    openOnInit: [], // show accordion items during initialization {array}
+    itemClass: "ac", // item class {string}
     triggerClass: "ac-trigger", // trigger class {string}
     panelClass: "ac-panel", // panel class {string}
-    activeClass: "is-active", // active element class {string}
-    beforeOpen: () => {}, // calls before the element is opened {function}
-    onOpen: () => {}, // calls when the element is opened {function}
-    beforeClose: () => {}, // calls before the element is closed {function}
-    onClose: () => {} // calls when the element is closed {function}
+    activeClass: "is-active", // active item class {string}
+    beforeOpen: () => {}, // calls before the item is opened {function}
+    onOpen: () => {}, // calls when the item is opened {function}
+    beforeClose: () => {}, // calls before the item is closed {function}
+    onClose: () => {} // calls when the item is closed {function}
   };
 
   #container: Element | null = null;
 
   #eventsAttached: boolean = false;
 
-  #elements: Array<HTMLElement> = [];
+  #items: Array<HTMLElement> = [];
 
   #currFocusedIdx: number = 0;
 
@@ -68,7 +68,7 @@ class Accordion {
     this.#container = isString ? document.querySelector<HTMLElement>(selectorOrElement) : selectorOrElement;
 
     if (!this.#container) {
-      throw new Error("Container element not found");
+      throw new Error("Container not found");
     }
 
     this.#createDefinitions();
@@ -76,50 +76,50 @@ class Accordion {
   }
 
   /**
-   * Create element definitions
+   * Create item definitions
    */
   #createDefinitions() {
-    const { elementClass, openOnInit } = this.#options;
+    const { itemClass, openOnInit } = this.#options;
 
     const container = this.#container!;
-    const allElements = container.querySelectorAll<HTMLElement>(Accordion.#cn(elementClass));
+    const allItems = container.querySelectorAll<HTMLElement>(Accordion.#cn(itemClass));
 
-    // Filter out elements that are not direct children of the container (e.g. nested elements)
-    this.#elements = Array.from(allElements).filter((element) => {
-      const closestElement = element.parentElement?.closest(Accordion.#cn(elementClass));
-      return !(!!closestElement && container.contains(closestElement));
+    // Filter out items that are not direct children of the container (e.g. nested items)
+    this.#items = Array.from(allItems).filter((item) => {
+      const closestItem = item.parentElement?.closest(Accordion.#cn(itemClass));
+      return !(!!closestItem && container.contains(closestItem));
     });
 
-    this.#elements
-      .filter((element) => !element.classList.contains(Accordion.JS_ENABLED_CLASS))
-      .forEach((element) => {
-        // When JS is enabled, add the class to the element
-        element.classList.add(Accordion.JS_ENABLED_CLASS);
+    this.#items
+      .filter((item) => !item.classList.contains(Accordion.JS_ENABLED_CLASS))
+      .forEach((item) => {
+        // When JS is enabled, add the class to the item
+        item.classList.add(Accordion.JS_ENABLED_CLASS);
 
-        this.#generateIDs(element);
-        this.#setARIA(element);
-        this.#setTransition(element);
+        this.#generateIDs(item);
+        this.#setARIA(item);
+        this.#setTransition(item);
 
-        const index = this.#elements.indexOf(element);
+        const idx = this.#items.indexOf(item);
 
         Accordion.#uniqueId++;
 
-        if (openOnInit.includes(index)) {
-          this.#showElement(element, false);
+        if (openOnInit.includes(idx)) {
+          this.#showItem(item, false);
         } else {
-          this.#closeElement(element, false);
+          this.#closeItem(item, false);
         }
       });
   }
 
   /**
    * Set transition
-   * @param {HTMLElement} element = accordion element
+   * @param {HTMLElement} item = accordion item
    * @param {boolean} clear = clear transition duration
    */
-  #setTransition(element: HTMLElement, clear: boolean = false) {
+  #setTransition(item: HTMLElement, clear: boolean = false) {
     const { duration, panelClass } = this.#options;
-    const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
     if (panel) {
       panel.style.transitionDuration = clear ? "" : `${duration}ms`;
@@ -127,43 +127,43 @@ class Accordion {
   }
 
   /**
-   * Generate unique IDs for each element
-   * @param {HTMLElement} element = accordion element
+   * Generate unique IDs for each item
+   * @param {HTMLElement} item = accordion item
    */
-  #generateIDs(element: HTMLElement) {
+  #generateIDs(item: HTMLElement) {
     const { triggerClass, panelClass } = this.#options;
-    const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
-    const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
-    element.setAttribute("id", element.id || `ac-${Accordion.#uniqueId}`);
+    item.setAttribute("id", item.id || `ac-${Accordion.#uniqueId}`);
     trigger?.setAttribute("id", trigger.id || `ac-trigger-${Accordion.#uniqueId}`);
     panel?.setAttribute("id", panel.id || `ac-panel-${Accordion.#uniqueId}`);
   }
 
   /**
    * Remove IDs
-   * @param {HTMLElement} element = accordion element
+   * @param {HTMLElement} item = accordion item
    */
-  #removeIDs(element: HTMLElement) {
+  #removeIDs(item: HTMLElement) {
     const { triggerClass, panelClass } = this.#options;
-    const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
-    const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
-    if (element.id.startsWith("ac-")) element.removeAttribute("id");
+    if (item.id.startsWith("ac-")) item.removeAttribute("id");
     if (trigger?.id.startsWith("ac-")) trigger.removeAttribute("id");
     if (panel?.id.startsWith("ac-")) panel.removeAttribute("id");
   }
 
   /**
    * Create ARIA
-   * @param {HTMLElement} element = accordion element
+   * @param {HTMLElement} item = accordion item
    */
-  #setARIA(element: HTMLElement) {
+  #setARIA(item: HTMLElement) {
     const { ariaEnabled, triggerClass, panelClass } = this.#options;
     if (!ariaEnabled) return;
 
-    const trigger = element.querySelector(Accordion.#cn(triggerClass));
-    const panel = element.querySelector(Accordion.#cn(panelClass));
+    const trigger = item.querySelector(Accordion.#cn(triggerClass));
+    const panel = item.querySelector(Accordion.#cn(panelClass));
 
     trigger?.setAttribute("role", "button");
     trigger?.setAttribute("aria-controls", panel?.id || "");
@@ -176,30 +176,30 @@ class Accordion {
 
   /**
    * Update ARIA
-   * @param {HTMLElement} element = accordion element
+   * @param {HTMLElement} item = accordion item
    * @param {object} options
    * @param {boolean} options.ariaExpanded = value of the attribute
    * @param {boolean} options.ariaDisabled = value of the attribute
    */
-  #updateARIA(element: HTMLElement, { ariaExpanded, ariaDisabled }: { ariaExpanded: boolean; ariaDisabled: boolean }) {
+  #updateARIA(item: HTMLElement, { ariaExpanded, ariaDisabled }: { ariaExpanded: boolean; ariaDisabled: boolean }) {
     const { ariaEnabled, triggerClass } = this.#options;
     if (!ariaEnabled) return;
 
-    const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+    const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
     trigger?.setAttribute("aria-expanded", ariaExpanded ? "true" : "false");
     trigger?.setAttribute("aria-disabled", ariaDisabled ? "true" : "false");
   }
 
   /**
    * Remove ARIA
-   * @param {HTMLElement} element = accordion element
+   * @param {HTMLElement} item = accordion item
    */
-  #removeARIA(element: HTMLElement) {
+  #removeARIA(item: HTMLElement) {
     const { ariaEnabled, triggerClass, panelClass } = this.#options;
     if (!ariaEnabled) return;
 
-    const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
-    const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
     trigger?.removeAttribute("role");
     trigger?.removeAttribute("aria-controls");
@@ -211,89 +211,89 @@ class Accordion {
   }
 
   /**
-   * Focus element
+   * Focus item
    * @param {Event} e = event
-   * @param {HTMLElement} element = accordion element
+   * @param {HTMLElement} item = accordion item
    */
-  #focus(e: Event, element: HTMLElement) {
+  #focus(e: Event, item: HTMLElement) {
     e.preventDefault();
 
     const { triggerClass } = this.#options;
-    const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+    const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
 
     trigger?.focus();
   }
 
   /**
-   * Focus first element
+   * Focus first item
    * @param {Event} e = event
    */
-  #focusFirstElement(e: Event) {
-    const firstElement = this.#elements[0];
-    if (!firstElement) return;
+  #focusFirstItem(e: Event) {
+    const firstItem = this.#items[0];
+    if (!firstItem) return;
 
-    this.#focus(e, firstElement);
+    this.#focus(e, firstItem);
     this.#currFocusedIdx = 0;
   }
 
   /**
-   * Focus last element
+   * Focus last item
    * @param {Event} e = event
    */
-  #focusLastElement(e: Event) {
-    const lastElement = this.#elements[this.#elements.length - 1];
-    if (!lastElement) return;
+  #focusLastItem(e: Event) {
+    const lastItem = this.#items[this.#items.length - 1];
+    if (!lastItem) return;
 
-    this.#focus(e, lastElement);
-    this.#currFocusedIdx = this.#elements.length - 1;
+    this.#focus(e, lastItem);
+    this.#currFocusedIdx = this.#items.length - 1;
   }
 
   /**
-   * Focus next element
+   * Focus next item
    * @param {Event} e = event
    */
-  #focusNextElement(e: Event) {
-    const nextElIdx = this.#currFocusedIdx + 1;
-    if (nextElIdx > this.#elements.length - 1) return this.#focusFirstElement(e);
+  #focusNextItem(e: Event) {
+    const nextItemIdx = this.#currFocusedIdx + 1;
+    if (nextItemIdx > this.#items.length - 1) return this.#focusFirstItem(e);
 
-    const nextElement = this.#elements[nextElIdx];
-    if (!nextElement) return;
+    const nextItem = this.#items[nextItemIdx];
+    if (!nextItem) return;
 
-    this.#focus(e, nextElement);
-    this.#currFocusedIdx = nextElIdx;
+    this.#focus(e, nextItem);
+    this.#currFocusedIdx = nextItemIdx;
   }
 
   /**
-   * Focus previous element
+   * Focus previous item
    * @param {Event} e = event
    */
-  #focusPrevElement(e: Event) {
-    const prevElIdx = this.#currFocusedIdx - 1;
-    if (prevElIdx < 0) return this.#focusLastElement(e);
+  #focusPrevItem(e: Event) {
+    const prevItemIdx = this.#currFocusedIdx - 1;
+    if (prevItemIdx < 0) return this.#focusLastItem(e);
 
-    const prevElement = this.#elements[prevElIdx];
-    if (!prevElement) return;
+    const prevItem = this.#items[prevItemIdx];
+    if (!prevItem) return;
 
-    this.#focus(e, prevElement);
-    this.#currFocusedIdx = prevElIdx;
+    this.#focus(e, prevItem);
+    this.#currFocusedIdx = prevItemIdx;
   }
 
   /**
-   * Show element
-   * @param {HTMLElement} element = accordion element
+   * Show item
+   * @param {HTMLElement} item = accordion item
    * @param {boolean} calcHeight = calculate the height of the panel
    */
-  #showElement(element: HTMLElement, calcHeight: boolean = true) {
+  #showItem(item: HTMLElement, calcHeight: boolean = true) {
     const { panelClass, activeClass, collapse, beforeOpen } = this.#options;
-    if (calcHeight) beforeOpen(element);
+    if (calcHeight) beforeOpen(item);
 
-    const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
     if (!panel) return;
 
     const height = panel.scrollHeight;
 
-    element.classList.add(activeClass);
+    item.classList.add(activeClass);
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -301,29 +301,29 @@ class Accordion {
       });
     });
 
-    this.#updateARIA(element, {
+    this.#updateARIA(item, {
       ariaExpanded: true,
       ariaDisabled: !collapse
     });
   }
 
   /**
-   * Close element
-   * @param {HTMLElement} element = accordion element
+   * Close item
+   * @param {HTMLElement} item = accordion item
    * @param {boolean} calcHeight = calculate the height of the panel
    */
-  #closeElement(element: HTMLElement, calcHeight: boolean = true) {
+  #closeItem(item: HTMLElement, calcHeight: boolean = true) {
     const { panelClass, activeClass, beforeClose } = this.#options;
-    const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
     if (!panel) return;
 
     const height = panel.scrollHeight;
 
-    element.classList.remove(activeClass);
+    item.classList.remove(activeClass);
 
     if (calcHeight) {
-      beforeClose(element);
+      beforeClose(item);
 
       // Animation [X]px => 0
       requestAnimationFrame(() => {
@@ -334,40 +334,40 @@ class Accordion {
         });
       });
     } else {
-      // Hide element without animation 'auto' => 0
+      // Hide item without animation 'auto' => 0
       panel.style.height = "0";
     }
 
-    this.#updateARIA(element, {
+    this.#updateARIA(item, {
       ariaExpanded: false,
       ariaDisabled: false
     });
   }
 
   /**
-   * Toggle element
-   * @param {HTMLElement} element = accordion element
+   * Toggle item
+   * @param {HTMLElement} item = accordion item
    */
-  #toggleElement(element: HTMLElement) {
+  #toggleItem(item: HTMLElement) {
     const { activeClass, collapse } = this.#options;
-    const isActive = element.classList.contains(activeClass);
+    const isActive = item.classList.contains(activeClass);
 
     if (isActive && !collapse) return;
-    return isActive ? this.#closeElement(element) : this.#showElement(element);
+    return isActive ? this.#closeItem(item) : this.#showItem(item);
   }
 
   /**
-   * Close all active elements without the current element
+   * Close all active items without the current item
    */
-  #closeElements() {
+  #closeItems() {
     const { activeClass, showMultiple } = this.#options;
     if (showMultiple) return;
 
-    this.#elements.forEach((element, idx) => {
-      const isActive = element.classList.contains(activeClass);
+    this.#items.forEach((item, idx) => {
+      const isActive = item.classList.contains(activeClass);
 
       if (isActive && idx !== this.#currFocusedIdx) {
-        this.#closeElement(element);
+        this.#closeItem(item);
       }
     });
   }
@@ -377,20 +377,20 @@ class Accordion {
    * @param {PointerEvent} e = event
    */
   #handleClick = (e: PointerEvent) => {
-    const { elementClass } = this.#options;
+    const { itemClass } = this.#options;
     const { currentTarget, target } = e;
 
-    const element = currentTarget instanceof Element && currentTarget.closest<HTMLElement>(Accordion.#cn(elementClass));
+    const item = currentTarget instanceof Element && currentTarget.closest<HTMLElement>(Accordion.#cn(itemClass));
     const isLink = target instanceof Element && !!target.closest<HTMLAnchorElement>("a");
 
-    if (!element || isLink) return;
+    if (!item || isLink) return;
 
-    const index = this.#elements.indexOf(element);
-    this.#currFocusedIdx = index;
+    const idx = this.#items.indexOf(item);
+    this.#currFocusedIdx = idx;
 
-    this.#closeElements();
-    this.#focus(e, element);
-    this.#toggleElement(element);
+    this.#closeItems();
+    this.#focus(e, item);
+    this.#toggleItem(item);
   };
 
   /**
@@ -400,13 +400,13 @@ class Accordion {
   #handleKeydown = (e: KeyboardEvent) => {
     switch (e.key) {
       case "ArrowUp":
-        return this.#focusPrevElement(e);
+        return this.#focusPrevItem(e);
       case "ArrowDown":
-        return this.#focusNextElement(e);
+        return this.#focusNextItem(e);
       case "Home":
-        return this.#focusFirstElement(e);
+        return this.#focusFirstItem(e);
       case "End":
-        return this.#focusLastElement(e);
+        return this.#focusLastItem(e);
       default:
         return null;
     }
@@ -421,10 +421,10 @@ class Accordion {
 
     if (!(currentTarget instanceof HTMLElement)) return;
 
-    const currElement = this.#elements.find((element) => element.contains(currentTarget));
+    const currItem = this.#items.find((item) => item.contains(currentTarget));
 
-    if (currElement) {
-      this.#currFocusedIdx = this.#elements.indexOf(currElement);
+    if (currItem) {
+      this.#currFocusedIdx = this.#items.indexOf(currItem);
     }
   };
 
@@ -442,15 +442,15 @@ class Accordion {
     if (!(panel instanceof HTMLElement)) return;
 
     const height = parseInt(panel.style.height);
-    const element = this.#elements.find((element) => element.contains(panel));
+    const item = this.#items.find((item) => item.contains(panel));
 
-    if (!element) return;
+    if (!item) return;
 
     if (height > 0) {
       panel.style.height = "auto";
-      onOpen(element);
+      onOpen(item);
     } else {
-      onClose(element);
+      onClose(item);
     }
   };
 
@@ -461,9 +461,9 @@ class Accordion {
     if (this.#eventsAttached) return;
     const { triggerClass, panelClass } = this.#options;
 
-    this.#elements.forEach((element) => {
-      const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
-      const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    this.#items.forEach((item) => {
+      const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+      const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
       trigger?.addEventListener("click", this.#handleClick);
       trigger?.addEventListener("keydown", this.#handleKeydown);
@@ -481,9 +481,9 @@ class Accordion {
     if (!this.#eventsAttached) return;
     const { triggerClass, panelClass } = this.#options;
 
-    this.#elements.forEach((element) => {
-      const trigger = element.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
-      const panel = element.querySelector<HTMLElement>(Accordion.#cn(panelClass));
+    this.#items.forEach((item) => {
+      const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
+      const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
       trigger?.removeEventListener("click", this.#handleClick);
       trigger?.removeEventListener("keydown", this.#handleKeydown);
@@ -495,66 +495,66 @@ class Accordion {
   }
 
   /**
-   * Toggle accordion element
-   * @param {number} elementIdx = element index
+   * Toggle accordion item
+   * @param {number} itemIdx = item index
    */
-  public toggle(elementIdx: number) {
-    const el = this.#elements[elementIdx];
-    if (el) this.#toggleElement(el);
+  public toggle(itemIdx: number) {
+    const el = this.#items[itemIdx];
+    if (el) this.#toggleItem(el);
   }
 
   /**
-   * Open accordion element
-   * @param {number} elementIdx = element index
+   * Open accordion item
+   * @param {number} itemIdx = item index
    */
-  public open = (elementIdx: number) => {
-    const el = this.#elements[elementIdx];
-    if (el) this.#showElement(el);
+  public open = (itemIdx: number) => {
+    const el = this.#items[itemIdx];
+    if (el) this.#showItem(el);
   };
 
   /**
-   * Open all hidden accordion elements
+   * Open all hidden accordion items
    */
   public openAll = () => {
     const { activeClass, onOpen } = this.#options;
 
-    this.#elements.forEach((element) => {
-      const isActive = element.classList.contains(activeClass);
+    this.#items.forEach((item) => {
+      const isActive = item.classList.contains(activeClass);
 
       if (!isActive) {
-        this.#showElement(element, false);
-        onOpen(element);
+        this.#showItem(item, false);
+        onOpen(item);
       }
     });
   };
 
   /**
-   * Close accordion element
-   * @param {number} elementIdx = element index
+   * Close accordion item
+   * @param {number} itemIdx = item index
    */
-  public close = (elementIdx: number) => {
-    const el = this.#elements[elementIdx];
-    if (el) this.#closeElement(el);
+  public close = (itemIdx: number) => {
+    const el = this.#items[itemIdx];
+    if (el) this.#closeItem(el);
   };
 
   /**
-   * Close all active accordion elements
+   * Close all active accordion items
    */
   public closeAll = () => {
     const { activeClass, onClose } = this.#options;
 
-    this.#elements.forEach((element) => {
-      const isActive = element.classList.contains(activeClass);
+    this.#items.forEach((item) => {
+      const isActive = item.classList.contains(activeClass);
 
       if (isActive) {
-        this.#closeElement(element, false);
-        onClose(element);
+        this.#closeItem(item, false);
+        onClose(item);
       }
     });
   };
 
   /**
-   * Update accordion elements
+   * Update accordion items
    */
   public update = () => {
     this.#createDefinitions();
@@ -570,11 +570,11 @@ class Accordion {
     this.detachEvents();
     this.openAll();
 
-    this.#elements.forEach((element) => {
-      this.#removeIDs(element);
-      this.#removeARIA(element);
-      this.#setTransition(element, true);
-      element.classList.remove(Accordion.JS_ENABLED_CLASS);
+    this.#items.forEach((item) => {
+      this.#removeIDs(item);
+      this.#removeARIA(item);
+      this.#setTransition(item, true);
+      item.classList.remove(Accordion.JS_ENABLED_CLASS);
     });
 
     this.#eventsAttached = true;
@@ -582,8 +582,8 @@ class Accordion {
 
   /**
    * Build class name
-   * @param {string} className = element class name
-   * @return {string} className = element class name with CSS.escape
+   * @param {string} className = class name
+   * @return {string} className = class name with CSS.escape
    */
   static #cn(className: string): string {
     return `.${CSS.escape(className)}`;

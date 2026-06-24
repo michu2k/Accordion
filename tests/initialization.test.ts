@@ -37,6 +37,6 @@ describe("Accordion initialization", () => {
   });
 
   test("throws an error when initialized with a non-existent selector", () => {
-    expect(() => new Accordion(".non-existent-selector")).toThrow("Container element not found");
+    expect(() => new Accordion(".non-existent-selector")).toThrow("Container not found");
   });
 });
