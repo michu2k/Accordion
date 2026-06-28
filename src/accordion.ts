@@ -576,8 +576,6 @@ class Accordion {
       this.#setTransition(item, true);
       item.classList.remove(Accordion.JS_ENABLED_CLASS);
     });
-
-    this.#eventsAttached = true;
   };
 
   /**
