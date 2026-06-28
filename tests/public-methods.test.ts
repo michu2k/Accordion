@@ -10,7 +10,7 @@ beforeAll(() => {
   accordion = new Accordion(container.selector);
 });
 
-describe("Accordion public API", () => {
+describe("Accordion public methods", () => {
   test("open(index) expands the specified accordion item", () => {
     accordion.open(0);
     expect(container.items[0]?.item.classList).toContain("is-active");

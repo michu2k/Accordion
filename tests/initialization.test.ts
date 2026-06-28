@@ -24,7 +24,7 @@ describe("Accordion initialization", () => {
     expect(accordion).toBeInstanceOf(Accordion);
   });
 
-  test("initializes with an array of elements", () => {
+  test("initializes with an array of strings and HTML elements", () => {
     const { container } = createAccordionContainer();
     const { selector } = createAccordionContainer("second-accordion");
     const accordion = new Accordion([container, selector]);
