@@ -54,7 +54,7 @@ This is just an example of a layout. You can create your own HTML structure.
 <div class="accordion-container">
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Lorem ipsum</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -63,7 +63,7 @@ This is just an example of a layout. You can create your own HTML structure.
 
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Lorem ipsum</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -72,7 +72,7 @@ This is just an example of a layout. You can create your own HTML structure.
 
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Lorem ipsum</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -144,21 +144,17 @@ accordion.detachEvents();
 
 ###### Methods
 
-| Option         | Description                                                                                | Arguments          |
-| -------------- | ------------------------------------------------------------------------------------------ | ------------------ |
-| attachEvents() | Attach events                                                                              | -                  |
-| detachEvents() | Detach events                                                                              | -                  |
-| open()         | Open the accordion item with the given idx <br> E.g. `acc.open(1)`                         | `idx` - item index |
-| close()        | Close the accordion item with the given idx <br> E.g. `acc.close(1)`                       | `idx` - item index |
-| toggle()       | Toggle the accordion item with the given idx <br> E.g. `acc.toggle(1)`                     | `idx` - item index |
-| openAll()      | Open all accordion items (without animation)                                               | -                  |
-| closeAll()     | Close all accordion items (without animation)                                              | -                  |
-| update()       | If there are new items added by lazy load, you can run this method to update the Accordion | -                  |
-| destroy()      | Destroy accordion instance: <br> Open items, remove events, IDs & ARIA                     | -                  |
-
-## v3 Release Info
-
-There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), I recommend updating the package to the latest version with new structure and options.
+| Option         | Description                                                                                | Arguments              |
+| -------------- | ------------------------------------------------------------------------------------------ | ---------------------- |
+| attachEvents() | Attach events                                                                              | -                      |
+| detachEvents() | Detach events                                                                              | -                      |
+| open()         | Open the accordion item with the given index <br> E.g. `acc.open(1)`                       | `itemIdx` - item index |
+| close()        | Close the accordion item with the given index <br> E.g. `acc.close(1)`                     | `itemIdx` - item index |
+| toggle()       | Toggle the accordion item with the given index <br> E.g. `acc.toggle(1)`                   | `itemIdx` - item index |
+| openAll()      | Open all accordion items (without animation)                                               | -                      |
+| closeAll()     | Close all accordion items (without animation)                                              | -                      |
+| update()       | If there are new items added by lazy load, you can run this method to update the Accordion | -                      |
+| destroy()      | Destroy accordion instance: <br> Open items, remove events, IDs & ARIA                     | -                      |
 
 ## License
 
