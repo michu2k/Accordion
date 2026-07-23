@@ -49,28 +49,27 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/user-event": "^14.6.1",
-    "@tsdown/css": "^0.22.3",
-    "@types/node": "^25.6.2",
-    "@vitest/coverage-v8": "4.1.9",
-    "eslint": "^9.17.0",
+    "@tsdown/css": "^0.22.13",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-v8": "4.1.10",
+    "eslint": "^10.7.0",
     "jsdom": "^29.1.1",
-    "prettier": "^3.9.4",
-    "tsdown": "^0.22.3",
+    "prettier": "^3.9.6",
+    "tsdown": "^0.22.13",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1",
-    "vitest": "^4.1.9"
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^4.1.10"
   },
   "browserslist": [
     ">0.15%",
     "not dead",
     "Chrome >= 80",
     "Edge >= 80",
-    "Firefox >= 74",
-    "Opera >= 68",
+    "Firefox >= 80",
+    "Opera >= 80",
     "Safari >= 13",
-    "not op_mini all",
-    "not IE 11"
+    "not op_mini all"
   ]
 }
