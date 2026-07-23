@@ -46,8 +46,6 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/user-event": "^14.6.1",
@@ -61,15 +59,5 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
     "vitest": "^4.1.10"
-  },
-  "browserslist": [
-    ">0.15%",
-    "not dead",
-    "Chrome >= 80",
-    "Edge >= 80",
-    "Firefox >= 80",
-    "Opera >= 80",
-    "Safari >= 13",
-    "not op_mini all"
-  ]
+  }
 }
