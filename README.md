@@ -8,7 +8,7 @@ Lightweight and accessible accordion module with an extensible API. With the mod
 
 ## Installation
 
-###### npm
+###### Package manager
 
 Install the package & import files
 
