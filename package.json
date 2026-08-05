@@ -48,16 +48,16 @@
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@tsdown/css": "^0.22.13",
-    "@types/node": "^26.1.1",
+    "@testing-library/user-event": "^14.6.3",
+    "@tsdown/css": "^0.22.14",
+    "@types/node": "^26.1.2",
     "@vitest/coverage-v8": "4.1.10",
-    "eslint": "^10.7.0",
-    "jsdom": "^29.1.1",
+    "eslint": "^10.8.0",
+    "jsdom": "^30.0.1",
     "prettier": "^3.9.6",
-    "tsdown": "^0.22.13",
+    "tsdown": "^0.22.14",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.65.0",
+    "typescript-eslint": "^8.66.0",
     "vitest": "^4.1.10"
   }
 }
