@@ -28,7 +28,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.mjs"
-    }
+    },
+    "./accordion.min.css": "./dist/accordion.min.css"
   },
   "files": [
     "dist"
