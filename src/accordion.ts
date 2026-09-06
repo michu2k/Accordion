@@ -212,12 +212,9 @@ class Accordion {
 
   /**
    * Focus item
-   * @param {Event} e = event
    * @param {HTMLElement} item = accordion item
    */
-  #focus(e: Event, item: HTMLElement) {
-    e.preventDefault();
-
+  #focus(item: HTMLElement) {
     const { triggerClass } = this.#options;
     const trigger = item.querySelector<HTMLElement>(Accordion.#cn(triggerClass));
 
@@ -229,10 +226,12 @@ class Accordion {
    * @param {Event} e = event
    */
   #focusFirstItem(e: Event) {
+    e.preventDefault();
+
     const firstItem = this.#items[0];
     if (!firstItem) return;
 
-    this.#focus(e, firstItem);
+    this.#focus(firstItem);
     this.#currFocusedIdx = 0;
   }
 
@@ -241,10 +240,12 @@ class Accordion {
    * @param {Event} e = event
    */
   #focusLastItem(e: Event) {
+    e.preventDefault();
+
     const lastItem = this.#items[this.#items.length - 1];
     if (!lastItem) return;
 
-    this.#focus(e, lastItem);
+    this.#focus(lastItem);
     this.#currFocusedIdx = this.#items.length - 1;
   }
 
@@ -253,13 +254,15 @@ class Accordion {
    * @param {Event} e = event
    */
   #focusNextItem(e: Event) {
+    e.preventDefault();
+
     const nextItemIdx = this.#currFocusedIdx + 1;
     if (nextItemIdx > this.#items.length - 1) return this.#focusFirstItem(e);
 
     const nextItem = this.#items[nextItemIdx];
     if (!nextItem) return;
 
-    this.#focus(e, nextItem);
+    this.#focus(nextItem);
     this.#currFocusedIdx = nextItemIdx;
   }
 
@@ -268,13 +271,15 @@ class Accordion {
    * @param {Event} e = event
    */
   #focusPrevItem(e: Event) {
+    e.preventDefault();
+
     const prevItemIdx = this.#currFocusedIdx - 1;
     if (prevItemIdx < 0) return this.#focusLastItem(e);
 
     const prevItem = this.#items[prevItemIdx];
     if (!prevItem) return;
 
-    this.#focus(e, prevItem);
+    this.#focus(prevItem);
     this.#currFocusedIdx = prevItemIdx;
   }
 
@@ -378,18 +383,17 @@ class Accordion {
    */
   #handleClick = (e: PointerEvent) => {
     const { itemClass } = this.#options;
-    const { currentTarget, target } = e;
+    const { currentTarget } = e;
 
     const item = currentTarget instanceof Element && currentTarget.closest<HTMLElement>(Accordion.#cn(itemClass));
-    const isLink = target instanceof Element && !!target.closest<HTMLAnchorElement>("a");
 
-    if (!item || isLink) return;
+    if (!item) return;
 
     const idx = this.#items.indexOf(item);
     this.#currFocusedIdx = idx;
 
     this.#closeItems();
-    this.#focus(e, item);
+    this.#focus(item);
     this.#toggleItem(item);
   };
 
