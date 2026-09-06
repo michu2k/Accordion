@@ -18,12 +18,11 @@ export interface AccordionConstructor {
   new (selector: string, options?: Partial<AccordionOptions>): Accordion;
   new (item: HTMLElement, options?: Partial<AccordionOptions>): Accordion;
   new (items: Array<string | HTMLElement>, options?: Partial<AccordionOptions>): Accordion[];
-  readonly JS_ENABLED_CLASS: string;
 }
 
-class Accordion {
-  static readonly JS_ENABLED_CLASS = "js-enabled";
+const JS_ENABLED_CLASS = "js-enabled";
 
+class Accordion {
   static #uniqueId: number = 0;
 
   #options: AccordionOptions = {
@@ -91,10 +90,10 @@ class Accordion {
     });
 
     this.#items
-      .filter((item) => !item.classList.contains(Accordion.JS_ENABLED_CLASS))
+      .filter((item) => !item.classList.contains(JS_ENABLED_CLASS))
       .forEach((item) => {
         // When JS is enabled, add the class to the item
-        item.classList.add(Accordion.JS_ENABLED_CLASS);
+        item.classList.add(JS_ENABLED_CLASS);
 
         this.#generateIDs(item);
         this.#setARIA(item);
@@ -578,7 +577,7 @@ class Accordion {
       this.#removeIDs(item);
       this.#removeARIA(item);
       this.#setTransition(item, true);
-      item.classList.remove(Accordion.JS_ENABLED_CLASS);
+      item.classList.remove(JS_ENABLED_CLASS);
     });
   };
 
