@@ -502,8 +502,8 @@ class Accordion {
    * @param {number} itemIdx = item index
    */
   public toggle(itemIdx: number) {
-    const el = this.#items[itemIdx];
-    if (el) this.#toggleItem(el);
+    const item = this.#items[itemIdx];
+    if (item) this.#toggleItem(item);
   }
 
   /**
@@ -511,8 +511,17 @@ class Accordion {
    * @param {number} itemIdx = item index
    */
   public open = (itemIdx: number) => {
-    const el = this.#items[itemIdx];
-    if (el) this.#showItem(el);
+    const item = this.#items[itemIdx];
+    if (item) this.#showItem(item);
+  };
+
+  /**
+   * Close accordion item
+   * @param {number} itemIdx = item index
+   */
+  public close = (itemIdx: number) => {
+    const item = this.#items[itemIdx];
+    if (item) this.#closeItem(item);
   };
 
   /**
@@ -529,15 +538,6 @@ class Accordion {
         onOpen(item);
       }
     });
-  };
-
-  /**
-   * Close accordion item
-   * @param {number} itemIdx = item index
-   */
-  public close = (itemIdx: number) => {
-    const el = this.#items[itemIdx];
-    if (el) this.#closeItem(el);
   };
 
   /**
