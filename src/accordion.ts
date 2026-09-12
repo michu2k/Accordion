@@ -326,13 +326,13 @@ class Accordion {
 
     item.classList.remove(activeClass);
 
+    // Animation [X]px => 0
     if (calcHeight) {
       beforeClose(item);
 
-      // Animation [X]px => 0
-      requestAnimationFrame(() => {
-        panel.style.height = `${height}px`;
+      panel.style.height = `${height}px`;
 
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           panel.style.height = "0";
         });
