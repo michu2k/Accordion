@@ -364,8 +364,7 @@ class Accordion {
    * Close all active items without the current item
    */
   #closeItems() {
-    const { activeClass, showMultiple } = this.#options;
-    if (showMultiple) return;
+    const { activeClass } = this.#options;
 
     this.#items.forEach((item, idx) => {
       const isActive = item.classList.contains(activeClass);
@@ -381,7 +380,7 @@ class Accordion {
    * @param {PointerEvent} e = event
    */
   #handleClick = (e: PointerEvent) => {
-    const { itemClass } = this.#options;
+    const { itemClass, showMultiple } = this.#options;
     const { currentTarget } = e;
 
     const item = currentTarget instanceof Element && currentTarget.closest<HTMLElement>(Accordion.#cn(itemClass));
@@ -391,7 +390,9 @@ class Accordion {
     const idx = this.#items.indexOf(item);
     this.#currFocusedIdx = idx;
 
-    this.#closeItems();
+    if (!showMultiple) {
+      this.#closeItems();
+    }
     this.#focus(item);
     this.#toggleItem(item);
   };
