@@ -381,11 +381,15 @@ class Accordion {
    */
   #handleClick = (e: PointerEvent) => {
     const { itemClass, showMultiple } = this.#options;
-    const { currentTarget } = e;
+    const { currentTarget, target } = e;
 
     const item = currentTarget instanceof Element && currentTarget.closest<HTMLElement>(Accordion.#cn(itemClass));
 
     if (!item) return;
+
+    // Let links with an href inside the trigger navigate without toggling the item
+    const link = target instanceof Element && target.closest("a[href]");
+    if (link && currentTarget.contains(link)) return;
 
     const idx = this.#items.indexOf(item);
     this.#currFocusedIdx = idx;
