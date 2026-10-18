@@ -299,11 +299,18 @@ class Accordion {
 
     item.classList.add(activeClass);
 
-    requestAnimationFrame(() => {
+    if (calcHeight) {
+      // Animation (0 => [X]px)
       requestAnimationFrame(() => {
-        panel.style.height = calcHeight ? `${height}px` : "auto";
+        requestAnimationFrame(() => {
+          if (!item.classList.contains(activeClass)) return;
+          panel.style.height = `${height}px`;
+        });
       });
-    });
+    } else {
+      // Show item without animation (0 => auto)
+      panel.style.height = "auto";
+    }
 
     this.#updateARIA(item, {
       ariaExpanded: true,
@@ -326,19 +333,20 @@ class Accordion {
 
     item.classList.remove(activeClass);
 
-    // Animation [X]px => 0
     if (calcHeight) {
       beforeClose(item);
 
+      // Animation ([X]px => 0)
       panel.style.height = `${height}px`;
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
+          if (item.classList.contains(activeClass)) return;
           panel.style.height = "0";
         });
       });
     } else {
-      // Hide item without animation 'auto' => 0
+      // Hide item without animation (auto => 0)
       panel.style.height = "0";
     }
 
