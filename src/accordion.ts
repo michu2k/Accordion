@@ -573,9 +573,8 @@ class Accordion {
    * Update accordion items
    */
   public update = () => {
-    this.#createDefinitions();
-
     this.detachEvents();
+    this.#createDefinitions();
     this.attachEvents();
   };
 
