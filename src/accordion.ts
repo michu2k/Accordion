@@ -473,7 +473,7 @@ class Accordion {
   /**
    * Attach events
    */
-  public attachEvents() {
+  public attachEvents = () => {
     if (this.#eventsAttached) return;
     const { triggerClass, panelClass } = this.#options;
 
@@ -488,12 +488,12 @@ class Accordion {
     });
 
     this.#eventsAttached = true;
-  }
+  };
 
   /**
    * Detach events
    */
-  public detachEvents() {
+  public detachEvents = () => {
     if (!this.#eventsAttached) return;
     const { triggerClass, panelClass } = this.#options;
 
@@ -508,16 +508,16 @@ class Accordion {
     });
 
     this.#eventsAttached = false;
-  }
+  };
 
   /**
    * Toggle accordion item
    * @param {number} itemIdx = item index
    */
-  public toggle(itemIdx: number) {
+  public toggle = (itemIdx: number) => {
     const item = this.#items[itemIdx];
     if (item) this.#toggleItem(item);
-  }
+  };
 
   /**
    * Open accordion item
