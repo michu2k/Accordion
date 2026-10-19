@@ -396,8 +396,9 @@ class Accordion {
     if (!item) return;
 
     // Let links with an href inside the trigger navigate without toggling the item
+    // A trigger that is itself a link with an href still toggles the item.
     const link = target instanceof Element && target.closest("a[href]");
-    if (link && currentTarget.contains(link)) return;
+    if (link && link !== currentTarget && currentTarget.contains(link)) return;
 
     const idx = this.#items.indexOf(item);
     this.#currFocusedIdx = idx;
