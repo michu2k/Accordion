@@ -59,18 +59,24 @@ describe("Accordion public methods", () => {
   });
 
   test("destroy() opens item, remove events, IDs & ARIA attributes", async () => {
-    accordion.destroy();
+    const { selector, items } = createAccordionContainer();
+    const onOpen = vi.fn();
+    const beforeOpen = vi.fn();
+    const instance = new Accordion(selector, { beforeOpen, onOpen });
+
+    instance.destroy();
 
     // Note: ARIA attributes are already being checked in accessibility tests
-    for (const { item, trigger, panel } of container.items) {
+    for (const { item, trigger, panel } of items) {
       await vi.waitFor(() => {
         expect(panel.style.height).toBe("auto");
       });
 
+      expect(onOpen).not.toHaveBeenCalled();
+      expect(beforeOpen).not.toHaveBeenCalled();
+
       expect(item.classList).toContain("is-active");
-
       trigger.click();
-
       expect(item.classList).toContain("is-active");
 
       expect(item.id).toBe("");

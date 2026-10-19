@@ -583,9 +583,9 @@ class Accordion {
    */
   public destroy = () => {
     this.detachEvents();
-    this.openAll();
 
     this.#items.forEach((item) => {
+      this.#showItem(item, false);
       this.#removeIDs(item);
       this.#removeARIA(item);
       this.#setTransition(item, true);
