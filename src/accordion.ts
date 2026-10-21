@@ -368,15 +368,14 @@ class Accordion {
   }
 
   /**
-   * Close all active items without the current item
+   * Close all active items except the given one
+   * @param {HTMLElement} except = item to keep open
    */
-  #closeItems() {
+  #closeItems(except: HTMLElement) {
     const { activeClass } = this.#options;
 
-    this.#items.forEach((item, idx) => {
-      const isActive = item.classList.contains(activeClass);
-
-      if (isActive && idx !== this.#currFocusedIdx) {
+    this.#items.forEach((item) => {
+      if (item !== except && item.classList.contains(activeClass)) {
         this.#closeItem(item);
       }
     });
@@ -403,7 +402,7 @@ class Accordion {
     this.#currFocusedIdx = idx;
 
     if (!showMultiple) {
-      this.#closeItems();
+      this.#closeItems(item);
     }
     this.#focus(item);
     this.#toggleItem(item);
@@ -515,8 +514,14 @@ class Accordion {
    * @param {number} itemIdx = item index
    */
   public toggle = (itemIdx: number) => {
+    const { showMultiple } = this.#options;
+
     const item = this.#items[itemIdx];
-    if (item) this.#toggleItem(item);
+    if (!item) return;
+
+    if (!showMultiple) this.#closeItems(item);
+
+    this.#toggleItem(item);
   };
 
   /**
@@ -524,8 +529,15 @@ class Accordion {
    * @param {number} itemIdx = item index
    */
   public open = (itemIdx: number) => {
+    const { showMultiple, activeClass } = this.#options;
+
     const item = this.#items[itemIdx];
-    if (item) this.#showItem(item);
+    if (!item) return;
+
+    if (!showMultiple) this.#closeItems(item);
+    if (item.classList.contains(activeClass)) return;
+
+    this.#showItem(item);
   };
 
   /**
@@ -533,8 +545,12 @@ class Accordion {
    * @param {number} itemIdx = item index
    */
   public close = (itemIdx: number) => {
+    const { activeClass } = this.#options;
+
     const item = this.#items[itemIdx];
-    if (item) this.#closeItem(item);
+    if (!item || !item.classList.contains(activeClass)) return;
+
+    this.#closeItem(item);
   };
 
   /**
@@ -544,9 +560,7 @@ class Accordion {
     const { activeClass, onOpen } = this.#options;
 
     this.#items.forEach((item) => {
-      const isActive = item.classList.contains(activeClass);
-
-      if (!isActive) {
+      if (!item.classList.contains(activeClass)) {
         this.#showItem(item, false);
         onOpen(item);
       }
@@ -560,9 +574,7 @@ class Accordion {
     const { activeClass, onClose } = this.#options;
 
     this.#items.forEach((item) => {
-      const isActive = item.classList.contains(activeClass);
-
-      if (isActive) {
+      if (item.classList.contains(activeClass)) {
         this.#closeItem(item, false);
         onClose(item);
       }
