@@ -89,26 +89,25 @@ class Accordion {
       return !(!!closestItem && container.contains(closestItem));
     });
 
-    this.#items
-      .filter((item) => !item.classList.contains(JS_ENABLED_CLASS))
-      .forEach((item) => {
-        // When JS is enabled, add the class to the item
-        item.classList.add(JS_ENABLED_CLASS);
+    this.#items.forEach((item, idx) => {
+      // Skip items that are already initialized (e.g. on update())
+      if (item.classList.contains(JS_ENABLED_CLASS)) return;
 
-        this.#generateIDs(item);
-        this.#setARIA(item);
-        this.#setTransition(item);
+      // When JS is enabled, add the class to the item
+      item.classList.add(JS_ENABLED_CLASS);
 
-        const idx = this.#items.indexOf(item);
+      this.#generateIDs(item);
+      this.#setARIA(item);
+      this.#setTransition(item);
 
-        Accordion.#uniqueId++;
+      Accordion.#uniqueId++;
 
-        if (openOnInit.includes(idx)) {
-          this.#showItem(item, false);
-        } else {
-          this.#closeItem(item, false);
-        }
-      });
+      if (openOnInit.includes(idx)) {
+        this.#showItem(item, false);
+      } else {
+        this.#closeItem(item, false);
+      }
+    });
   }
 
   /**
