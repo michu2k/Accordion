@@ -86,11 +86,11 @@ class Accordion {
     // Filter out items that are not direct children of the container (e.g. nested items)
     this.#items = Array.from(allItems).filter((item) => {
       const closestItem = item.parentElement?.closest(Accordion.#cn(itemClass));
-      return !(!!closestItem && container.contains(closestItem));
+      return !closestItem || !container.contains(closestItem);
     });
 
     this.#items.forEach((item, idx) => {
-      // Skip items that are already initialized (e.g. on update())
+      // Skip items that are already initialized
       if (item.classList.contains(JS_ENABLED_CLASS)) return;
 
       // When JS is enabled, add the class to the item
