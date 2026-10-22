@@ -38,7 +38,7 @@ describe("Accordion options", () => {
     expect(item.classList.contains("is-active")).toBe(expected);
   });
 
-  test("prevents collapsing an active item when toggle() is called and 'collapse' is false", () => {
+  test("prevents collapsing an active item when toggle() is called and collapse is 'false'", () => {
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector, { collapse: false, openOnInit: [0] });
 
@@ -62,6 +62,18 @@ describe("Accordion options", () => {
 
     items[1]!.trigger.click();
     expect(items[0]!.item.classList.contains("is-active")).toBe(expected);
+    expect(items[1]!.item.classList).toContain("is-active");
+  });
+
+  test.each(["open", "toggle"] as const)("%s() closes other items when showMultiple is 'false'", (method) => {
+    const { selector, items } = createAccordionContainer();
+    const accordion = new Accordion(selector);
+
+    accordion[method](0);
+    expect(items[0]!.item.classList).toContain("is-active");
+
+    accordion[method](1);
+    expect(items[0]!.item.classList).not.toContain("is-active");
     expect(items[1]!.item.classList).toContain("is-active");
   });
 });
