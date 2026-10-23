@@ -148,8 +148,8 @@ class Accordion {
     const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
     if (item.id.startsWith("ac-")) item.removeAttribute("id");
-    if (trigger?.id.startsWith("ac-")) trigger.removeAttribute("id");
-    if (panel?.id.startsWith("ac-")) panel.removeAttribute("id");
+    if (trigger?.id.startsWith("ac-trigger-")) trigger.removeAttribute("id");
+    if (panel?.id.startsWith("ac-panel-")) panel.removeAttribute("id");
   }
 
   /**
