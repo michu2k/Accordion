@@ -62,8 +62,8 @@ describe("Accordion public methods", () => {
     const { selector, items } = createAccordionContainer();
     const onOpen = vi.fn();
     const beforeOpen = vi.fn();
-    const instance = new Accordion(selector, { beforeOpen, onOpen });
 
+    const instance = new Accordion(selector, { beforeOpen, onOpen });
     instance.destroy();
 
     // Note: ARIA attributes are already being checked in accessibility tests
@@ -83,5 +83,21 @@ describe("Accordion public methods", () => {
       expect(trigger.id).toBe("");
       expect(panel.id).toBe("");
     }
+  });
+
+  test("destroy() keeps custom IDs", () => {
+    const { selector, items } = createAccordionContainer();
+    const { item, trigger, panel } = items[0]!;
+
+    item.id = "faq";
+    trigger.id = "ac-faq-trigger";
+    panel.id = "ac-faq-panel";
+
+    const instance = new Accordion(selector);
+    instance.destroy();
+
+    expect(item.id).toBe("faq");
+    expect(trigger.id).toBe("ac-faq-trigger");
+    expect(panel.id).toBe("ac-faq-panel");
   });
 });
