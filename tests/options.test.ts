@@ -17,8 +17,7 @@ describe("Accordion options", () => {
     const { selector, items } = createAccordionContainer();
     new Accordion(selector, options);
 
-    const { panel } = items[0]!;
-
+    const { panel } = items[0];
     expect(panel.style.transitionDuration).toBe(expected);
   });
 
@@ -29,7 +28,7 @@ describe("Accordion options", () => {
     const { selector, items } = createAccordionContainer();
     new Accordion(selector, options);
 
-    const { item, trigger } = items[0]!;
+    const { item, trigger } = items[0];
 
     trigger.click();
     expect(item.classList).toContain("is-active");
@@ -42,7 +41,7 @@ describe("Accordion options", () => {
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector, { collapse: false, openOnInit: [0] });
 
-    const { item } = items[0]!;
+    const { item } = items[0];
     expect(item.classList).toContain("is-active");
 
     accordion.toggle(0);
@@ -56,24 +55,28 @@ describe("Accordion options", () => {
     const { selector, items } = createAccordionContainer();
     new Accordion(selector, options);
 
-    items[0]!.trigger.click();
-    expect(items[0]!.item.classList).toContain("is-active");
-    expect(items[1]!.item.classList).not.toContain("is-active");
+    const [item0, item1] = items;
 
-    items[1]!.trigger.click();
-    expect(items[0]!.item.classList.contains("is-active")).toBe(expected);
-    expect(items[1]!.item.classList).toContain("is-active");
+    item0.trigger.click();
+    expect(item0.item.classList).toContain("is-active");
+    expect(item1.item.classList).not.toContain("is-active");
+
+    item1.trigger.click();
+    expect(item0.item.classList.contains("is-active")).toBe(expected);
+    expect(item1.item.classList).toContain("is-active");
   });
 
   test.each(["open", "toggle"] as const)("%s() closes other items when showMultiple is 'false'", (method) => {
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector);
 
+    const [item0, item1] = items;
+
     accordion[method](0);
-    expect(items[0]!.item.classList).toContain("is-active");
+    expect(item0.item.classList).toContain("is-active");
 
     accordion[method](1);
-    expect(items[0]!.item.classList).not.toContain("is-active");
-    expect(items[1]!.item.classList).toContain("is-active");
+    expect(item0.item.classList).not.toContain("is-active");
+    expect(item1.item.classList).toContain("is-active");
   });
 });

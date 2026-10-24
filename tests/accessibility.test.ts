@@ -53,7 +53,7 @@ describe("Accordion accessibility - ARIA attributes", () => {
     const { selector, items } = createAccordionContainer();
     new Accordion(selector, { openOnInit: [0] });
 
-    const trigger = items[0]!.trigger;
+    const { trigger } = items[0];
 
     expect(trigger.ariaExpanded).toBe("true");
     expect(trigger.ariaDisabled).toBe("false");
@@ -63,7 +63,7 @@ describe("Accordion accessibility - ARIA attributes", () => {
     const { selector, items } = createAccordionContainer();
     new Accordion(selector, { openOnInit: [0], collapse: false });
 
-    const trigger = items[0]!.trigger;
+    const { trigger } = items[0];
 
     expect(trigger.ariaExpanded).toBe("true");
     expect(trigger.ariaDisabled).toBe("true");
@@ -87,7 +87,7 @@ describe("Accordion accessibility - keyboard navigation", () => {
     ["{End}", "moves focus to the last item", 0, 2]
   ])("pressing %s key %s", async (key, _, beforeIndex, afterIndex) => {
     const triggers = screen.getAllByRole("button", { name: /Trigger/i });
-    triggers[beforeIndex]!.focus();
+    triggers[beforeIndex]?.focus();
 
     expect(triggers[beforeIndex]).toHaveFocus();
 

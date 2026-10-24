@@ -15,7 +15,7 @@ describe("Accordion lifecycle callbacks", () => {
 
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector, { beforeOpen });
-    const { item } = items[0]!;
+    const { item } = items[0];
 
     accordion.open(0);
 
@@ -28,7 +28,7 @@ describe("Accordion lifecycle callbacks", () => {
 
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector, { onOpen });
-    const { item, panel } = items[0]!;
+    const { item, panel } = items[0];
 
     accordion.open(0);
     panel.style.height = "24px";
@@ -43,7 +43,7 @@ describe("Accordion lifecycle callbacks", () => {
 
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector, { openOnInit: [0], beforeClose });
-    const { item } = items[0]!;
+    const { item } = items[0];
 
     accordion.close(0);
 
@@ -56,7 +56,7 @@ describe("Accordion lifecycle callbacks", () => {
 
     const { selector, items } = createAccordionContainer();
     const accordion = new Accordion(selector, { openOnInit: [0], onClose });
-    const { item, panel } = items[0]!;
+    const { item, panel } = items[0];
 
     accordion.close(0);
     panel.style.height = "0px";
@@ -77,7 +77,7 @@ describe("Accordion lifecycle callbacks", () => {
 
     expect(beforeOpen).toHaveBeenCalledTimes(2);
     expect(onOpen).toHaveBeenCalledTimes(2);
-    expect(beforeOpen).not.toHaveBeenCalledWith(items[0]!.item);
+    expect(beforeOpen).not.toHaveBeenCalledWith(items[0].item);
   });
 
   test("closeAll() calls beforeClose() and onClose() for each open item", () => {
@@ -91,6 +91,26 @@ describe("Accordion lifecycle callbacks", () => {
 
     expect(beforeClose).toHaveBeenCalledTimes(2);
     expect(onClose).toHaveBeenCalledTimes(2);
-    expect(beforeClose).not.toHaveBeenCalledWith(items[2]!.item);
+    expect(beforeClose).not.toHaveBeenCalledWith(items[2].item);
+  });
+
+  test("open() on an already opened item does not call beforeOpen()", () => {
+    const beforeOpen = vi.fn();
+    const { selector } = createAccordionContainer();
+    const accordion = new Accordion(selector, { openOnInit: [0], beforeOpen });
+
+    accordion.open(0);
+
+    expect(beforeOpen).not.toHaveBeenCalled();
+  });
+
+  test("close() on a closed item does not call beforeClose()", () => {
+    const beforeClose = vi.fn();
+    const { selector } = createAccordionContainer();
+    const accordion = new Accordion(selector, { beforeClose });
+
+    accordion.close(0);
+
+    expect(beforeClose).not.toHaveBeenCalled();
   });
 });

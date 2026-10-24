@@ -1,3 +1,5 @@
+type AccordionItem = ReturnType<typeof createAccordionItem>;
+
 /** Creates a single accordion item. */
 export function createAccordionItem(index: number = 0) {
   const template = `
@@ -21,21 +23,20 @@ export function createAccordionItem(index: number = 0) {
 }
 
 /** Creates an accordion container. */
-export function createAccordionContainer(className = "accordion") {
+export function createAccordionContainer(className = "accordion", { clearBody = true } = {}) {
   // Clear the document body before appending the new container
-  document.body.innerHTML = "";
+  if (clearBody) document.body.innerHTML = "";
 
   const container = document.createElement("div");
   container.classList.add(className);
 
-  const items: Array<ReturnType<typeof createAccordionItem>> = [];
+  const items: [AccordionItem, AccordionItem, AccordionItem] = [
+    createAccordionItem(0),
+    createAccordionItem(1),
+    createAccordionItem(2)
+  ];
 
-  for (let i = 0; i < 3; i++) {
-    const item = createAccordionItem(i);
-    items.push(item);
-
-    container.appendChild(item.item);
-  }
+  container.append(...items.map(({ item }) => item));
 
   document.body.appendChild(container);
 
