@@ -288,13 +288,13 @@ class Accordion {
    */
   #showItem(item: HTMLElement, calcHeight: boolean = true) {
     const { panelClass, activeClass, collapse, beforeOpen } = this.#options;
-    if (calcHeight) beforeOpen(item);
 
     const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
-
     if (!panel) return;
 
     const height = panel.scrollHeight;
+
+    if (calcHeight) beforeOpen(item);
 
     item.classList.add(activeClass);
 
@@ -324,17 +324,17 @@ class Accordion {
    */
   #closeItem(item: HTMLElement, calcHeight: boolean = true) {
     const { panelClass, activeClass, beforeClose } = this.#options;
-    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
 
+    const panel = item.querySelector<HTMLElement>(Accordion.#cn(panelClass));
     if (!panel) return;
 
     const height = panel.scrollHeight;
 
+    if (calcHeight) beforeClose(item);
+
     item.classList.remove(activeClass);
 
     if (calcHeight) {
-      beforeClose(item);
-
       // Animation ([X]px => 0)
       panel.style.height = `${height}px`;
 
@@ -557,10 +557,11 @@ class Accordion {
    * Open all hidden accordion items
    */
   public openAll = () => {
-    const { activeClass, onOpen } = this.#options;
+    const { activeClass, beforeOpen, onOpen } = this.#options;
 
     this.#items.forEach((item) => {
       if (!item.classList.contains(activeClass)) {
+        beforeOpen(item);
         this.#showItem(item, false);
         onOpen(item);
       }
@@ -571,10 +572,11 @@ class Accordion {
    * Close all active accordion items
    */
   public closeAll = () => {
-    const { activeClass, onClose } = this.#options;
+    const { activeClass, beforeClose, onClose } = this.#options;
 
     this.#items.forEach((item) => {
       if (item.classList.contains(activeClass)) {
+        beforeClose(item);
         this.#closeItem(item, false);
         onClose(item);
       }
