@@ -65,4 +65,32 @@ describe("Accordion lifecycle callbacks", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledWith(item);
   });
+
+  test("openAll() calls beforeOpen() and onOpen() for each closed item", () => {
+    const beforeOpen = vi.fn();
+    const onOpen = vi.fn();
+
+    const { selector, items } = createAccordionContainer();
+    const accordion = new Accordion(selector, { openOnInit: [0], beforeOpen, onOpen });
+
+    accordion.openAll();
+
+    expect(beforeOpen).toHaveBeenCalledTimes(2);
+    expect(onOpen).toHaveBeenCalledTimes(2);
+    expect(beforeOpen).not.toHaveBeenCalledWith(items[0]!.item);
+  });
+
+  test("closeAll() calls beforeClose() and onClose() for each open item", () => {
+    const beforeClose = vi.fn();
+    const onClose = vi.fn();
+
+    const { selector, items } = createAccordionContainer();
+    const accordion = new Accordion(selector, { openOnInit: [0, 1], beforeClose, onClose });
+
+    accordion.closeAll();
+
+    expect(beforeClose).toHaveBeenCalledTimes(2);
+    expect(onClose).toHaveBeenCalledTimes(2);
+    expect(beforeClose).not.toHaveBeenCalledWith(items[2]!.item);
+  });
 });
