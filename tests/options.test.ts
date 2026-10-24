@@ -66,9 +66,14 @@ describe("Accordion options", () => {
     expect(item1.item.classList).toContain("is-active");
   });
 
-  test.each(["open", "toggle"] as const)("%s() closes other items when showMultiple is 'false'", (method) => {
+  test.each([
+    ["open", "closes", false],
+    ["toggle", "closes", false],
+    ["open", "keeps open", true],
+    ["toggle", "keeps open", true]
+  ] as const)("%s() %s other items when showMultiple is %s", (method, _, showMultiple) => {
     const { selector, items } = createAccordionContainer();
-    const accordion = new Accordion(selector);
+    const accordion = new Accordion(selector, { showMultiple });
 
     const [item0, item1] = items;
 
@@ -76,7 +81,7 @@ describe("Accordion options", () => {
     expect(item0.item.classList).toContain("is-active");
 
     accordion[method](1);
-    expect(item0.item.classList).not.toContain("is-active");
+    expect(item0.item.classList.contains("is-active")).toBe(showMultiple);
     expect(item1.item.classList).toContain("is-active");
   });
 });
