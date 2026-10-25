@@ -59,8 +59,8 @@ describe("Accordion public methods", () => {
     trigger.click();
 
     expect(item.id).toContain("ac-");
-    expect(trigger.id).toContain("ac-");
-    expect(panel.id).toContain("ac-");
+    expect(trigger.id).toContain("ac-trigger-");
+    expect(panel.id).toContain("ac-panel-");
     expect(item.classList).toContain("is-active");
   });
 
