@@ -47,18 +47,18 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^7.0.0",
-    "@testing-library/user-event": "^14.6.3",
-    "@tsdown/css": "^0.22.14",
-    "@types/node": "^26.1.2",
-    "@vitest/coverage-v8": "4.1.10",
-    "eslint": "^10.8.0",
-    "jsdom": "^30.0.1",
-    "prettier": "^3.9.6",
-    "tsdown": "^0.22.14",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/user-event": "^14.6.8",
+    "@tsdown/css": "^0.23.2",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "^10.13.0",
+    "jsdom": "^30.1.3",
+    "prettier": "^3.9.10",
+    "tsdown": "^0.23.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0",
-    "vitest": "^4.1.10"
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
   }
 }
