@@ -18,7 +18,7 @@ npm install accordion-js
 
 ```javascript
 import Accordion from "accordion-js";
-import "accordion-js/dist/accordion.min.css";
+import "accordion-js/accordion.min.css";
 ```
 
 ###### CDN
@@ -125,25 +125,25 @@ accordion.detachEvents();
 
 ###### Options
 
-| Option         | Type     | Default value | Description                                                                                                                               |
-| -------------- | -------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| duration       | number   | 500           | Animation duration in ms                                                                                                                  |
-| ariaEnabled    | boolean  | true          | Add ARIA items to the HTML structure                                                                                                      |
-| collapse       | boolean  | true          | Allow collapse expanded panel                                                                                                             |
-| showMultiple   | boolean  | false         | Show multiple items at the same time                                                                                                      |
-| openOnInit     | array    | []            | Show accordion items during initialization                                                                                                |
-| itemClass      | string   | "ac"          | Item class                                                                                                                                |
-| triggerClass   | string   | "ac-trigger"  | Trigger class                                                                                                                             |
-| panelClass     | string   | "ac-panel"    | Panel class                                                                                                                               |
-| activeClass    | string   | "is-active"   | Active item class                                                                                                                         |
-| beforeOpen     | function | -             | Calls before the item is opened. <br> `beforeOpen: (item) => {}`                                                                          |
-| onOpen         | function | -             | Calls when the item is opened. <br> `onOpen: (item) => {}`                                                                                |
-| beforeClose    | function | -             | Calls before the item is closed. <br> `beforeClose: (item) => {}`                                                                         |
-| onClose        | function | -             | Calls when the item is closed. <br> `onClose: (item) => {}`                                                                               |
+| Option       | Type     | Default value | Description                                                       |
+| ------------ | -------- | ------------- | ----------------------------------------------------------------- |
+| duration     | number   | 500           | Animation duration in ms                                          |
+| ariaEnabled  | boolean  | true          | Add ARIA items to the HTML structure                              |
+| collapse     | boolean  | true          | Allow collapse expanded panel                                     |
+| showMultiple | boolean  | false         | Show multiple items at the same time                              |
+| openOnInit   | array    | []            | Show accordion items during initialization                        |
+| itemClass    | string   | "ac"          | Item class                                                        |
+| triggerClass | string   | "ac-trigger"  | Trigger class                                                     |
+| panelClass   | string   | "ac-panel"    | Panel class                                                       |
+| activeClass  | string   | "is-active"   | Active item class                                                 |
+| beforeOpen   | function | -             | Calls before the item is opened. <br> `beforeOpen: (item) => {}`  |
+| onOpen       | function | -             | Calls when the item is opened. <br> `onOpen: (item) => {}`        |
+| beforeClose  | function | -             | Calls before the item is closed. <br> `beforeClose: (item) => {}` |
+| onClose      | function | -             | Calls when the item is closed. <br> `onClose: (item) => {}`       |
 
 ###### Methods
 
-| Option         | Description                                                                                | Arguments              |
+| Method         | Description                                                                                | Arguments              |
 | -------------- | ------------------------------------------------------------------------------------------ | ---------------------- |
 | attachEvents() | Attach events                                                                              | -                      |
 | detachEvents() | Detach events                                                                              | -                      |
