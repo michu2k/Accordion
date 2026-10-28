@@ -19,9 +19,9 @@ export default defineConfig([
     entry: {
       index: "./src/accordion.ts"
     },
-    platform: "node",
+    platform: "browser",
     format: "esm",
-    target: "node20",
+    target: "es2022",
     clean: true,
     dts: true,
     outDir: "dist",
