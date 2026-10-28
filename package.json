@@ -22,12 +22,12 @@
   "bugs": {
     "url": "https://github.com/michu2k/Accordion/issues"
   },
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.js"
     },
     "./accordion.min.css": "./dist/accordion.min.css"
   },
