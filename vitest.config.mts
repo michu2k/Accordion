@@ -6,6 +6,7 @@ export default defineConfig({
     globals: true,
     setupFiles: "./tests/test.setup.ts",
     environment: "jsdom",
+    pool: "vmThreads",
     coverage: {
       reporter: ["html"],
       include: ["src/**/*.ts"]
