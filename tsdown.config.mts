@@ -5,7 +5,7 @@ import pkg from "./package.json" with { type: "json" };
 
 const banner = `
 /**
- * Accordion v3.4.1
+ * Accordion v4.0.0
  * ${pkg.description}
  * https://github.com/michu2k/Accordion
  *
