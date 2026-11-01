@@ -2,7 +2,7 @@
 export default {
   printWidth: 120,
   bracketSameLine: true,
-  bracketSpacing: false,
+  bracketSpacing: true,
   trailingComma: "none",
   quoteProps: "consistent"
 };

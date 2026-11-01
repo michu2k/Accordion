@@ -1,8 +1,10 @@
 {
   "name": "accordion-js",
   "version": "3.4.1",
-  "description": "Lightweight and accessible accordion module created in pure Javascript",
-  "main": "dist/accordion.min.js",
+  "license": "MIT",
+  "author": "Michał Strumpf",
+  "type": "module",
+  "description": "Lightweight and accessible accordion module for JavaScript",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michu2k/Accordion.git"
@@ -12,46 +14,51 @@
     "accordion",
     "a11y",
     "es6",
-    "accesibility",
+    "accessibility",
     "aria",
     "javascript-library"
   ],
-  "author": "Michał Strumpf",
   "homepage": "https://github.com/michu2k/Accordion#readme",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/michu2k/Accordion/issues"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./accordion.min.css": "./dist/accordion.min.css"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "start:dev": "gulp",
-    "lint:check": "eslint \"**/*.{mjs,js}\"",
-    "lint:fix": "eslint \"**/*.{mjs,js}\" --fix",
-    "format:check": "prettier \"**/*.{mjs,js}\" --check --cache",
-    "format:fix": "prettier \"**/*.{mjs,js}\" --write --cache"
+    "start:dev": "tsdown --watch ./src/**/*",
+    "build": "tsdown",
+    "ts:check": "tsc --noEmit",
+    "lint:check": "eslint \"**/*.{js,ts,mjs,mts}\"",
+    "lint:fix": "eslint \"**/*.{js,ts,mjs,mts}\" --fix",
+    "format:check": "prettier \"**/*.{js,ts,mjs,mts}\" --check --cache",
+    "format:fix": "prettier \"**/*.{js,ts,mjs,mts}\" --write --cache",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
-    "browser-sync": "^3.0.3",
-    "eslint": "^9.17.0",
-    "gulp": "^5.0.0",
-    "gulp-autoprefixer": "^9.0.0",
-    "gulp-babel": "^8.0.0",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-header-comment": "^0.10.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-terser": "^2.1.0",
-    "prettier": "^3.4.2"
-  },
-  "browserslist": [
-    ">0.15%",
-    "not dead",
-    "Chrome >= 80",
-    "Edge >= 80",
-    "Firefox >= 74",
-    "Opera >= 68",
-    "Safari >= 13",
-    "not op_mini all",
-    "not IE 11"
-  ]
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/user-event": "^14.6.8",
+    "@tsdown/css": "^0.23.2",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "^10.13.0",
+    "jsdom": "^30.1.3",
+    "prettier": "^3.9.10",
+    "tsdown": "^0.23.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
 }

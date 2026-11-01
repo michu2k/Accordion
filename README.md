@@ -4,11 +4,11 @@ Lightweight and accessible accordion module with an extensible API. With the mod
 
 ## Version
 
-3.4.1
+4.0.0
 
 ## Installation
 
-###### npm
+###### Package manager
 
 Install the package & import files
 
@@ -18,7 +18,7 @@ npm install accordion-js
 
 ```javascript
 import Accordion from "accordion-js";
-import "accordion-js/dist/accordion.min.css";
+import "accordion-js/accordion.min.css";
 ```
 
 ###### CDN
@@ -26,8 +26,8 @@ import "accordion-js/dist/accordion.min.css";
 Include files using CDN.
 
 ```
-https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css
-https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js
+https://unpkg.com/accordion-js@4.0.0/dist/accordion.min.css
+https://unpkg.com/accordion-js@4.0.0/dist/accordion.min.js
 ```
 
 ```html
@@ -54,7 +54,7 @@ This is just an example of a layout. You can create your own HTML structure.
 <div class="accordion-container">
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Lorem ipsum</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -63,7 +63,7 @@ This is just an example of a layout. You can create your own HTML structure.
 
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Lorem ipsum</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -72,7 +72,7 @@ This is just an example of a layout. You can create your own HTML structure.
 
   <div class="ac">
     <h2 class="ac-header">
-      <button type="button" class="ac-trigger">Lorem ipsum dolor sit amet.</button>
+      <button type="button" class="ac-trigger">Lorem ipsum</button>
     </h2>
     <div class="ac-panel">
       <p class="ac-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -95,8 +95,8 @@ This is just an example of a layout. You can create your own HTML structure.
 
 new Accordion(container, options)
 
-- `container` - *string | HTMLElement | Array<string | HTMLElement> (required)*, A selector string, a DOM element, or an array of selector strings or HTMLElements that specify the accordion container(s).
-- `options` - *object (optional)*, Configuration options for the accordion. See the table below for available options.
+- `container` - _string | HTMLElement | Array<string | HTMLElement> (required)_, A selector string, an HTMLElement, or an array of selector strings or HTMLElements that specify the accordion container(s).
+- `options` - _object (optional)_, Configuration options for the accordion. See the table below for available options.
 
 ```javascript
 // Default options
@@ -106,8 +106,8 @@ new Accordion(".container-first");
 new Accordion(".container-second", {
   duration: 400,
   showMultiple: true,
-  onOpen: function (currentElement) {
-    console.log(currentElement);
+  onOpen: function (item) {
+    console.log(item);
   }
 });
 
@@ -125,40 +125,35 @@ accordion.detachEvents();
 
 ###### Options
 
-| Option         | Type     | Default value | Description                                                                                                                               |
-| -------------- | -------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| duration       | number   | 500           | Animation duration in ms                                                                                                                  |
-| ariaEnabled    | boolean  | true          | Add ARIA elements to the HTML structure                                                                                                   |
-| collapse       | boolean  | true          | Allow collapse expanded panel                                                                                                             |
-| showMultiple   | boolean  | false         | Show multiple elements at the same time                                                                                                   |
-| onlyChildNodes | boolean  | true          | Disabling this option will find all items in the container. Warning: Setting to `false` will break the functionality of nested accordions |
-| openOnInit     | array    | []            | Show accordion elements during initialization                                                                                             |
-| elementClass   | string   | "ac"          | Element class                                                                                                                             |
-| triggerClass   | string   | "ac-trigger"  | Trigger class                                                                                                                             |
-| panelClass     | string   | "ac-panel"    | Panel class                                                                                                                               |
-| activeClass    | string   | "is-active"   | Active element class                                                                                                                      |
-| beforeOpen     | function | -             | Calls before the item is opened. <br> `beforeOpen: (currElement) => {}`                                                                   |
-| onOpen         | function | -             | Calls when the item is opened. <br> `onOpen: (currElement) => {}`                                                                         |
-| beforeClose    | function | -             | Calls before the item is closed. <br> `beforeClose: (currElement) => {}`                                                                  |
-| onClose        | function | -             | Calls when the item is closed. <br> `onClose: (currElement) => {}`                                                                        |
+| Option       | Type     | Default value | Description                                                       |
+| ------------ | -------- | ------------- | ----------------------------------------------------------------- |
+| duration     | number   | 500           | Animation duration in ms                                          |
+| ariaEnabled  | boolean  | true          | Add ARIA items to the HTML structure                              |
+| collapse     | boolean  | true          | Allow collapse expanded panel                                     |
+| showMultiple | boolean  | false         | Show multiple items at the same time                              |
+| openOnInit   | array    | []            | Show accordion items during initialization                        |
+| itemClass    | string   | "ac"          | Item class                                                        |
+| triggerClass | string   | "ac-trigger"  | Trigger class                                                     |
+| panelClass   | string   | "ac-panel"    | Panel class                                                       |
+| activeClass  | string   | "is-active"   | Active item class                                                 |
+| beforeOpen   | function | -             | Calls before the item is opened. <br> `beforeOpen: (item) => {}`  |
+| onOpen       | function | -             | Calls when the item is opened. <br> `onOpen: (item) => {}`        |
+| beforeClose  | function | -             | Calls before the item is closed. <br> `beforeClose: (item) => {}` |
+| onClose      | function | -             | Calls when the item is closed. <br> `onClose: (item) => {}`       |
 
 ###### Methods
 
-| Option         | Description                                                                                | Arguments             |
-| -------------- | ------------------------------------------------------------------------------------------ | --------------------- |
-| attachEvents() | Attach events                                                                              | -                     |
-| detachEvents() | Detach events                                                                              | -                     |
-| open()         | Open the accordion element with the given idx <br> E.g. `acc.open(1)`                      | `idx` - element index |
-| close()        | Close the accordion element with the given idx <br> E.g. `acc.close(1)`                    | `idx` - element index |
-| toggle()       | Toggle the accordion element with the given idx <br> E.g. `acc.toggle(1)`                  | `idx` - element index |
-| openAll()      | Open all accordion elements (without animation)                                            | -                     |
-| closeAll()     | Close all accordion elements (without animation)                                           | -                     |
-| update()       | If there are new items added by lazy load, you can run this method to update the Accordion | -                     |
-| destroy()      | Destroy accordion instance: <br> Open elements, remove events, IDs & ARIA                  | -                     |
-
-## v3 Release Info
-
-There have been a lot of changes to the API in version `3.0.0`, so if you are using previous versions of the accordion (`2.8.0` and below), I recommend updating the package to the latest version with new structure and options.
+| Method         | Description                                                                                | Arguments              |
+| -------------- | ------------------------------------------------------------------------------------------ | ---------------------- |
+| attachEvents() | Attach events                                                                              | -                      |
+| detachEvents() | Detach events                                                                              | -                      |
+| open()         | Open the accordion item with the given index <br> E.g. `acc.open(1)`                       | `itemIdx` - item index |
+| close()        | Close the accordion item with the given index <br> E.g. `acc.close(1)`                     | `itemIdx` - item index |
+| toggle()       | Toggle the accordion item with the given index <br> E.g. `acc.toggle(1)`                   | `itemIdx` - item index |
+| openAll()      | Open all accordion items (without animation)                                               | -                      |
+| closeAll()     | Close all accordion items (without animation)                                              | -                      |
+| update()       | If there are new items added by lazy load, you can run this method to update the Accordion | -                      |
+| destroy()      | Destroy accordion instance: <br> Open items, remove events, IDs & ARIA                     | -                      |
 
 ## License
 
